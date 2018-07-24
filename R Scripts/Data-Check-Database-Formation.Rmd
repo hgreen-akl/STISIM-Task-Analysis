@@ -1,0 +1,18 @@
+---
+title: "Data Check & Database Formation"
+author: "Hayden Green"
+date: "24 July 2018"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+column_classes <- c("d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","d","t","f","f")
+
+Imported <- read_csv(file.choose(), col_names = TRUE, col_types = column_classes)
+
+```
+

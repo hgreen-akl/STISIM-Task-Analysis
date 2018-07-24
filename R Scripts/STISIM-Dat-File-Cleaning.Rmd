@@ -23,6 +23,8 @@ sorted_columns <- c("Elapsed_Time","Total_dist","Longitudinal_Veloc","Speed","Lo
 
 ### Choose the raw data file to be cleaned
 
+Errors may appear when running this dialog if there is a problem with using your google drive or other file directories are inaccesible to R
+
 ```{r}
 filename <- file.choose()
 ```
@@ -63,6 +65,7 @@ summary_report %>% tail()
 ```
 
 ### Obtain the name & path of the data file and create file nimes for the cleaned data
+There is also a function at the bottom which adds additoinal columns for the particpant ID and the run number. 
 
 ```{r}
 Participant_ID <- raw_data[3,2]
@@ -74,6 +77,8 @@ Pattern <- paste(Participant_ID,"_",Run_number,".Dat", sep = "")
 path <- filename %>% str_replace(Pattern, "")
 cleaned_data$ID <- Participant_ID %>% rep(nrow(cleaned_data))
 cleaned_data$Run_Number <- Run_number %>% rep(nrow(cleaned_data))
+cleaned_data$Date <- file.info(filename)$mtime %>% as.Date() %>% rep(nrow(cleaned_data))
+
 ```
 
 ### Write the cleaned and summary data into a csv and .txt 
