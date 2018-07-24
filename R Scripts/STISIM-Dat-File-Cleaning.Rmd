@@ -14,6 +14,7 @@ library(tidyverse)
 
 ### Creating the Column Names
 Define the column names and then sorting them in a more preferred order.
+test to push into github
 
 ```{r results='hide'}
 Columns <- c("Elapsed_Time","Longitudinal_Accel","Lateral_Accel","Longitudinal_Veloc","Lateral_Veloc","Total_dist","Lateral_Lane_Pos","Vehic_curve","Road_Curve","Steering_angle","Throttle_input","Brake_input","Crashes_comp","Marker","Speed","Steering_count","Throttle_count","Brake_Count","System_Time","RT","Trigger_Number","Speed_Limit","Left_indicator","Right_Indicator", "Driving_Tickets")
