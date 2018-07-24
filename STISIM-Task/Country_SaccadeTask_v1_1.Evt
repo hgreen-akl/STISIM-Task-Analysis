@@ -1,0 +1,450 @@
+METRIC
+//  This Event files was created by:
+//  Victor Borges
+//  Exercise Metabolism Lab, Dept. Sport and Exercise Science
+//  The University of Auckland, New Zealand
+//  v.borges@auckland.ac.nz
+//
+//  Notes:
+//
+//
+//
+//
+//
+{Tags
+PDEFiles = C:\Users\stisim\Desktop\STISIM_DRIVE_FILES
+Left = %PDEFiles%\Arrow_Left.png
+Right = %PDEFiles%\Arrow_Right.png
+}
+/
+//
+//    Overide specific configuration settings
+  Config_Start_Y = 6{2}
+  Config_SpeedOm_Units = KPH
+  Config_Output_Units = METRIC
+  Config_Road_Side = Left
+//
+//    Data collection
+//
+100, Begin Block Save, 1, .01, Driver Data, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 18, 22, 23, 26, 27, 28, 39, 40, 45, 50, 58, 59, 65
+//
+//    Specify the roadway we will use
+
+0, Previously Defined Events,  %PDEFiles%\Country_HeavyCurves_v1_1.Pde
+//
+//    Set up some trees on the side of the road to make it look interesting
+0, Tree, 20, 0, *2;6;9;12;16;5;18, 50{0}, 250{0}, 0
+//
+//    Add vehicles to make it look a bit interesting
+//
+100, Vehicles, 500, 6, 28, 3, F3, 1, 1
+150, Vehicles, 500, 6, 28, 3, S41, 1, 1
+400, Vehicles, 500, 6, 28, 3, T24, 1, 1
+550, Vehicles, 500, 6, 28, 3, F23, 1, 1
+1000, Vehicles, 500, 6, 28, 3, SP9, 1, 1
+1250, Vehicles, 500, 6, 28, 3, F11, 1, 1
+1790.7, Vehicles, 304.8, 1.2192{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 310.896, 2.4384{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 316.992, .9144{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 323.088, 2.4384{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 329.184, .9144{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 335.28, 2.4384{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 341.376, .9144{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+1798.32, Vehicles, 347.472, 1.8288{0}, 28, 3, SP14, 1, 0, 30, 1, 0{7}, 20, 1, {25}, 2, 28, , , 1
+2000, Vehicles, 500, 6, 28, 3, T26, 1, 1
+2500, Vehicles, 500, 6, 28, 3, E9, 1, 1
+3250, Vehicles, 500, 6, 28, 3, F3, 1, 1
+4750, Vehicles, 500, 6, 28, 3, S41, 1, 1
+5000, Vehicles, 500, 6, 28, 3, T24, 1, 1
+6500, Vehicles, 500, 6, 28, 3, F23, 1, 1
+7250, Vehicles, 500, 6, 28, 3, SP9, 1, 1
+10000, Vehicles, 500, 6, 28, 3, F11, 1, 1
+10500, Vehicles, 500, 6, 28, 3, T26, 1, 1
+12000, Vehicles, 500, 6, 28, 3, E9, 1, 1
+13000, Vehicles, 500, 6, 28, 3, F3, 1, 1
+13500, Vehicles, 500, 6, 28, 3, S41, 1, 1
+15000, Vehicles, 500, 6, 28, 3, T24, 1, 1
+15250, Vehicles, 500, 6, 28, 3, F23, 1, 1
+16500, Vehicles, 500, 6, 28, 3, SP9, 1, 1
+20000, Vehicles, 500, 6, 28, 3, F11, 1, 1
+21000, Vehicles, 500, 6, 28, 3, T26, 1, 1
+21500, Vehicles, 500, 6, 28, 3, E9, 1, 1
+21750, Vehicles, 500, 6, 28, 3, F3, 1, 1
+25000, Vehicles, 500, 6, 28, 3, S41, 1, 1
+30000, Vehicles, 500, 6, 28, 3, T24, 1, 1
+//
+// Trigger digital extendend output for USB-1408-FS plus daq, from port1, Register B, Pin 1
+//
+0		,	Digital Output	,	0	,		,	2
+99		,	Digital Output	,	1	,		,	2
+101		,	Digital Output	,	0	,		,	2
+249		,	Digital Output	,	1	,		,	2
+251		,	Digital Output	,	0	,		,	2
+499		,	Digital Output	,	1	,		,	2
+501		,	Digital Output	,	0	,		,	2
+749		,	Digital Output	,	1	,		,	2
+751		,	Digital Output	,	0	,		,	2
+999		,	Digital Output	,	1	,		,	2
+1001	,	Digital Output	,	0	,		,	2
+1249	,	Digital Output	,	1	,		,	2
+1251	,	Digital Output	,	0	,		,	2
+1499	,	Digital Output	,	1	,		,	2
+1501	,	Digital Output	,	0	,		,	2
+1749	,	Digital Output	,	1	,		,	2
+1751	,	Digital Output	,	0	,		,	2
+1999	,	Digital Output	,	1	,		,	2
+2001	,	Digital Output	,	0	,		,	2
+2249	,	Digital Output	,	1	,		,	2
+2251	,	Digital Output	,	0	,		,	2
+2499	,	Digital Output	,	1	,		,	2
+2501	,	Digital Output	,	0	,		,	2
+2749	,	Digital Output	,	1	,		,	2
+2751	,	Digital Output	,	0	,		,	2
+2999	,	Digital Output	,	1	,		,	2
+3001	,	Digital Output	,	0	,		,	2
+3249	,	Digital Output	,	1	,		,	2
+3251	,	Digital Output	,	0	,		,	2
+3499	,	Digital Output	,	1	,		,	2
+3501	,	Digital Output	,	0	,		,	2
+3749	,	Digital Output	,	1	,		,	2
+3751	,	Digital Output	,	0	,		,	2
+3999	,	Digital Output	,	1	,		,	2
+4001	,	Digital Output	,	0	,		,	2
+4249	,	Digital Output	,	1	,		,	2
+4251	,	Digital Output	,	0	,		,	2
+4499	,	Digital Output	,	1	,		,	2
+4501	,	Digital Output	,	0	,		,	2
+4749	,	Digital Output	,	1	,		,	2
+4751	,	Digital Output	,	0	,		,	2
+4999	,	Digital Output	,	1	,		,	2
+5001	,	Digital Output	,	0	,		,	2
+5249	,	Digital Output	,	1	,		,	2
+5251	,	Digital Output	,	0	,		,	2
+5499	,	Digital Output	,	1	,		,	2
+5501	,	Digital Output	,	0	,		,	2
+5749	,	Digital Output	,	1	,		,	2
+5751	,	Digital Output	,	0	,		,	2
+5999	,	Digital Output	,	1	,		,	2
+6001	,	Digital Output	,	0	,		,	2
+6249	,	Digital Output	,	1	,		,	2
+6251	,	Digital Output	,	0	,		,	2
+6499	,	Digital Output	,	1	,		,	2
+6501	,	Digital Output	,	0	,		,	2
+6749	,	Digital Output	,	1	,		,	2
+6751	,	Digital Output	,	0	,		,	2
+6999	,	Digital Output	,	1	,		,	2
+7001	,	Digital Output	,	0	,		,	2
+7249	,	Digital Output	,	1	,		,	2
+7251	,	Digital Output	,	0	,		,	2
+7499	,	Digital Output	,	1	,		,	2
+7501	,	Digital Output	,	0	,		,	2
+7749	,	Digital Output	,	1	,		,	2
+7751	,	Digital Output	,	0	,		,	2
+7999	,	Digital Output	,	1	,		,	2
+8001	,	Digital Output	,	0	,		,	2
+8249	,	Digital Output	,	1	,		,	2
+8251	,	Digital Output	,	0	,		,	2
+8499	,	Digital Output	,	1	,		,	2
+8501	,	Digital Output	,	0	,		,	2
+8749	,	Digital Output	,	1	,		,	2
+8751	,	Digital Output	,	0	,		,	2
+8999	,	Digital Output	,	1	,		,	2
+9001	,	Digital Output	,	0	,		,	2
+9249	,	Digital Output	,	1	,		,	2
+9251	,	Digital Output	,	0	,		,	2
+9499	,	Digital Output	,	1	,		,	2
+9501	,	Digital Output	,	0	,		,	2
+9749	,	Digital Output	,	1	,		,	2
+9751	,	Digital Output	,	0	,		,	2
+9999	,	Digital Output	,	1	,		,	2
+10001	,	Digital Output	,	0	,		,	2
+10249	,	Digital Output	,	1	,		,	2
+10251	,	Digital Output	,	0	,		,	2
+10499	,	Digital Output	,	1	,		,	2
+10501	,	Digital Output	,	0	,		,	2
+10749	,	Digital Output	,	1	,		,	2
+10751	,	Digital Output	,	0	,		,	2
+10999	,	Digital Output	,	1	,		,	2
+11001	,	Digital Output	,	0	,		,	2
+11249	,	Digital Output	,	1	,		,	2
+11251	,	Digital Output	,	0	,		,	2
+11499	,	Digital Output	,	1	,		,	2
+11501	,	Digital Output	,	0	,		,	2
+11749	,	Digital Output	,	1	,		,	2
+11751	,	Digital Output	,	0	,		,	2
+11999	,	Digital Output	,	1	,		,	2
+12001	,	Digital Output	,	0	,		,	2
+12249	,	Digital Output	,	1	,		,	2
+12251	,	Digital Output	,	0	,		,	2
+12499	,	Digital Output	,	1	,		,	2
+12501	,	Digital Output	,	0	,		,	2
+12749	,	Digital Output	,	1	,		,	2
+12751	,	Digital Output	,	0	,		,	2
+12999	,	Digital Output	,	1	,		,	2
+13001	,	Digital Output	,	0	,		,	2
+13249	,	Digital Output	,	1	,		,	2
+13251	,	Digital Output	,	0	,		,	2
+13499	,	Digital Output	,	1	,		,	2
+13501	,	Digital Output	,	0	,		,	2
+13749	,	Digital Output	,	1	,		,	2
+13751	,	Digital Output	,	0	,		,	2
+13999	,	Digital Output	,	1	,		,	2
+14001	,	Digital Output	,	0	,		,	2
+14249	,	Digital Output	,	1	,		,	2
+14251	,	Digital Output	,	0	,		,	2
+14499	,	Digital Output	,	1	,		,	2
+14501	,	Digital Output	,	0	,		,	2
+14749	,	Digital Output	,	1	,		,	2
+14751	,	Digital Output	,	0	,		,	2
+14999	,	Digital Output	,	1	,		,	2
+15001	,	Digital Output	,	0	,		,	2
+15249	,	Digital Output	,	1	,		,	2
+15251	,	Digital Output	,	0	,		,	2
+15499	,	Digital Output	,	1	,		,	2
+15501	,	Digital Output	,	0	,		,	2
+15749	,	Digital Output	,	1	,		,	2
+15751	,	Digital Output	,	0	,		,	2
+15999	,	Digital Output	,	1	,		,	2
+16001	,	Digital Output	,	0	,		,	2
+16249	,	Digital Output	,	1	,		,	2
+16251	,	Digital Output	,	0	,		,	2
+16499	,	Digital Output	,	1	,		,	2
+16501	,	Digital Output	,	0	,		,	2
+16749	,	Digital Output	,	1	,		,	2
+16751	,	Digital Output	,	0	,		,	2
+16999	,	Digital Output	,	1	,		,	2
+17001	,	Digital Output	,	0	,		,	2
+17249	,	Digital Output	,	1	,		,	2
+17251	,	Digital Output	,	0	,		,	2
+17499	,	Digital Output	,	1	,		,	2
+17501	,	Digital Output	,	0	,		,	2
+17749	,	Digital Output	,	1	,		,	2
+17751	,	Digital Output	,	0	,		,	2
+17999	,	Digital Output	,	1	,		,	2
+18001	,	Digital Output	,	0	,		,	2
+18249	,	Digital Output	,	1	,		,	2
+18251	,	Digital Output	,	0	,		,	2
+18499	,	Digital Output	,	1	,		,	2
+18501	,	Digital Output	,	0	,		,	2
+18749	,	Digital Output	,	1	,		,	2
+18751	,	Digital Output	,	0	,		,	2
+18999	,	Digital Output	,	1	,		,	2
+19001	,	Digital Output	,	0	,		,	2
+19249	,	Digital Output	,	1	,		,	2
+19251	,	Digital Output	,	0	,		,	2
+19499	,	Digital Output	,	1	,		,	2
+19501	,	Digital Output	,	0	,		,	2
+19749	,	Digital Output	,	1	,		,	2
+19751	,	Digital Output	,	0	,		,	2
+19999	,	Digital Output	,	1	,		,	2
+20001	,	Digital Output	,	0	,		,	2
+20249	,	Digital Output	,	1	,		,	2
+20251	,	Digital Output	,	0	,		,	2
+20499	,	Digital Output	,	1	,		,	2
+20501	,	Digital Output	,	0	,		,	2
+20749	,	Digital Output	,	1	,		,	2
+20751	,	Digital Output	,	0	,		,	2
+20999	,	Digital Output	,	1	,		,	2
+21001	,	Digital Output	,	0	,		,	2
+21249	,	Digital Output	,	1	,		,	2
+21251	,	Digital Output	,	0	,		,	2
+21499	,	Digital Output	,	1	,		,	2
+21501	,	Digital Output	,	0	,		,	2
+21749	,	Digital Output	,	1	,		,	2
+21751	,	Digital Output	,	0	,		,	2
+21999	,	Digital Output	,	1	,		,	2
+22001	,	Digital Output	,	0	,		,	2
+22249	,	Digital Output	,	1	,		,	2
+22251	,	Digital Output	,	0	,		,	2
+22499	,	Digital Output	,	1	,		,	2
+22501	,	Digital Output	,	0	,		,	2
+22749	,	Digital Output	,	1	,		,	2
+22751	,	Digital Output	,	0	,		,	2
+22999	,	Digital Output	,	1	,		,	2
+23001	,	Digital Output	,	0	,		,	2
+23249	,	Digital Output	,	1	,		,	2
+23251	,	Digital Output	,	0	,		,	2
+23499	,	Digital Output	,	1	,		,	2
+23501	,	Digital Output	,	0	,		,	2
+23749	,	Digital Output	,	1	,		,	2
+23751	,	Digital Output	,	0	,		,	2
+23999	,	Digital Output	,	1	,		,	2
+24001	,	Digital Output	,	0	,		,	2
+24249	,	Digital Output	,	1	,		,	2
+24251	,	Digital Output	,	0	,		,	2
+24499	,	Digital Output	,	1	,		,	2
+24501	,	Digital Output	,	0	,		,	2
+24749	,	Digital Output	,	1	,		,	2
+24751	,	Digital Output	,	0	,		,	2
+24999	,	Digital Output	,	1	,		,	2
+25001	,	Digital Output	,	0	,		,	2
+25249	,	Digital Output	,	1	,		,	2
+25251	,	Digital Output	,	0	,		,	2
+25499	,	Digital Output	,	1	,		,	2
+25501	,	Digital Output	,	0	,		,	2
+25749	,	Digital Output	,	1	,		,	2
+25751	,	Digital Output	,	0	,		,	2
+25999	,	Digital Output	,	1	,		,	2
+26001	,	Digital Output	,	0	,		,	2
+26249	,	Digital Output	,	1	,		,	2
+26251	,	Digital Output	,	0	,		,	2
+26499	,	Digital Output	,	1	,		,	2
+26501	,	Digital Output	,	0	,		,	2
+26749	,	Digital Output	,	1	,		,	2
+26751	,	Digital Output	,	0	,		,	2
+26999	,	Digital Output	,	1	,		,	2
+27001	,	Digital Output	,	0	,		,	2
+27249	,	Digital Output	,	1	,		,	2
+27251	,	Digital Output	,	0	,		,	2
+27499	,	Digital Output	,	1	,		,	2
+27501	,	Digital Output	,	0	,		,	2
+27749	,	Digital Output	,	1	,		,	2
+27751	,	Digital Output	,	0	,		,	2
+27999	,	Digital Output	,	1	,		,	2
+28001	,	Digital Output	,	0	,		,	2
+28249	,	Digital Output	,	1	,		,	2
+28251	,	Digital Output	,	0	,		,	2
+28499	,	Digital Output	,	1	,		,	2
+28501	,	Digital Output	,	0	,		,	2
+28749	,	Digital Output	,	1	,		,	2
+28751	,	Digital Output	,	0	,		,	2
+28999	,	Digital Output	,	1	,		,	2
+29001	,	Digital Output	,	0	,		,	2
+29249	,	Digital Output	,	1	,		,	2
+29251	,	Digital Output	,	0	,		,	2
+29499	,	Digital Output	,	1	,		,	2
+29501	,	Digital Output	,	0	,		,	2
+29749	,	Digital Output	,	1	,		,	2
+29751	,	Digital Output	,	0	,		,	2
+29999	,	Digital Output	,	1	,		,	2
+30001	,	Digital Output	,	0	,		,	2
+
+//
+//  POLYGONS FOR REACTION TASK SACCADES
+//
+250		,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+500		,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+750		,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+1000	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+1250	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+1500	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+1750	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+2000	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+2250	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+2500	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+2750	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+3000	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+3250	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+3500	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+3750	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+4000	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+4250	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+4500	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+4750	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+5000	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+5250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+5500	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+5750	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+6000	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+6250	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+6500	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+6750	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+7000	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+7250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+7500	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+7750	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+8000	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+8250	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+8500	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+8750	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+9000	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+9250	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+9500	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+9750	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+10000	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+10250	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+10500	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+10750	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+11000	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+11250	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+11500	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+11750	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+12000	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+12250	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+12500	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+12750	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+13000	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+13250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+13500	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+13750	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+14000	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+14250	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+14500	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+14750	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+15000	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+15250	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+15500	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+15750	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+16000	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+16250	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+16500	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+16750	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+17000	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+17250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+17500	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+17750	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+18000	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+18250	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+18500	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+18750	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+19000	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+19250	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+19500	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+19750	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+20000	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+20250	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+20500	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+20750	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+21000	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+21250	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+21500	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+21750	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+22000	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+22250	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+22500	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+22750	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+23000	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+23250	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+23500	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+23750	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+24000	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+24250	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+24500	,	Polygon	,	0	,	0.78	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+24750	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+25000	,	Polygon	,	0	,	0.37	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+25250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+25500	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+25750	,	Polygon	,	0	,	0.37	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+26000	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+26250	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+26500	,	Polygon	,	0	,	0.78	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+26750	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+27000	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+27250	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+27500	,	Polygon	,	0	,	0.19	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+27750	,	Polygon	,	0	,	0.59	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+28000	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+28250	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+28500	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+28750	,	Polygon	,	0	,	0.76	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	1	,	0
+29000	,	Polygon	,	0	,	0.76	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	1	,	0
+29250	,	Polygon	,	0	,	0.18	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	0	,	0
+29500	,	Polygon	,	0	,	0.18	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	0	,	0
+29750	,	Polygon	,	0	,	0.19	,	0.14	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Right%	,	2	,	0
+30000	,	Polygon	,	0	,	0.59	,	0.83	,	0	,	255/255/255	,	%PDEFiles%\Country_Saccade.Pol	,	1	,	1	,	%Left%	,	2	,	0
+
+//
+//    End the simulation run
+//
+30100, End Block Save
+30150, End Simulation
