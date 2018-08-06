@@ -1,0 +1,55 @@
+---
+title: "Binning Drivesim Data"
+author: "Hayden Green"
+date: "6 August 2018"
+output: html_document
+---
+
+## Function to Bin the Drivesim data into chunks of equal distance
+  The function requires the Bin size otherwise the default will be 100m,
+
+
+```{r setup, include=FALSE, results='hide'}
+library(tidyverse)
+library(tidyselect)
+
+bin_by_dist <- function(x, bin_size = 100) {
+  if(class(x) != "data.frame") {
+      stop("Object is Not Data Frame")
+  }
+  if(!"Total_dist" %in% names(x)){
+      stop("No distance column in data frame");
+  }
+  max_bin <- if_else(menu(c("Country", "Urban"),TRUE, "Is this a Country or Urban scenario?") == 1, 31000, 9000)
+  
+  bins <- vector()
+  if (max(bins) > max_bin) {
+    
+  }
+  
+  print("Check OK")
+  print("Starting Binning")
+
+  
+  print("Binning Complete")
+}
+```
+
+## Function to Bin the Drivesim data into chunks of equal distance
+  The function requires the Bin size otherwise the default will be 100m, 
+
+
+```{r}
+
+
+bin_by_dist(Imported)
+class(Imported)
+
+```
+
+
+```{r}
+
+
+```
+
