@@ -24,12 +24,13 @@ bin_by_dist <- function(x, bin_size = 100) {
   max_bin <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 31000, 9000)
   
   bins <- c(seq(from = 300, to = max_bin,by= bin_size))
-  
+  bin_ranges <- 
   print("Starting Binning")
   
-  for (i in bins) {
-    
+  bin_ranges <<- for (a in bins) {
+    paste(a,"-", a + bin_size)
   }
+ 
   
   print("Starting Binning")
 
@@ -43,7 +44,6 @@ bin_by_dist <- function(x, bin_size = 100) {
 
 
 ```{r}
-
 
 bin_by_dist(Imported)
 class(Imported)
