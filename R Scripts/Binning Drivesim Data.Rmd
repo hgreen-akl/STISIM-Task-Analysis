@@ -9,10 +9,10 @@ output: html_document
   The function requires the Bin size otherwise the default will be 100m,
 
 
-```{r setup, include=FALSE, results='hide'}
+```{r results='hide'}
 library(tidyverse)
 library(tidyselect)
-
+bins <- vector()
 bin_by_dist <- function(x, bin_size = 100) {
   if(class(x) != "data.frame") {
       stop("Object is Not Data Frame")
@@ -20,18 +20,21 @@ bin_by_dist <- function(x, bin_size = 100) {
   if(!"Total_dist" %in% names(x)){
       stop("No distance column in data frame");
   }
-  max_bin <- if_else(menu(c("Country", "Urban"),TRUE, "Is this a Country or Urban scenario?") == 1, 31000, 9000)
+  print("Check OK")
+  max_bin <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 31000, 9000)
   
-  bins <- vector()
-  if (max(bins) > max_bin) {
+  bins <- c(seq(from = 300, to = max_bin,by= bin_size))
+  
+  print("Starting Binning")
+  
+  for (i in bins) {
     
   }
   
-  print("Check OK")
   print("Starting Binning")
 
   
-  print("Binning Complete")
+  print("Binning Complete, Starting Export")
 }
 ```
 
