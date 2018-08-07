@@ -27,13 +27,17 @@ bin_by_dist <- function(x, bin_size = 100) {
   max_bin <- if_else(Task == 1, 31000, 9000)
   
   bins <- c(seq(from = 100, to = max_bin,by= bin_size))
-  print("Starting Binning")
+
   binned_data <- list()
-  
-  for (a in (seq_along(bins) - 1)) {
-    print
-    index <- a
-    binned_data[index] <<- paste(c(bins[index],"-",bins[index+1])) %>% as.character()
+  bin_start <- list()
+  bin_end <- list()
+  print("Starting Binning")
+  for (a in (seq_along(bins) - 2)) {
+    index <- a + 1
+    start <- bins[index]
+    end <- bins[index + 1]
+    bin_start[index] <- 
+    binned_data[index] <- paste(c(start,"-",end), collapse = "")
     print(index)
     if(index > length(bins)){
       stop("Bin Range Exceeded")
@@ -46,7 +50,6 @@ bin_by_dist <- function(x, bin_size = 100) {
 
 ## Function to Bin the Drivesim data into chunks of equal distance
   The function requires the Bin size otherwise the default will be 100m, 
-
 
 ```{r}
 
