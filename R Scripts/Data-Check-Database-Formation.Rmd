@@ -13,7 +13,7 @@ library(tidyverse)
 
 ```{r}
 
-Imported <- read_csv(file.choose(), col_names = TRUE)
+Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
 
 ```
 

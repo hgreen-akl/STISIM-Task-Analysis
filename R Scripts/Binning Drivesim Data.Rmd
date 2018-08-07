@@ -14,26 +14,31 @@ library(tidyverse)
 library(tidyselect)
 bins <- vector()
 bin_by_dist <- function(x, bin_size = 100) {
+  #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
       stop("Object is Not Data Frame")
   }
   if(!"Total_dist" %in% names(x)){
-      stop("No distance column in data frame");
+      stop("No distance column in data frame")
   }
   print("Check OK")
-  max_bin <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 31000, 9000)
+  ##pop up to confirm whether the file was from the country or urban task. 
+  Task <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 1, 2)
+  max_bin <- if_else(Task == 1, 31000, 9000)
   
-  bins <- c(seq(from = 300, to = max_bin,by= bin_size))
-  bin_ranges <- 
+  bins <- c(seq(from = 100, to = max_bin,by= bin_size))
   print("Starting Binning")
+  binned_data <- list()
   
-  bin_ranges <<- for (a in bins) {
-    paste(a,"-", a + bin_size)
+  for (a in (seq_along(bins) - 1)) {
+    print
+    index <- a
+    binned_data[index] <<- paste(c(bins[index],"-",bins[index+1])) %>% as.character()
+    print(index)
+    if(index > length(bins)){
+      stop("Bin Range Exceeded")
   }
- 
-  
-  print("Starting Binning")
-
+  }
   
   print("Binning Complete, Starting Export")
 }
