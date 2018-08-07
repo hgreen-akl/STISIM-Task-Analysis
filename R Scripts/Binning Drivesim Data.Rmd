@@ -12,7 +12,7 @@ output: html_document
 ```{r results='hide'}
 library(tidyverse)
 library(tidyselect)
-bins <- vector()
+
 bin_by_dist <- function(x, bin_size = 100) {
   #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
@@ -28,22 +28,21 @@ bin_by_dist <- function(x, bin_size = 100) {
   
   bins <- c(seq(from = 100, to = max_bin,by= bin_size))
 
-  binned_data <- list()
-  bin_start <- list()
-  bin_end <- list()
+  bin_ranges <- list()
+  bin_start <- seq(from = 100, to = max_bin - bin_size, by = bin_size)
+  bin_end <- seq(from = 100 + bin_size, to = max_bin, by = bin_size)
   print("Starting Binning")
   for (a in (seq_along(bins) - 2)) {
     index <- a + 1
-    start <- bins[index]
-    end <- bins[index + 1]
-    bin_start[index] <- 
-    binned_data[index] <- paste(c(start,"-",end), collapse = "")
-    print(index)
+    start <- bins$index
+    end <- bins$index + 1
+    bin_ranges$index <- paste(c(start,"-",end), collapse = "")
     if(index > length(bins)){
       stop("Bin Range Exceeded")
+    }
   }
-  }
-  
+
+  binned_data <- data.frame(bin_ranges, bin_start, bin_end)
   print("Binning Complete, Starting Export")
 }
 ```

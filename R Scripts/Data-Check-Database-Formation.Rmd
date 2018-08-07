@@ -7,11 +7,11 @@ output: html_document
 
 ## An additional script to analyse the clean data, 
 
-```{r, include=FALSE}
+```{r, include=FALSE, results = 'hide'}
 library(tidyverse)
 ```
 
-```{r}
+```{r results='hide'}
 
 Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
 
