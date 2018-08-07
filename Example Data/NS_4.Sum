@@ -1,0 +1,70 @@
+STISIM Drive Traffic lights:
+
+Date:                    July 31, 2018                                                                                                                             
+Time:                    2:49 PM                                                                                                                                   
+Name:                    S, N                                                                                                                                      
+Test Computer:           SC-SSC-362777                                                                                                                             
+Run Number:              4                                                                                                                                         
+Scenario File:           Country_SaccadeTask_v1_1.Evt                                                                                                              
+Configuration File:      ENML_HG.CFG                                                                                                                               
+                                                                                                                                                                   
+Comments:                country                                                                                                                                   
+                                                                                                                                                                   
+                                                                                                                                                                   
+Attention:               Mean response time =                                0.00                                                                                  
+                         Response time deviation =                           0.00                                                                                  
+                         Correct responses =                                 0                                                                                     
+                         Incorrect responses =                               0                                                                                     
+                         Missed responses =                                  0                                                                                     
+                                                                                                                                                                   
+Performance:             Speed exceedances =                                 15                                                                                    
+                         Mean time above speed limit, deviation =            47.129                74.916                                                          
+                         Mean distance above speed limit, deviation =        1330.8                2120.6                                                          
+                         % of run above speed limit time, distance =         64.639                66.213                                                          
+                                                                                                                                                                   
+                         Centerline crossings =                              0                                                                                     
+                         Mean time across center line, deviation =           0.000                 0.000                                                           
+                         Mean distance across center line, deviation =       0.000                 0.000                                                           
+                         % of run across center line time, distance =        0.000                 0.000                                                           
+                                                                                                                                                                   
+                         Road edge excursions =                              0                                                                                     
+                         Mean time off road, deviation =                     0.000                 0.000                                                           
+                         Mean distance off road, deviation =                 0.000                 0.000                                                           
+                         % of run off road time, distance =                  0.000                 0.000                                                           
+                                                                                                                                                                   
+                         Turning turn signal use (Good, Poor, Missed) =      0                     0                  0                                            
+                         Lane change turn signal use (Good, Poor, Missed) =  0                     0                  0                                            
+                                                                                                                                                                   
+Mistakes:                Off road accidents =                                0                                                                                     
+                         Collisions =                                        0                                                                                     
+                         Illegal turns =                                     0                                                                                     
+                         Pedestrians hit =                                   0                                                                                     
+                         Speeding tickets =                                  0                                                                                     
+                         Traffic light tickets =                             0                                                                                     
+                         Stop sign tickets =                                 0                                                                                     
+                                                                                                                                                                   
+Additional information:  Stops at traffic lights =                           0                                                                                     
+                         Length of run (seconds) =                           1093.67                                                                               
+                                                                                                                                                                   
+Individual mistakes:     Time from start:                                    Distance from start:  Elapsed distance:  Elapsed time:  Maximum value:  Speed limit:  
+
+Speed exceedance         48.88                                               951.98                0.93               0.03           27.78           27.78
+Speed exceedance         61                                                  1285.13               109.9              3.88           27.99           27.78
+Speed exceedance         87.2                                                1999.18               2.78               0.1            27.78           27.78
+Speed exceedance         118.59                                              2845.65               15.56              0.57           27.82           27.78
+Speed exceedance         129.45                                              3144.19               483.28             17.16          28.19           27.78
+Speed exceedance         189.86                                              4806.71               443.16             15.76          28.33           27.78
+Speed exceedance         227.71                                              5843.32               91.24              3.27           28.05           27.78
+Speed exceedance         251.33                                              6491.32               376.64             13.45          28.09           27.78
+Speed exceedance         274.49                                              7137.82               5263.35            185.79         28.73           27.78
+Speed exceedance         496.31                                              13397.95              532.47             19.01          28.32           27.78
+Speed exceedance         530.33                                              14346.28              1202.89            42.94          28.14           27.78
+Speed exceedance         590.77                                              16034.14              1444.88            51.22          28.46           27.78
+Speed exceedance         664.82                                              18108.57              7582.49            268.07         28.89           27.78
+Speed exceedance         943.33                                              25979.19              2074.32            73.45          28.79           27.78
+Speed exceedance         1081.42                                             29810.74              339.31             12.24          27.86           27.78
+
+
+Post Run Comments:
+
+None

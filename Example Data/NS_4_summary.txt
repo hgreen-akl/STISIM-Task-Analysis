@@ -1,0 +1,68 @@
+ Tailgating results, {Vehicle #, Minimum distance, Speed at min distance, Vehicle type}:
+
+ None
+
+ Turn signal usage {Total, Turns, Lane changes}:
+
+ Good performance =     0     0     0
+ Poor performance =     0     0     0
+ Missed =               0     0     0
+
+ Internally triggered events (Event, Action, Time, Distance):
+
+ Vehicle7                            1     79.52    1791.32
+ Vehicle7                            2     79.52    1791.32
+ Vehicle14                           1     79.80    1799.01
+ Vehicle14                           2     79.80    1799.01
+ Vehicle13                           1     79.80    1799.01
+ Vehicle13                           2     79.80    1799.01
+ Vehicle12                           1     79.80    1799.01
+ Vehicle12                           2     79.80    1799.01
+ Vehicle11                           1     79.80    1799.01
+ Vehicle11                           2     79.80    1799.01
+ Vehicle10                           1     79.80    1799.01
+ Vehicle10                           2     79.80    1799.01
+ Vehicle9                            1     79.80    1799.01
+ Vehicle9                            2     79.80    1799.01
+ Vehicle8                            1     79.80    1799.01
+ Vehicle8                            2     79.80    1799.01
+
+ Driver mistakes:
+
+ Total number of off road accidents = 0
+ Total number of collisions = 0
+ Total number of pedestrians hit = 0
+ Total number of speed exceedances = 15
+ Total number of speeding tickets = 0
+ Total number of traffic light tickets = 0
+ Total number of stop signs missed = 0
+ Total number of centerline crossings = 0
+ Total number of road edge excursions = 0
+ Total number of stops at traffic lights = 0
+ Total number of correct DA responses = 0
+ Total number of incorrect DA responses = 0
+ Total number of DAs with no response = 0
+ Total run length (Drive T, X, Total T) = 1093.67         30150        1093.67
+ Total number of illegal turns =             0
+ Total number of low speed warnings =        0
+ Total number of high speed warnings =       0
+ Over speed limit (% Time, % Distance) = 64.64  66.21         
+ Out of lane (% Time, % Distance) = 0.00   0.00          
+
+ Individual mistakes (Time, Distance, Elapsed distance or object number, Elapsed time, Maximum value, Speed limit/Centerline):
+
+ Speed exceedance          48.88      951.98        0.93        0.03    27.78    27.78
+ Speed exceedance          61.00     1285.13      109.90        3.88    27.99    27.78
+ Speed exceedance          87.20     1999.18        2.78        0.10    27.78    27.78
+ Speed exceedance         118.59     2845.65       15.56        0.57    27.82    27.78
+ Speed exceedance         129.45     3144.19      483.28       17.16    28.19    27.78
+ Speed exceedance         189.86     4806.71      443.16       15.76    28.33    27.78
+ Speed exceedance         227.71     5843.32       91.24        3.27    28.05    27.78
+ Speed exceedance         251.33     6491.32      376.64       13.45    28.09    27.78
+ Speed exceedance         274.49     7137.82     5263.35      185.79    28.73    27.78
+ Speed exceedance         496.31    13397.95      532.47       19.01    28.32    27.78
+ Speed exceedance         530.33    14346.28     1202.89       42.94    28.14    27.78
+ Speed exceedance         590.77    16034.14     1444.88       51.22    28.46    27.78
+ Speed exceedance         664.82    18108.57     7582.49      268.07    28.89    27.78
+ Speed exceedance         943.33    25979.19     2074.32       73.45    28.79    27.78
+ Speed exceedance        1081.42    29810.74      339.31       12.24    27.86    27.78

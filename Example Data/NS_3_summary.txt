@@ -1,0 +1,264 @@
+ Tailgating results, {Vehicle #, Minimum distance, Speed at min distance, Vehicle type}:
+
+   35   183.44    55.36  C:\STISIM3\Data\Vehicles\Construction\Bulldozer.Mka (4)
+   36   224.55    55.60  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+   37   174.55    55.60  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+   45   188.16    53.21  C:\STISIM3\Data\Vehicles\Construction\Bulldozer.Mka (4)
+   46   208.11    53.17  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+   47   184.99    53.82  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+   73   182.20    52.54  C:\STISIM3\Data\Vehicles\Construction\Bulldozer.Mka (4)
+   74   227.23    54.17  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+   75   177.23    54.17  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+  107   193.30    52.17  C:\STISIM3\Data\Vehicles\Construction\Bulldozer.Mka (4)
+  108   213.17    52.21  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+  109   187.78    52.11  C:\STISIM3\Data\Vehicles\Construction\Dump_Truck_White.Mka (1)
+  129    60.83    51.72  C:\STISIM3\Data\Vehicles\Commercial\Cargo_Truck_Yellow.Mka (3)
+
+ Intersection turns (Number, Expected turn, Actual turn, Correctness of turn, Vehicle #, Gap distance, Vehicle #, Gap time):
+
+   1  1  1  0    12   234.99    12  16.92
+   2  0  0  0
+   3  1  0  1
+   4  2  2  0
+   5  1  1  0     0  3047.70     0 999.00
+   6  0  0  0
+   7  2  2  0
+   8  1  1  0   118   105.12   118   7.57
+   9  2  2  0
+  10  0  0  0
+  11  2  2  0
+  12  0  0  0
+
+ Turn signal usage {Total, Turns, Lane changes}:
+
+ Good performance =     9     7     2
+ Poor performance =     0     0     0
+ Missed =               1     0     1
+
+ Internally triggered events (Event, Action, Time, Distance):
+
+ Pedestrian10                        0      0.46       0.02
+ Pedestrian9                         0      0.46       0.02
+ Pedestrian1                         0      0.46       0.02
+ Pedestrian11                        0     19.31      90.11
+ Pedestrian2                         0     19.31      90.11
+ Pedestrian12                        0     21.51     120.02
+ Pedestrian13                        0     24.36     160.07
+ Pedestrian3                         0     25.06     170.14
+ Pedestrian14                        0     26.43     190.02
+ Pedestrian4                         0     29.21     230.13
+ Pedestrian15                        0     29.91     240.18
+ Pedestrian16                        0     35.39     320.12
+ Pedestrian5                         0     35.39     320.12
+ Pedestrian6                         0     38.79     370.06
+ Pedestrian17                        0     40.16     390.03
+ Pedestrian7                         0     44.62     455.15
+ Pedestrian8                         0     46.34     480.18
+ Pedestrian18                        0     53.24     580.04
+ Pedestrian19                        0     53.99     590.22
+ Pedestrian20                        0     58.92     650.15
+ Pedestrian21                        0     60.86     670.03
+ Pedestrian22                        0     62.94     690.13
+ Pedestrian24                        0     67.61     720.02
+ Pedestrian23                        0     67.61     720.02
+ Pedestrian26                        0     71.41     735.03
+ Pedestrian25                        0     71.41     735.03
+ Pedestrian27                        0     73.16     745.07
+ Pedestrian28                        0     74.08     750.05
+ Traffic light2                      0    103.27    1150.22
+ Pedestrian47                        0    134.54    1360.03
+ Pedestrian48                        0    136.67    1390.05
+ Pedestrian49                        0    139.77    1435.09
+ Pedestrian50                        0    140.12    1440.17
+ Pedestrian51                        0    140.45    1445.02
+ Pedestrian52                        0    145.62    1520.08
+ Pedestrian53                        0    150.46    1590.22
+ Pedestrian54                        0    157.95    1700.20
+ Pedestrian55                        0    158.96    1715.12
+ Pedestrian56                        0    166.49    1820.11
+ Pedestrian57                        0    168.41    1845.10
+ Pedestrian58                        0    169.56    1860.02
+ Pedestrian59                        0    171.89    1890.18
+ Pedestrian60                        0    175.98    1940.12
+ Pedestrian61                        0    177.11    1950.01
+ Pedestrian62                        0    183.09    2020.06
+ Pedestrian63                        0    186.44    2070.25
+ Pedestrian64                        0    187.72    2090.20
+ Pedestrian65                        0    190.64    2135.03
+ Pedestrian66                        0    194.22    2190.15
+ Pedestrian67                        0    196.25    2220.21
+ Pedestrian68                        0    197.29    2235.17
+ Pedestrian69                        0    197.64    2240.20
+ Pedestrian70                        0    198.69    2255.15
+ Pedestrian71                        0    203.40    2320.10
+ Pedestrian72                        0    210.40    2400.02
+ Pedestrian73                        0    223.06    2435.05
+ Pedestrian87                        0    270.00    3090.10
+ Pedestrian88                        0    270.80    3100.11
+ Pedestrian89                        0    274.05    3135.09
+ Pedestrian90                        0    274.65    3140.09
+ Pedestrian91                        0    275.32    3145.09
+ Pedestrian111                       0    320.57    3770.07
+ Pedestrian112                       0    326.07    3820.16
+ Pedestrian113                       0    327.42    3835.03
+ Pedestrian114                       0    332.00    3890.06
+ Pedestrian115                       0    334.29    3920.10
+ Pedestrian116                       0    335.39    3935.17
+ Pedestrian117                       0    336.10    3945.18
+ Pedestrian119                       0    338.52    3980.21
+ Pedestrian118                       0    338.52    3980.21
+ Pedestrian120                       0    339.85    4000.01
+ Pedestrian121                       0    342.28    4035.04
+ Pedestrian122                       0    346.22    4090.18
+ Pedestrian123                       0    346.93    4100.07
+ Pedestrian124                       0    348.40    4120.12
+ Pedestrian125                       0    349.88    4140.21
+ Pedestrian126                       0    351.35    4160.16
+ Pedestrian127                       0    352.47    4175.42
+ Pedestrian128                       0    356.41    4230.13
+ Pedestrian129                       0    357.83    4250.06
+ Pedestrian130                       0    360.30    4285.22
+ Pedestrian131                       0    360.63    4290.01
+ Pedestrian132                       0    361.33    4300.10
+ Pedestrian133                       0    363.73    4335.01
+ Pedestrian134                       0    367.20    4385.32
+ Pedestrian136                       0    371.24    4440.30
+ Pedestrian135                       0    371.24    4440.30
+ Pedestrian137                       0    373.81    4470.14
+ Pedestrian138                       0    379.08    4520.16
+ Pedestrian139                       0    381.69    4535.00
+ Pedestrian140                       0    383.07    4540.05
+ Pedestrian165                       0    424.86    5145.02
+ Pedestrian166                       0    426.96    5175.04
+ Pedestrian168                       0    428.01    5190.10
+ Pedestrian167                       0    428.01    5190.10
+ Pedestrian169                       0    431.15    5235.16
+ Pedestrian170                       0    432.88    5260.15
+ Pedestrian171                       0    436.68    5315.07
+ Pedestrian172                       0    438.41    5340.18
+ Pedestrian173                       0    438.74    5345.01
+ Pedestrian174                       0    442.53    5400.24
+ Pedestrian175                       0    443.88    5420.05
+ Pedestrian176                       0    444.91    5435.23
+ Pedestrian177                       0    445.58    5445.03
+ Pedestrian178                       0    446.61    5460.25
+ Pedestrian180                       0    448.63    5490.01
+ Pedestrian179                       0    448.63    5490.01
+ Pedestrian181                       0    451.67    5535.17
+ Pedestrian182                       0    454.04    5570.04
+ Pedestrian183                       0    454.74    5580.22
+ Pedestrian184                       0    457.16    5615.31
+ Pedestrian185                       0    459.24    5645.46
+ Pedestrian187                       0    461.64    5680.01
+ Pedestrian186                       0    461.64    5680.01
+ Pedestrian188                       0    465.52    5735.36
+ Pedestrian189                       0    466.20    5745.03
+ Pedestrian190                       0    467.30    5760.20
+ Pedestrian191                       0    468.80    5780.25
+ Pedestrian192                       0    469.55    5790.06
+ Pedestrian193                       0    471.12    5810.05
+ Pedestrian194                       0    473.60    5840.13
+ Pedestrian195                       0    474.04    5845.02
+ Pedestrian197                       0    483.40    5920.11
+ Pedestrian196                       0    483.40    5920.11
+ Pedestrian198                       0    485.22    5935.11
+ Pedestrian228                       0    531.04    6565.09
+ Pedestrian230                       0    532.84    6590.20
+ Pedestrian229                       0    532.84    6590.20
+ Pedestrian231                       0    533.92    6605.15
+ Pedestrian232                       0    536.07    6635.00
+ Pedestrian233                       0    536.44    6640.14
+ Pedestrian235                       0    539.25    6680.21
+ Pedestrian234                       0    539.25    6680.21
+ Pedestrian236                       0    539.94    6690.02
+ Pedestrian237                       0    541.67    6715.15
+ Pedestrian238                       0    542.00    6720.03
+ Pedestrian240                       0    543.37    6740.11
+ Pedestrian239                       0    543.37    6740.11
+ Pedestrian241                       0    544.72    6760.11
+ Pedestrian242                       0    546.07    6780.19
+ Pedestrian243                       0    546.74    6790.15
+ Pedestrian244                       0    550.12    6840.13
+ Pedestrian245                       0    551.52    6860.12
+ Pedestrian246                       0    554.37    6900.33
+ Pedestrian247                       0    554.70    6905.00
+ Pedestrian248                       0    555.78    6920.13
+ Pedestrian249                       0    557.25    6940.46
+ Pedestrian250                       0    557.97    6950.21
+ Pedestrian251                       0    558.33    6955.09
+ Pedestrian253                       0    561.33    6990.27
+ Pedestrian252                       0    561.33    6990.27
+ Pedestrian254                       0    566.60    7030.14
+ Pedestrian284                       0    619.55    7645.09
+ Pedestrian285                       0    621.95    7670.16
+ Pedestrian287                       0    624.38    7700.14
+ Pedestrian286                       0    624.38    7700.14
+ Pedestrian288                       0    627.00    7735.10
+ Pedestrian289                       0    627.37    7740.09
+ Pedestrian290                       0    627.73    7745.14
+ Pedestrian292                       0    630.21    7780.20
+ Pedestrian291                       0    630.21    7780.20
+ Pedestrian293                       0    633.76    7830.24
+ Pedestrian294                       0    634.46    7840.07
+ Pedestrian295                       0    636.96    7875.26
+ Pedestrian296                       0    638.73    7900.31
+ Pedestrian297                       0    640.13    7920.23
+ Pedestrian298                       0    641.20    7935.41
+ Pedestrian299                       0    642.59    7955.34
+ Pedestrian300                       0    642.93    7960.09
+ Pedestrian301                       0    644.34    7980.27
+ Pedestrian302                       0    645.04    7990.25
+ Pedestrian303                       0    645.74    8000.24
+ Pedestrian304                       0    648.19    8035.18
+ Pedestrian305                       0    648.56    8040.40
+ Pedestrian306                       0    650.66    8070.30
+ Pedestrian307                       0    654.16    8120.28
+ Pedestrian308                       0    656.92    8160.00
+ Pedestrian309                       0    657.99    8175.30
+ Pedestrian310                       0    659.02    8190.02
+ Pedestrian311                       0    662.32    8235.06
+ Pedestrian312                       0    662.72    8240.23
+ Pedestrian313                       0    663.12    8245.31
+ Pedestrian314                       0    664.39    8260.34
+ Pedestrian315                       0    667.42    8290.20
+ Pedestrian316                       0    669.95    8310.20
+ Pedestrian317                       0    670.59    8315.24
+ Pedestrian349                       0    717.63    8950.11
+ Pedestrian350                       0    719.09    8970.09
+ Pedestrian351                       0    719.46    8975.09
+ Pedestrian352                       0    723.83    9035.08
+ Pedestrian353                       0    724.91    9050.06
+
+ Driver mistakes:
+
+ Total number of off road accidents = 0
+ Total number of collisions = 0
+ Total number of pedestrians hit = 1
+ Total number of speed exceedances = 7
+ Total number of speeding tickets = 0
+ Total number of traffic light tickets = 0
+ Total number of stop signs missed = 0
+ Total number of centerline crossings = 1
+ Total number of road edge excursions = 0
+ Total number of stops at traffic lights = 10
+ Total number of correct DA responses = 0
+ Total number of incorrect DA responses = 0
+ Total number of DAs with no response = 0
+ Total run length (Drive T, X, Total T) = 746.02           9350         751.54
+ Total number of illegal turns =             0
+ Total number of low speed warnings =        0
+ Total number of high speed warnings =       0
+ Over speed limit (% Time, % Distance) = 2.53   3.10          
+ Out of lane (% Time, % Distance) = 0.23   0.22          
+
+ Individual mistakes (Time, Distance, Elapsed distance or object number, Elapsed time, Maximum value, Speed limit/Centerline):
+
+ Speed exceedance          96.28     1048.80        1.00        0.07    15.00    15.00
+ Hit pedestrian           177.59     1952.49          56
+ Centerline crossing      179.09     1969.55       20.94        1.75     0.39    2
+ Speed exceedance         184.66     2042.71      152.73        9.91    15.74    15.00
+ Speed exceedance         242.21     2693.92       12.79        0.85    15.08    15.00
+ Speed exceedance         289.73     3337.83       21.88        1.45    15.17    15.00
+ Speed exceedance         338.60     3981.46        5.76        0.38    15.07    15.00
+ Speed exceedance         393.99     4695.61       86.08        5.58    15.94    15.00
+ Speed exceedance         547.22     6797.39        9.26        0.62    15.02    15.00
