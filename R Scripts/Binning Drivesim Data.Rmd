@@ -28,21 +28,17 @@ bin_by_dist <- function(x, bin_size = 100) {
   
   bins <- c(seq(from = 100, to = max_bin,by= bin_size))
 
-  bin_ranges <- list()
-  bin_start <- seq(from = 100, to = max_bin - bin_size, by = bin_size)
-  bin_end <- seq(from = 100 + bin_size, to = max_bin, by = bin_size)
+  
+  bin_start  <-  seq(from = 100, to = max_bin - bin_size, by = bin_size)
+  bin_end    <-  seq(from = 100 + bin_size, to = max_bin, by = bin_size)
+  bin_ranges <-  paste(bin_start,"-", bin_end, sep = "")
   print("Starting Binning")
-  for (a in (seq_along(bins) - 2)) {
-    index <- a + 1
-    start <- bins$index
-    end <- bins$index + 1
-    bin_ranges$index <- paste(c(start,"-",end), collapse = "")
-    if(index > length(bins)){
-      stop("Bin Range Exceeded")
-    }
-  }
 
-  binned_data <- data.frame(bin_ranges, bin_start, bin_end)
+  binned_data <<- data.frame(bin_start, bin_end, bin_ranges)
+  names(binned_data) <- c("bin_start","bin_end", "bin_ranges")
+  
+  binned_data <- mutate(binned_data)
+    
   print("Binning Complete, Starting Export")
 }
 ```
