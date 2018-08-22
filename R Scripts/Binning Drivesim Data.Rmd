@@ -55,7 +55,9 @@ class(Imported)
 
 
 ```{r}
-
+#  Imported2 <- Imported %>% 
+#    mutate(bin_num = cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+# Imported3 <- Imported2 %>% group_by(bin_num) %>% summarise(avg_speed = mean(Speed))
 
 ```
 
