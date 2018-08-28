@@ -13,7 +13,7 @@ output: html_document
 library(tidyverse)
 library(tidyselect)
 
-var_list <- c()
+var_list <- c("avg_speed" = "mean(Speed)")
 
 #The function used to create the bins, 
 bin_by_dist <- function(x, bin_size = 100) {
@@ -45,6 +45,7 @@ bin_by_dist <- function(x, bin_size = 100) {
     group_by(bin_num) %>% 
     summarise(var_list)
   
+
 }
 ```
 
