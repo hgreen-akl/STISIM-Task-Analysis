@@ -13,6 +13,9 @@ output: html_document
 library(tidyverse)
 library(tidyselect)
 
+var_list <- c()
+
+#The function used to create the bins, 
 bin_by_dist <- function(x, bin_size = 100) {
   #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
@@ -21,7 +24,6 @@ bin_by_dist <- function(x, bin_size = 100) {
   if(!"Total_dist" %in% names(x)){
       stop("No distance column in data frame")
   }
-  print("Check OK")
   ##pop up to confirm whether the file was from the country or urban task. 
   Task <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 1, 2)
   max_bin <- if_else(Task == 1, 31000, 9000)
@@ -32,14 +34,17 @@ bin_by_dist <- function(x, bin_size = 100) {
   bin_start  <-  seq(from = 100, to = max_bin - bin_size, by = bin_size)
   bin_end    <-  seq(from = 100 + bin_size, to = max_bin, by = bin_size)
   bin_ranges <-  paste(bin_start,"-", bin_end, sep = "")
-  print("Starting Binning")
 
   binned_data <<- data.frame(bin_start, bin_end, bin_ranges)
   names(binned_data) <- c("bin_start","bin_end", "bin_ranges")
   
-  binned_data <- mutate(binned_data)
-    
-  print("Binning Complete, Starting Export")
+  bin_factors <<- as.factor(cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+  
+  Imported %>% 
+    mutate(bin_num = bin_factors) %>%
+    group_by(bin_num) %>% 
+    summarise(var_list)
+  
 }
 ```
 
@@ -49,7 +54,7 @@ bin_by_dist <- function(x, bin_size = 100) {
 ```{r}
 
 bin_by_dist(Imported)
-class(Imported)
+
 
 ```
 
