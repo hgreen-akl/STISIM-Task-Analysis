@@ -13,9 +13,8 @@ output: html_document
 library(tidyverse)
 library(tidyselect)
 
-var_list <- c("avg_speed" = "mean(Speed)")
 
-#The function used to create the bins, 
+#The function used to create the bins, bin size by default is every 100m  
 bin_by_dist <- function(x, bin_size = 100) {
   #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
@@ -43,18 +42,19 @@ bin_by_dist <- function(x, bin_size = 100) {
   Imported %>% 
     mutate(bin_num = bin_factors) %>%
     group_by(bin_num) %>% 
-    summarise(var_list)
-  
-
+    summarise(bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+              avg_speed = mean(Speed), 
+              sd_speed = sd(Speed),
+              avg_lanepos = mean(Lateral_Lane_Pos), 
+              sd_lanepos = sd(Lateral_Lane_Pos),
+              avg_throttle = mean(Throttle_input), 
+              sd_throttle = sd(Throttle_input))
 }
 ```
 
-## Function to Bin the Drivesim data into chunks of equal distance
-  The function requires the Bin size otherwise the default will be 100m, 
-
 ```{r}
 
-bin_by_dist(Imported)
+output <- as.tibble(bin_by_dist(Imported))
 
 
 ```
