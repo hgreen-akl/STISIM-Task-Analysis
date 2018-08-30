@@ -54,9 +54,13 @@ bin_by_dist <- function(x, bin_size = 100) {
 
 ```{r}
 
-output <- as.tibble(bin_by_dist(Imported))
+output <- as.tibble(bin_by_dist(Imported)) %>% filter(bin_duration > 0)
+output2 <- output %>% mutate(Trial = as.factor("One"))
 
 
+ggplot(output2, aes(x = avg_speed, y = Trial, height = ..density..)) +
+    geom_density_ridges(stat = "density") +
+  xlim(60,120)
 ```
 
 
