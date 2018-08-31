@@ -10,6 +10,7 @@ output: html_document
 
 ```{r results='hide', error=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(readxl)
 ```
 
 ### Creating the Column Names
@@ -26,6 +27,14 @@ sorted_columns <- c("Elapsed_Time","Total_dist","Longitudinal_Veloc","Speed","Lo
 Errors may appear when running this dialog if there is a problem with using your google drive or other file directories are inaccesible to R
 
 ```{r}
+list_of_files_name <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Participant Information.xlsx" 
+list_of_DAT_files <- read_xlsx(list_of_files_name, sheet = "Scenario Coding") %>% 
+  mutate(pattern_name = paste0(Participant,"_", Run_Number))
+        
+list_of_DAT_files %>% head()
+
+DAT_to_import <- list_of_DAT_files$pattern_name
+  
 filename <- file.choose()
 ```
 
@@ -33,7 +42,8 @@ filename <- file.choose()
 The file is imported, the start and end of the numerical raw data file is idenitifed and selected into a data frame called "cleaned_data", it is sorted based on the vector "Sorted_columns" above.
 
 ```{r}
-raw_data <- read.table(filename, sep = "", col.names = Columns, header = FALSE, fill = TRUE, blank.lines.skip = FALSE, stringsAsFactors = FALSE)
+clean_DAT <- function (filename) {
+    raw_data <- read.table(filename, sep = "", col.names = Columns, header = FALSE, fill = TRUE, blank.lines.skip = FALSE, stringsAsFactors = FALSE)
 
 data_start <- raw_data[raw_data$Elapsed_Time == "Block",] %>% 
   row.names.data.frame() %>% 
@@ -44,11 +54,8 @@ data_end <- raw_data[raw_data$Elapsed_Time == "Tailgating",] %>%
   as.numeric() - 3
 
 cleaned_data <- raw_data[data_start:data_end,sorted_columns]
+}
 
-
-cleaned_data %>% str()
-cleaned_data %>% head()
-cleaned_data %>% tail()
 ```
 
 ### Get the summary data of performance and violations.
