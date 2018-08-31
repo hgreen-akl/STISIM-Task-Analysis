@@ -93,7 +93,7 @@ cleaned_data$Date <- file.info(filename)$mtime %>% as.Date() %>% rep(nrow(cleane
 
 cleaned_data %>% write.csv(file = paste(path,data_filename,".csv", sep = ""), row.names = FALSE)
 write(summary_report,file = paste(path,summary_filename, ".txt",sep = ""))
-print
+
 }
 
 ```
