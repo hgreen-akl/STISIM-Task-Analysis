@@ -12,9 +12,11 @@ output: html_document
 ```{r results='hide'}
 library(tidyverse)
 library(tidyselect)
-
+library(ggthemes)
+library(ggridges)
 
 #The function used to create the bins, bin size by default is every 100m  
+
 bin_by_dist <- function(x, bin_size = 100) {
   #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
@@ -49,25 +51,42 @@ bin_by_dist <- function(x, bin_size = 100) {
               sd_lanepos = sd(Lateral_Lane_Pos),
               avg_throttle = mean(Throttle_input), 
               sd_throttle = sd(Throttle_input))
+  
+  
 }
 ```
 
+
+
+
+
+```{r}
+output <- as.tibble(bin_by_dist(Imported) %>% filter(bin_duration > 0, !is.na(bin_num)))
+
+output2 <- output %>% mutate(Trial = as.factor("Fam"))
+output3 <- output %>% mutate(Trial = as.factor("1"))
+output4 <- output2 %>% bind_rows(output3)
+output4$Trial <- output4$Trial %>% as.factor()
+```
+
 ```{r}
 
-output <- as.tibble(bin_by_dist(Imported)) %>% filter(bin_duration > 0)
-output2 <- output %>% mutate(Trial = as.factor("One"))
-
-
-ggplot(output2, aes(x = avg_speed, y = Trial, height = ..density..)) +
-    geom_density_ridges(stat = "density") +
-  xlim(60,120)
 ```
 
 
 ```{r}
-#  Imported2 <- Imported %>% 
-#    mutate(bin_num = cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
-# Imported3 <- Imported2 %>% group_by(bin_num) %>% summarise(avg_speed = mean(Speed))
+##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
+p1 <- ggplot(output4, aes(x = avg_speed, y = Trial, height = ..density..)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)+
+  xlim(60,120)
+p1
+# an alternative ridgeline plot with data points recorded
+p2 <- ggplot(output4, aes(x = avg_speed, y = Trial, height = ..density..)) +
+  geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.8, 
+                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+  theme_classic()
+p2
 
 ```
 
