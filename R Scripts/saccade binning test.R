@@ -1,7 +1,7 @@
 Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()  
 
-
-saccades <- seq(from = 250, to = 30000, by = 250)
+  bin_size <- 100
+  saccades <- seq(from = 250, to = 30000, by = 250)
   saccade_number <- seq(from = 1, to = 120, by = 1)
   saccade_bin_start <- saccades - bin_size
   saccade_bin_end <- saccades + bin_size
@@ -11,6 +11,14 @@ saccades <- seq(from = 250, to = 30000, by = 250)
   names(binned_data) <- c("bin_start","bin_end", "bin_ranges", "saccade_num")
   
   bin_factors <<- as.factor(cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+  
+  
+binning_function <- function(x,y) {
+  x %>% 
+    filter(Total_dist >= y$bin_start, Total_dist < y$bin_end) %>% 
+    mutate(duration = max(Elapsed_Time) - min(Elapsed_Time))
+  }  
+map2_df(Imported, binned_data, binning_function)
   
   test <- Imported %>% 
     mutate(bin_num = bin_factors) %>%
