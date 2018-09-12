@@ -13,12 +13,13 @@ Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
   bin_factors <<- as.factor(cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
   
   
-binning_function <- function(x,y) {
-  x %>% 
-    filter(Total_dist >= y$bin_start, Total_dist < y$bin_end) %>% 
-    mutate(duration = max(Elapsed_Time) - min(Elapsed_Time))
-  }  
-map2_df(Imported, binned_data, binning_function)
+binning_function <- function(x) {
+  xa %>% 
+    filter(Imported$Total_dist >= y$bin_start, Total_dist < y$bin_end) %>% 
+    nest()
+}  
+
+func_output <- lmap(x.Imported, binned_data), binning_function)
   
   test <- Imported %>% 
     mutate(bin_num = bin_factors) %>%
@@ -30,3 +31,19 @@ map2_df(Imported, binned_data, binning_function)
               sd_lanepos = sd(Lateral_Lane_Pos),
               avg_throttle = mean(Throttle_input), 
               sd_throttle = sd(Throttle_input))
+  
+  
+  
+  
+  
+  
+  
+  test2 <- Imported %>% filter(Total_dist >= binned_data$bin_start[1] & Total_dist < binned_data$bin_end[1]) %>% as_tibble()
+  
+  nested_bins <- binned_data
+  nested_bins["nested"] <- NA
+  nested_bins$nested[1] <- test2 %>% nest()
+  nested_bins$duration <- NA
+  nested_bins$duration <- max(nested_bins$nestedElapsed_Time) - min(nested_bins$nestedElapsed_Time)
+  nested_bins$nested[[Elapsed_Time]]
+  
