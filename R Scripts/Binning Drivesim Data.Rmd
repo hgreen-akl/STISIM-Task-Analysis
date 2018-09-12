@@ -15,8 +15,9 @@ library(tidyselect)
 library(ggthemes)
 library(ggridges)
 
-#The function used to create the bins, bin size by default is every 100m  
+Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
 
+#The function used to create the bins, bin size by default is every 100m  
 bin_by_dist <- function(x, bin_size = 100) {
   #Check to see data structure and contents is sufficient for the binning function. 
   if(class(x) != "data.frame") {
@@ -39,9 +40,9 @@ bin_by_dist <- function(x, bin_size = 100) {
   binned_data <<- data.frame(bin_start, bin_end, bin_ranges)
   names(binned_data) <- c("bin_start","bin_end", "bin_ranges")
   
-  bin_factors <<- as.factor(cut(Imported$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+  bin_factors <<- as.factor(cut(x$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
   
-  Imported %>% 
+  x %>% 
     mutate(bin_num = bin_factors) %>%
     group_by(bin_num) %>% 
     summarise(bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
@@ -54,6 +55,44 @@ bin_by_dist <- function(x, bin_size = 100) {
   
   
 }
+
+
+
+
+
+```
+
+```{r}
+
+bin_by_saccades <- function(x, bin_size = 100) {
+   if(class(x) != "data.frame") {
+      stop("Object is Not Data Frame")
+  }
+  if(!"Total_dist" %in% names(x)){
+      stop("No distance column in data frame")
+  }
+  saccades <- seq(from = 250, to = 30000, by = 250)
+  saccade_number <- seq(from = 1, to = 120, by = 1)
+  saccade_bin_start <- saccades - bin_size
+  saccade_bin_end <- saccades + bin_size
+  saccade_bin_ranges <-  paste(saccade_bin_start,"-", saccade_bin_end, sep = "")
+  
+  binned_data <<- data.frame(saccade_bin_start, saccade_bin_end, saccade_bin_ranges, saccade_number)
+  names(binned_data) <- c("bin_start","bin_end", "bin_ranges")
+  
+  bin_factors <<- as.factor(cut(x$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+
+   x %>% 
+    mutate(bin_num = bin_factors) %>%
+    group_by(bin_num) %>% 
+    summarise(bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+              avg_speed = mean(Speed), 
+              sd_speed = sd(Speed),
+              avg_lanepos = mean(Lateral_Lane_Pos), 
+              sd_lanepos = sd(Lateral_Lane_Pos),
+              avg_throttle = mean(Throttle_input), 
+              sd_throttle = sd(Throttle_input))
+}
 ```
 
 
@@ -61,7 +100,7 @@ bin_by_dist <- function(x, bin_size = 100) {
 
 
 ```{r}
-output <- as.tibble(bin_by_dist(Imported) %>% filter(bin_duration > 0, !is.na(bin_num)))
+output <- as.tibble(bin_by_saccades(Imported) %>% filter(bin_duration > 0, !is.na(bin_num)))
 
 output2 <- output %>% mutate(Trial = as.factor("Fam"))
 output3 <- output %>% mutate(Trial = as.factor("1"))
@@ -69,9 +108,7 @@ output4 <- output2 %>% bind_rows(output3)
 output4$Trial <- output4$Trial %>% as.factor()
 ```
 
-```{r}
 
-```
 
 
 ```{r}
