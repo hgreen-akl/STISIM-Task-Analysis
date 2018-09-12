@@ -14,12 +14,12 @@ Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
   
   
 binning_function <- function(x) {
-  xa %>% 
-    filter(Imported$Total_dist >= y$bin_start, Total_dist < y$bin_end) %>% 
+  x %>% 
+    filter(Imported$Total_dist >= x$bin_start, Total_dist < x$bin_end) %>% 
     nest()
 }  
 
-func_output <- lmap(x.Imported, binned_data), binning_function)
+func_output <- lmap(binned_data, binning_function)
   
   test <- Imported %>% 
     mutate(bin_num = bin_factors) %>%
@@ -34,11 +34,14 @@ func_output <- lmap(x.Imported, binned_data), binning_function)
   
   
   
+tested <- function(x) {
+  print(x$bin_start,x$bin_end)
+}
+
+trial1 <- lmap(binned_data, tested)
   
   
-  
-  
-  test2 <- Imported %>% filter(Total_dist >= binned_data$bin_start[1] & Total_dist < binned_data$bin_end[1]) %>% as_tibble()
+test2 <- Imported %>% filter(Total_dist >= binned_data$bin_start[1] & Total_dist < binned_data$bin_end[1]) %>% as_tibble()
   
   nested_bins <- binned_data
   nested_bins["nested"] <- NA

@@ -101,7 +101,7 @@ bin_by_saccades <- function(x, bin_size = 100) {
 
 ```{r}
 output <- as.tibble(bin_by_saccades(Imported) %>% filter(bin_duration > 0, !is.na(bin_num)))
-
+output <- as.tibble(bin_by_dist(Imported) %>% filter(bin_duration > 0, !is.na(bin_num)))
 output2 <- output %>% mutate(Trial = as.factor("Fam"))
 output3 <- output %>% mutate(Trial = as.factor("1"))
 output4 <- output2 %>% bind_rows(output3)
