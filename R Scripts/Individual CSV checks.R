@@ -1,14 +1,16 @@
 # Method to import the csv 
 
 library(tidyverse)
-csv_to_check <- Imported
+
+csv_to_check_filename <- file.choose()
+csv_to_check <- read_csv(csv_to_check_filename, col_names = TRUE) %>% data.frame()
 
 to_plot <- csv_to_check %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
 
 plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
 plot_by_time
 
-check1 <- menu(c("Ok to Proceed", "Need to Fix"), 1, 0, )
+check1 <- menu(c("Ok to Proceed", "Need to Fix"), graphics = TRUE )
 
 stopifnot(check1 == 1)
 
