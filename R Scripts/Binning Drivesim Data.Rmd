@@ -27,7 +27,8 @@ bin_by_dist <- function(x, bin_size = 100) {
       stop("No distance column in data frame")
   }
   ##pop up to confirm whether the file was from the country or urban task. 
-  Task <- if_else(menu(c("Country", "Urban"),T,"Is this a Country or Urban scenario?") == 1, 1, 2)
+ Task <- if_else(x$scenario[1] == "Urban", 1,2)
+    
   max_bin <- if_else(Task == 1, 31000, 9000)
   
   bins <- c(seq(from = 100, to = max_bin,by= bin_size))

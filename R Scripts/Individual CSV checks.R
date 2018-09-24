@@ -74,8 +74,8 @@ check_data <- function() {
   plot_by_time
 }
 
-check_data <- csv_to_check
+csv_to_check <- csv_to_check %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
 
 save_location <- str_replace(file_to_check, "trimmed", "checked")
 
-write.csv(checked_data)
+write.csv(checked_data, file = save_location, row.names = FALSE)
