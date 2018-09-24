@@ -1,4 +1,34 @@
 library(tidyverse)
+library(readxl)
+library(xlsx)
+
+## These are functions to call prior that plots the data for checking.
+# a function that plots the data x (which should be csv to check) by time, it gathers the data into long form with each variable being indexed, 
+# then it plots it in a facted format
+plot_by_time <- function(x) {
+  data_to_plot <- x %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
+  ggplot(data_to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
+}
+
+## a function that plots the data x (which should be csv to check) by distance, it gathers the data into long form with each variable being indexed, 
+## then it plots it in a facted format
+plot_by_distance <- function(x){
+  
+  data_to_plot <- x %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
+  ggplot(data_to_plot, aes(Total_dist, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
+}
+
+##function used to save the data
+save_data <- function(x){
+  save_location <- str_replace(file_to_check, "trimmed", "checked")
+  if (file.exists(save_location)) {
+    print("trimmed csv data already exists")
+  } else {
+    save_location <- str_replace(file_to_check, "trimmed", "checked")
+    write.csv(checked_data, file = save_location, row.names = FALSE)
+    print(paste0(x,"_trimmed.csv is saved"))
+  }}
+
 
 ## Loading of the file containg the list of existing files. 
 filename_Database <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Participant Information.xlsx" 
@@ -7,10 +37,12 @@ list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>%
 
 list_of_DAT_files %>% head()
 
+files2 <- list_of_DAT_files %>% filter(Scenario == "Country")
+files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
 ## function to ask which number row to check
 
 number <- readline("What is the value of x?") %>% as.numeric()
-x <- list_of_DAT_files$pattern_name[readline("What is the value of x?") %>% as.numeric()]
+x <- files2$pattern_name[4]
 
 ## if a checked file exists it will give an output to say so or else it will load a file to check
 
@@ -19,63 +51,22 @@ file_to_check <- if(list_of_DAT_files$Scenario[number] == "Familiarisation"){ pr
     list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
                 pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE)}
 
+##reads the csv file that needs to be checked and adds some extra columns providing information about the data file
+
 csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
-
-csv_to_check <- csv_to_check %>% mutate(session = rep(list_of_DAT_files$Session[number],times = nrow(csv_to_check)) ,scenario = rep(list_of_DAT_files$Scenario[number],times = nrow(csv_to_check)))
-
-to_plot <- csv_to_check %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
-
-plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
-plot_by_time
+csv_to_check <- csv_to_check %>% mutate(session = rep(list_of_DAT_files$Session[number],times = nrow(csv_to_check)) ,
+                                        scenario = rep(list_of_DAT_files$Scenario[number],times = nrow(csv_to_check)))
 
 
-plot_by_distance <- ggplot(to_plot, aes(Total_dist, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
-plot_by_distance
+
+csv_to_check %>% plot_by_distance()
+csv_to_check %>% plot_by_time()
+
+## Some commonly used filters and plots to cover and check unexplainable spikes in lateral lane deviations
+csv_to_check <- csv_to_check %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
 
 csv_to_check %>% ggplot(aes(x = Steering_count, y = Lateral_Veloc)) + geom_point() + ylim(-50,50)
 
 
-check_raw_data <- function(x) {
- x %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value") %>% 
-    ggplot(aes(Elapsed_Time, value)) + 
-    geom_line() + 
-    facet_wrap(~ Variable, scales = "free") %>% plot()
-  
+csv_to_check %>% save_data
 
-  
-  check1 <- menu(c("Ok to Proceed", "Need to Fix"),graphics = TRUE, title = "Is Data OK??")
-  
-  stopifnot(check1 == 1)
-  
-  by_dist <- x %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value") %>%
-    ggplot(aes(Total_dist, value)) + 
-    geom_line() + 
-    facet_wrap(~ Variable, scales = "free") %>% print()
-
- 
-   check2 <- menu(c("Ok to Proceed", "Need to Fix"),graphics = TRUE, title = "Is Data OK??")
-   stopifnot(check2 == 1)
-   
-   x
-}
-
-check_raw_data(csv_to_check)
-checked_data <- check_raw_data(csv_to_check)
-checked_data
-
-
-
-check_data <- function() {
-  csv_to_check <- read_csv(filename, col_names = TRUE) %>% data.frame() %>% as_tibble()
-  
-  to_plot <- csv_to_check %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
-  
-  plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
-  plot_by_time
-}
-
-csv_to_check <- csv_to_check %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
-
-save_location <- str_replace(file_to_check, "trimmed", "checked")
-
-write.csv(checked_data, file = save_location, row.names = FALSE)
