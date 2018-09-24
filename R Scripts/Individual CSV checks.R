@@ -1,8 +1,9 @@
 # Method to import the csv 
 
 library(tidyverse)
-filename <- file.choose()
-csv_to_check <- read_csv(file.choose(), col_names = TRUE) %>% data.frame() %>% as_tibble()
+
+file_to_check <- file.choose()
+csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
 
 to_plot <- csv_to_check %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
 
@@ -43,3 +44,16 @@ check_raw_data <- function(x) {
 check_raw_data(csv_to_check)
 checked_data <- check_raw_data(csv_to_check)
 checked_data
+
+
+
+check_data <- function() {
+  csv_to_check <- read_csv(filename, col_names = TRUE) %>% data.frame() %>% as_tibble()
+  
+  to_plot <- csv_to_check %>% gather(Longitudinal_Veloc:Road_Curve, key = "Variable", value = "value")
+  
+  plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
+  plot_by_time
+}
+
+check_data()
