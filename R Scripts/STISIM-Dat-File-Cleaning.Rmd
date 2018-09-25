@@ -11,6 +11,7 @@ output: html_document
 ```{r results='hide', error=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)
+library(xlsx)
 ```
 
 #
@@ -26,14 +27,14 @@ Errors may appear when running this dialog if there is a problem with using your
 ```{r}
 filename_Database <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Participant Information.xlsx" 
 list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>% 
-  mutate(pattern_name = paste0(Participant,"_", Run_Number,".Dat"))
+  mutate(pattern_name = paste0(Participant,"_", Run_Number))
         
 list_of_DAT_files %>% head()
 
   
 list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?NS_3.Dat", recursive = TRUE, full.names = TRUE)
 
- filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = list_of_DAT_files$pattern_name[1], recursive = TRUE, full.names = TRUE)
+filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = list_of_DAT_files$pattern_name[1], recursive = TRUE, full.names = TRUE)
 ```
 
 ### Import the file
@@ -41,7 +42,14 @@ The file is imported, the start and end of the numerical raw data file is idenit
 
 ```{r}
 clean_DAT <- function (x) {
-  filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = paste0("?",x), recursive = TRUE, full.names = TRUE)
+
+if(file.exists(list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
+                              pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE))) {
+    print(paste(x , "is Trimmed"))
+  
+    } else {
+    
+  filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = paste0("?",x,".Dat"), recursive = TRUE, full.names = TRUE)
   
 ## Define the column names that are in the DAT files and then sorting them in a more preferred order.
 
@@ -80,7 +88,7 @@ Run_number <- raw_data[10,3]
 ## Obtain the name & path of the data file and create file nimes for the cleaned data
 ## There is also a function at the bottom which adds additoinal columns for the particpant ## ID and the run number. 
 
-data_filename <- paste(Participant_ID, Run_number, "cleaned", sep = "_")
+data_filename <- paste(Participant_ID, Run_number, "trimmed", sep = "_")
 summary_filename <- paste(Participant_ID, Run_number, "summary", sep = "_")
 Pattern <- paste(Participant_ID,"_",Run_number,".Dat", sep = "")
 path <- filename %>% str_replace(Pattern, "")
@@ -94,7 +102,10 @@ cleaned_data$Date <- file.info(filename)$mtime %>% as.Date() %>% rep(nrow(cleane
 cleaned_data %>% write.csv(file = paste(path,data_filename,".csv", sep = ""), row.names = FALSE)
 write(summary_report,file = paste(path,summary_filename, ".txt",sep = ""))
 
-}
+print(paste(x, "has now been Trimmed")) }
+
+ 
+ }
 
 ```
 
