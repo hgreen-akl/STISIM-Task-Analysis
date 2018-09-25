@@ -20,23 +20,29 @@ binning_function <- function(saccade_bin_start, saccade_bin_end, saccade_bin_ran
 func_output <- pmap(bins, binning_function)
 binned_data <- bins %>% mutate(nested = pmap(bins, binning_function)) %>% as_tibble()
 
+##Function to unnest the data and then ungroups and summarise each bin to the 
+un_nested <- binned_data %>% unnest()
+grouped <- un_nested %>%
+  group_by(saccade_number) %>% 
+  summarise(n_of_obs = n(), 
+            bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+            avg_speed = mean(Speed), 
+            sd_speed = sd(Speed),
+            avg_lanepos = mean(Lateral_Lane_Pos), 
+            sd_lanepos = sd(Lateral_Lane_Pos),
+            avg_throttle = mean(Throttle_input), 
+            sd_throttle = sd(Throttle_input),
+            avg_brake = mean(Brake_input),
+            sd_brake = sd(Brake_input),
+            avg_steering = mean(Steering_angle),
+            sd_steering = sd(Steering_angle),
+            following_road = mean(abs(Road_Curve - Vehic_curve)),
+            ID = ID[1],
+            Run_Number = Run_Number[1],
+            Date = Date[1])
 
 
-
-
-  test <- Imported %>% 
-    mutate(bin_num = bin_factors) %>%
-    group_by(bin_num) %>% 
-    summarise(bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
-              avg_speed = mean(Speed), 
-              sd_speed = sd(Speed),
-              avg_lanepos = mean(Lateral_Lane_Pos), 
-              sd_lanepos = sd(Lateral_Lane_Pos),
-              avg_throttle = mean(Throttle_input), 
-              sd_throttle = sd(Throttle_input))
-  
-  
-  
+ 
 tested <- function(x) {
   print(x$bin_start,x$bin_end)
 }
@@ -53,4 +59,5 @@ test2 <- Imported %>% filter(Total_dist >= binned_data$bin_start[1] & Total_dist
   nested_bins$duration <- max(nested_bins$nestedElapsed_Time) - min(nested_bins$nestedElapsed_Time)
   nested_bins$nested[[Elapsed_Time]]
 
-splitted <- str_split(binned_data$bin_ranges, pattern = "-")    
+splitted <- str_split(binned_data$bin_ranges, pattern = "-")  
+
