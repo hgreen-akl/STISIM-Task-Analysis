@@ -43,13 +43,14 @@ The file is imported, the start and end of the numerical raw data file is idenit
 ```{r}
 clean_DAT <- function (x) {
 
-if(file.exists(list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
-                              pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE))) {
+if(length(list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
+                              pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE)) >= 1) {
     print(paste(x , "is Trimmed"))
   
     } else {
     
-  filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = paste0("?",x,".Dat"), recursive = TRUE, full.names = TRUE)
+  filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", 
+                         pattern = paste0("?",x,".Dat"), recursive = TRUE, full.names = TRUE)
   
 ## Define the column names that are in the DAT files and then sorting them in a more preferred order.
 

@@ -23,17 +23,18 @@ plot_by_distance <- function(x){
 
 ##function used to save the data
 save_data <- function(x) {
-     selection <- 1
+  save_location <- str_replace(file_to_check, "trimmed", "checked")   
+  selection <- 1
   if (file.exists(save_location)) {
-    selection <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+    save_or_not <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
     } 
    if (selection = 2) {
      stop("Stopped saving the file by user request")
    }   if (selection = 1) {
-      save_location <- str_replace(file_to_check, "trimmed", "checked")
       write.csv(x, file = save_location, row.names = FALSE)
-      print(paste0(x,"_trimmed.csv is saved"))
-    }}
+      print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv"))
+   }
+}
 
 
 ## Loading of the file containg the list of existing files. 
@@ -41,14 +42,14 @@ filename_Database <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim
 list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number))
 
-list_of_DAT_files %>% head()
+list_of_DAT_files %>% glimpse()
 
 files2 <- list_of_DAT_files %>% filter(Scenario == "Country")
 files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
 ## function to ask which number row to check
 
 number <- readline("What is the value of x?") %>% as.numeric()
-x <- 5
+x <- 1
 pat <- files2$pattern_name[x]
 
 ## if a checked file exists it will give an output to say so or else it will load a file to check
