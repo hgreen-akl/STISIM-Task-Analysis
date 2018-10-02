@@ -24,16 +24,15 @@ plot_by_distance <- function(x){
 ##function used to save the data
 save_data <- function(x) {
   save_location <- str_replace(file_to_check, "trimmed", "checked")   
-  selection <- 1
-  if (file.exists(save_location)) {
-    save_or_not <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+  selection <- if_else(file.exists(save_location), 1, 2) 
+   if(selection == 1) {
+     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
     } 
-   if (selection = 2) {
+  if (selection = 1) {
      stop("Stopped saving the file by user request")
-   }   if (selection = 1) {
+   } else {
       write.csv(x, file = save_location, row.names = FALSE)
-      print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv"))
-   }
+      print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv")) }
 }
 
 
@@ -49,7 +48,7 @@ files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
 ## function to ask which number row to check
 
 number <- readline("What is the value of x?") %>% as.numeric()
-x <- 1
+x <- 40
 pat <- files2$pattern_name[x]
 
 ## if a checked file exists it will give an output to say so or else it will load a file to check
