@@ -24,15 +24,19 @@ plot_by_distance <- function(x){
 ##function used to save the data
 save_data <- function(x) {
   save_location <- str_replace(file_to_check, "trimmed", "checked")   
-  selection <- if_else(file.exists(save_location), 1, 2) 
-   if(selection == 1) {
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+   if(existing_file) {
      overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
-    } 
-  if (selection = 1) {
-     stop("Stopped saving the file by user request")
-   } else {
-      write.csv(x, file = save_location, row.names = FALSE)
-      print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv")) }
+     if(overwrite == 2) {
+       stop("ERROR:: file already exists")
+     }
+   } 
+  if (existing_file == FALSE) {
+  write.csv(x, file = save_location, row.names = FALSE)
+  print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv")) 
+  } else {
+    stop("ERROR :: error in save location")
+  }
 }
 
 
@@ -48,17 +52,26 @@ files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
 ## function to ask which number row to check
 
 number <- readline("What is the value of x?") %>% as.numeric()
-x <- 40
+x <- 1
 pat <- files2$pattern_name[x]
 
 ## if a checked file exists it will give an output to say so or else it will load a file to check
 
+load_trimmed <- function(x) {
 file_to_check <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
-                pattern = paste0("?",pat,"_trimmed"), recursive = TRUE, full.names = TRUE)
-
+                pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE)
+save_location <- str_replace(file_to_check, "trimmed", "checked")   
+existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+ if (existing_file) {
+   overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+   if(overwrite == 2) {
+     stop("ERROR:: file already exists")
+   }
+ }
 csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
-csv_to_check <- csv_to_check %>% mutate(session = rep(list_of_DAT_files$Session[x],times = nrow(csv_to_check)) ,
+csv_to_check %>% mutate(session = rep(list_of_DAT_files$Session[x],times = nrow(csv_to_check)) ,
                                         scenario = rep(list_of_DAT_files$Scenario[x],times = nrow(csv_to_check)))
+}
 
 plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
 plot_by_time
@@ -68,11 +81,19 @@ check1 <- menu(c("Ok to Proceed", "Need to Fix"), graphics = TRUE )
 stopifnot(check1 == 1)
 
 
+## once functions are loaded you can change x and then run this block multiple times
+x <- 1
+pat <- files2$pattern_name[x]
+csv_to_check <- pat %>% load_trimmed()
+csv_to_check %>% plot_by_distance()
+csv_to_check %>% plot_by_time()
+
 ## Some commonly used filters and plots to cover and check unexplainable spikes in lateral lane deviations
 csv_to_check <- csv_to_check %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
 csv_to_check %>% filter(Total_dist > 29000) %>% ggplot(aes(x = Total_dist, y = Lateral_Lane_Pos)) + geom_line()
 
 
+## function to save the data, errors will be presented if there is an existing checked file
 csv_to_check %>% save_data()
 
 
