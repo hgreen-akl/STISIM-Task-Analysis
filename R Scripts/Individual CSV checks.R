@@ -32,11 +32,11 @@ save_data <- function(x) {
        stop("ERROR:: file already exists")
       } else {
        write.csv(x, file = save_location, row.names = FALSE)
-       print(paste0(code,"_trimmed.csv is saved"))
+       print(paste0(code,"_checked.csv is saved"))
   } } 
     else if (existing_file == FALSE) {
   write.csv(x, file = save_location, row.names = FALSE)
-  return(paste0(code,"_trimmed.csv is saved")) 
+  return(paste0(code,"_checked.csv is saved")) 
     } else {
     stop("ERROR :: error in saving process save manually")
         }
@@ -76,10 +76,13 @@ files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
 
 
 ## once functions are loaded you can change x and then run this block once to check then save, change x and repeat
-x <- 19
+x <- 34
 csv_to_check <- x %>% load_trimmed(df = files2)
 csv_to_check %>% plot_by_distance()
 csv_to_check %>% plot_by_time()
+
+##USE for urban environments
+## csv_to_check <- x %>% load_trimmed(df = files3) %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
 
 ## Some commonly used filters and plots to cover and check unexplainable spikes in lateral lane deviations
 csv_to_check <- csv_to_check %>% filter(Lateral_Veloc < 100 & Lateral_Veloc> -100)
@@ -87,5 +90,7 @@ csv_to_check %>% filter(Total_dist > 29000) %>% ggplot(aes(x = Total_dist, y = L
 
 
 ## function to save the data, errors will be presented if there is an existing checked file
+
 csv_to_check %>% save_data()
 x <- x+1
+
