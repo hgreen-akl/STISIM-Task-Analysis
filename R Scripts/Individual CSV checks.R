@@ -25,19 +25,42 @@ plot_by_distance <- function(x){
 save_data <- function(x) {
   save_location <- str_replace(file_to_check, "trimmed", "checked")   
   existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
-   if(existing_file) {
+  code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
+  if(existing_file == TRUE) {
      overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
      if(overwrite == 2) {
        stop("ERROR:: file already exists")
-     }
-   } 
-  if (existing_file == FALSE) {
+      } else {
+       write.csv(x, file = save_location, row.names = FALSE)
+       print(paste0(code,"_trimmed.csv is saved"))
+  } } 
+    else if (existing_file == FALSE) {
   write.csv(x, file = save_location, row.names = FALSE)
-  print(paste0(x,"_trimmed.csv is saved as ", x, "_checked.csv")) 
-  } else {
-    stop("ERROR :: error in save location")
+  return(paste0(code,"_trimmed.csv is saved")) 
+    } else {
+    stop("ERROR :: error in saving process save manually")
+        }
+  } 
+
+## if a checked file exists it will give an output to say so or else it will load a file to check
+
+load_trimmed <- function(x, df) {
+  pat <- df$pattern_name[x]
+  file_to_check <<- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
+                               pattern = paste0("?",pat,"_trimmed"), recursive = TRUE, full.names = TRUE)
+  save_location <- str_replace(file_to_check, "trimmed", "checked")   
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+  if (existing_file) {
+    recheck <- menu(c("Recheck","Stop"), graphics = TRUE, title = paste(pat, "checked csv data already exists do you wish to overwrite")) %>% as.numeric()
+    if(recheck == 2) {
+      stop("ERROR:: file already exists")
+    }
   }
+  csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
+  csv_to_check %>% mutate(session = rep(df$Session[x],times = nrow(csv_to_check)) ,
+                          scenario = rep(df$Scenario[x],times = nrow(csv_to_check)))
 }
+
 
 
 ## Loading of the file containg the list of existing files. 
@@ -49,42 +72,12 @@ list_of_DAT_files %>% glimpse()
 
 files2 <- list_of_DAT_files %>% filter(Scenario == "Country")
 files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
-## function to ask which number row to check
-
-number <- readline("What is the value of x?") %>% as.numeric()
-x <- 1
-pat <- files2$pattern_name[x]
-
-## if a checked file exists it will give an output to say so or else it will load a file to check
-
-load_trimmed <- function(x) {
-file_to_check <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
-                pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE)
-save_location <- str_replace(file_to_check, "trimmed", "checked")   
-existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
- if (existing_file) {
-   overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
-   if(overwrite == 2) {
-     stop("ERROR:: file already exists")
-   }
- }
-csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
-csv_to_check %>% mutate(session = rep(list_of_DAT_files$Session[x],times = nrow(csv_to_check)) ,
-                                        scenario = rep(list_of_DAT_files$Scenario[x],times = nrow(csv_to_check)))
-}
-
-plot_by_time <- ggplot(to_plot, aes(Elapsed_Time, value)) + geom_line() + facet_wrap(~ Variable, scales = "free")
-plot_by_time
-
-check1 <- menu(c("Ok to Proceed", "Need to Fix"), graphics = TRUE )
-
-stopifnot(check1 == 1)
 
 
-## once functions are loaded you can change x and then run this block multiple times
-x <- 1
-pat <- files2$pattern_name[x]
-csv_to_check <- pat %>% load_trimmed()
+
+## once functions are loaded you can change x and then run this block once to check then save, change x and repeat
+x <- 19
+csv_to_check <- x %>% load_trimmed(df = files2)
 csv_to_check %>% plot_by_distance()
 csv_to_check %>% plot_by_time()
 
@@ -95,8 +88,4 @@ csv_to_check %>% filter(Total_dist > 29000) %>% ggplot(aes(x = Total_dist, y = L
 
 ## function to save the data, errors will be presented if there is an existing checked file
 csv_to_check %>% save_data()
-
-
-save_location <- str_replace(file_to_check, "trimmed", "checked")
-write.csv(checked_data, file = save_location, row.names = FALSE)
-print(paste0(x,"_trimmed.csv is saved"))
+x <- x+1
