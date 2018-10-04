@@ -70,13 +70,13 @@ list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>%
 
 list_of_DAT_files %>% glimpse()
 
-files2 <- list_of_DAT_files %>% filter(Scenario == "Country")
-files3 <- list_of_DAT_files %>% filter(Scenario == "Urban")
+files2 <- list_of_DAT_files %>% filter(Scenario == "Country", CSV_checked == "No")
+files3 <- list_of_DAT_files %>% filter(Scenario == "Urban", CSV_checked == "No")
 
 
 
 ## once functions are loaded you can change x and then run this block once to check then save, change x and repeat
-x <- 34
+x <- 49
 csv_to_check <- x %>% load_trimmed(df = files2)
 csv_to_check %>% plot_by_distance()
 csv_to_check %>% plot_by_time()
