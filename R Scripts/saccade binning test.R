@@ -1,4 +1,6 @@
-Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame() %>%   
+library(tidyverse)
+
+Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame() %>% as.tibble()
 
   bin_size <- 100
   saccades <- seq(from = 250, to = 30000, by = 250)

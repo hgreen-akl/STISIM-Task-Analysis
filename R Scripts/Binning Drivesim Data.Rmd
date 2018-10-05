@@ -58,9 +58,6 @@ bin_by_dist <- function(x, bin_size = 100) {
 }
 
 
-
-
-
 ```
 
 ```{r}
@@ -78,10 +75,10 @@ bin_by_saccades <- function(x, bin_size = 100) {
   saccade_bin_end <- saccades + bin_size
   saccade_bin_ranges <-  paste(saccade_bin_start,"-", saccade_bin_end, sep = "")
   
-  binned_data <<- data.frame(saccade_bin_start, saccade_bin_end, saccade_bin_ranges, saccade_number)
+  binned_data <- data.frame(saccade_bin_start, saccade_bin_end, saccade_bin_ranges, saccade_number)
   names(binned_data) <- c("bin_start","bin_end", "bin_ranges")
   
-  bin_factors <<- as.factor(cut(x$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
+  bin_factors <- as.factor(cut(x$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
 
    x %>% 
     mutate(bin_num = bin_factors) %>%
@@ -97,6 +94,29 @@ bin_by_saccades <- function(x, bin_size = 100) {
 ```
 
 
+```{r}
+
+save_data <- function(x) {
+  save_location <- str_replace(file_to_check, "trimmed", "checked")   
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+  code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
+  if(existing_file == TRUE) {
+     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+     if(overwrite == 2) {
+       stop("ERROR:: file already exists")
+      } else {
+       write.csv(x, file = save_location, row.names = FALSE)
+       print(paste0(code,"_checked.csv is saved"))
+  } } 
+    else if (existing_file == FALSE) {
+  write.csv(x, file = save_location, row.names = FALSE)
+  return(paste0(code,"_checked.csv is saved")) 
+    } else {
+    stop("ERROR :: error in saving process save manually")
+        }
+  } 
+
+```
 
 
 
