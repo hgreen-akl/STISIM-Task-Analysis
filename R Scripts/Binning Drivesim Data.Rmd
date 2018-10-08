@@ -15,11 +15,16 @@ library(tidyselect)
 library(ggthemes)
 library(ggridges)
 
-Imported <- read_csv(file.choose(), col_names = TRUE) %>% data.frame()
+List_of_checked_files <- read.xlsx(filename_Database, sheetIndex = 1) %>% 
+  mutate(pattern_name = paste0(Participant,"_", Run_Number))
+
+
+Imported <- read_csv(file.choose(), col_names = TRUE, col_types = "ddddddddddddddddddddddddtcdTcc") %>% as.tibble()
 
 #The function used to create the bins, bin size by default is every 100m  
 bin_by_dist <- function(x, bin_size = 100) {
-  #Check to see data structure and contents is sufficient for the binning function. 
+    #Check to see data structure and contents is sufficient for the binning function. 
+  
   if(class(x) != "data.frame") {
       stop("Object is Not Data Frame")
   }

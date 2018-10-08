@@ -25,8 +25,8 @@ library(xlsx)
 Errors may appear when running this dialog if there is a problem with using your google drive or other file directories are inaccesible to R
 
 ```{r}
-filename_Database <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Participant Information.xlsx" 
-list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>% 
+filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
+list_of_DAT_files <- read.xlsx(filename_Database, sheetIndex = 1) %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number))
         
 list_of_DAT_files %>% head()
