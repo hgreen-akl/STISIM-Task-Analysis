@@ -27,6 +27,8 @@ un_nested <- binned_data %>% unnest()
 grouped <- un_nested %>%
   group_by(saccade_number) %>% 
   summarise(n_of_obs = n(), 
+            start_dist = min(Total_dist),
+            end_dist = max(Total_dist),
             bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
             avg_speed = mean(Speed), 
             sd_speed = sd(Speed),
