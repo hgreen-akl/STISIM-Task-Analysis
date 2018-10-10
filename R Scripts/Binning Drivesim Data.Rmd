@@ -15,11 +15,15 @@ library(tidyselect)
 library(ggthemes)
 library(ggridges)
 
+filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
 List_of_checked_files <- read.xlsx(filename_Database, sheetIndex = 1) %>% 
-  mutate(pattern_name = paste0(Participant,"_", Run_Number))
+  mutate(pattern_name = paste0(Participant,"_", Run_Number)) %>% filter(CSV_checked == "Yes")
 
 
-Imported <- read_csv(file.choose(), col_names = TRUE, col_types = "ddddddddddddddddddddddddtcdTcc") %>% as.tibble()
+file_to_import <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = paste0("?","AL_5","_checked.csv"), recursive = TRUE, full.names = TRUE)
+
+Imported <- read_csv(file_to_import, col_names = TRUE, col_types = "ddddddddddddddddddddddddtcdccc") %>% as.tibble() %>% select(-15,-16, -20,-21,-22,-23,-24,-25)
+
 
 #The function used to create the bins, bin size by default is every 100m  
 bin_by_dist <- function(x, bin_size = 100) {
@@ -68,7 +72,9 @@ bin_by_dist <- function(x, bin_size = 100) {
 ```{r}
 
 bin_by_saccades <- function(x, bin_size = 100) {
-   if(class(x) != "data.frame") {
+   
+  
+  if(!"data.frame" %in% class(x)) {
       stop("Object is Not Data Frame")
   }
   if(!"Total_dist" %in% names(x)){
@@ -85,7 +91,7 @@ bin_by_saccades <- function(x, bin_size = 100) {
   
   bin_factors <- as.factor(cut(x$Total_dist, breaks =  binned_data$bin_start, labels = FALSE))
 
-   x %>% 
+ binned_data  x %>% 
     mutate(bin_num = bin_factors) %>%
     group_by(bin_num) %>% 
     summarise(bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
@@ -95,6 +101,24 @@ bin_by_saccades <- function(x, bin_size = 100) {
               sd_lanepos = sd(Lateral_Lane_Pos),
               avg_throttle = mean(Throttle_input), 
               sd_throttle = sd(Throttle_input))
+   
+   save_location <- str_replace(file_to_check,"checked", "binned_by_saccade")   
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+  code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
+  if(existing_file == TRUE) {
+     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+     if(overwrite == 2) {
+       stop("ERROR:: file already exists")
+      } else {
+       write.csv(x, file = save_location, row.names = FALSE)
+       print(paste0(code,"_checked.csv is saved"))
+  } } 
+    else if (existing_file == FALSE) {
+  write.csv(x, file = save_location, row.names = FALSE)
+  return(paste0(code,"_checked.csv is saved")) 
+    } else {
+    stop("ERROR :: error in saving process save manually")
+        }
 }
 ```
 
@@ -102,7 +126,7 @@ bin_by_saccades <- function(x, bin_size = 100) {
 ```{r}
 
 save_data <- function(x) {
-  save_location <- str_replace(file_to_check, "trimmed", "checked")   
+  save_location <- str_replace(file_to_check,"checked", "binned_by_saccade")   
   existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
   code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
   if(existing_file == TRUE) {
@@ -132,6 +156,9 @@ output2 <- output %>% mutate(Trial = as.factor("Fam"))
 output3 <- output %>% mutate(Trial = as.factor("1"))
 output4 <- output2 %>% bind_rows(output3)
 output4$Trial <- output4$Trial %>% as.factor()
+
+
+saccade_bins <- Imported %>% bin_by_saccades()
 ```
 
 
