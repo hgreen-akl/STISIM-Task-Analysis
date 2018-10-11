@@ -15,10 +15,11 @@ library(psy)
 library(psych)
 library(irr)
 library(ez)
+library(data.table)
 
 file_to_import <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?KSS Scores.xlsx", recursive = TRUE, full.names = TRUE)
 
-KSS_scores <- read.xlsx("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/KSS Scores.xlsx",1)
+KSS_scores <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/KSS Scores.xlsx")
 
 KSS_scores %>% head()
 
@@ -47,13 +48,69 @@ ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Sessi
 
 ```{r}
 
-binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?by_saccade_100", recursive = TRUE, full.names = TRUE)
+binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
 
-binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?by_dist_100", recursive = TRUE, full.names = TRUE)
+binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
 
 
-database_by_saccade_100 <- do.call("rbind", lapply(binned_files_saccade, 
-                 function(x) read.csv(x, stringsAsFactors = FALSE)))
+database_by_saccade_100 <- binned_files_saccade %>% map_df(~read_csv(., col_types = "dddddddddddddddddccccc"))
+
+database_by_distance_100 <- binned_files_distance %>% map_df(~read_csv(., col_types = "iiddddddddddddddd??c?"))
+
+
+database_by_saccade_100 <- binned_files_saccade %>% map_df(~fread(., stringsAsFactors = TRUE, colClasses=c()))
+
+database_by_distance_100 %>% write.csv(file.choose())
+
+database_by_saccade_100 %>% write.csv(file.choose())
+
+
+ 
+x <- binned_files_distance %>% map_df(~create_database(.))
+
+create_database <- function (x) {
+  df <- read_csv(x, col_types = "???????????????????c?")
+
+  df$ID <- df$ID %>% as.character()
+  df$Run_Number <- df$Run_Number %>% as.double()
+  df$Date <- df$Date %>% as.Date()
+  df$Trial <- df$Trial %>% as.character()
+ 
+ df1 <- df %>% filter(start_dist < 30100, start_dist > 300)
+ 
+ df1
+    }
+
 ```
 
+
+```{r}
+##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
+p1 <- ggplot(x, aes(x = sd_lanepos, y = Trial, height = ..density..)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)
+p1
+# an alternative ridgeline plot with data points recorded can use in aes(color = Run_Number once correctly labelled run number to 1 or two)
+
+
+  p2 <- ggplot(x, aes(x = sd_speed, y = Trial, color =  height = ..density..)) +
+  geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
+                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+  theme_classic()
+plot(p2)
+
+
+ridgeline_with_dots(df = x, variable_to_show = sd_speed)
+
+
+
+p3 <- ggplot(x, aes(x = sd_lanepos, y = Trial, color = Run_Number, point_color = Run_Number, fill = Run_Number, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
+                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+         scale_fill_cyclical(values = c("blue", "green"), guide = "legend")+
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .9)
+p3
+
+
+```
 

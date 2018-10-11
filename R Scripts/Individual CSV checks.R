@@ -57,8 +57,8 @@ load_trimmed <- function(x, df) {
     }
   }
   csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
-  csv_to_check %>% mutate(session = rep(df$Session[x],times = nrow(csv_to_check)) ,
-                          scenario = rep(df$Scenario[x],times = nrow(csv_to_check)))
+  csv_to_check <- csv_to_check %>% mutate(session = rep("F",times = nrow(csv_to_check)) ,
+                          scenario = rep("Country",times = nrow(csv_to_check)))
 }
 
 
