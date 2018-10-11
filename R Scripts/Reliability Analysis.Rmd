@@ -1,0 +1,59 @@
+---
+title: "Reliability Analysis"
+author: "Hayden Green"
+date: "11 October 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tidyselect)
+library(ggthemes)
+library(ggridges)
+library(xlsx)
+library(psy)
+library(psych)
+library(irr)
+library(ez)
+
+file_to_import <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?KSS Scores.xlsx", recursive = TRUE, full.names = TRUE)
+
+KSS_scores <- read.xlsx("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/KSS Scores.xlsx",1)
+
+KSS_scores %>% head()
+
+gathered <- KSS_scores %>% gather(Baseline:Run_4, key = "Variable", value = "value")
+gathered$Variable <- gathered$Variable %>% as.character() 
+
+na_removed <- gathered %>% 
+  filter(value != "NA") %>% 
+  filter(Variable != "Run_3"| Variable != "Run_4") 
+na_removed$value <- na_removed$value %>% as.numeric()
+
+na_removed %>% head()
+
+```
+
+
+```{r}
+
+KSSfit1 <- aov(value ~ Session*Variable + Participant_ID, na_removed)
+summary(KSSfit1)
+
+ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Session), detailed = TRUE)
+
+
+```
+
+```{r}
+
+binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?by_saccade_100", recursive = TRUE, full.names = TRUE)
+
+binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?by_dist_100", recursive = TRUE, full.names = TRUE)
+
+
+database_by_saccade_100 <- do.call("rbind", lapply(binned_files_saccade, 
+                 function(x) read.csv(x, stringsAsFactors = FALSE)))
+```
+
+
