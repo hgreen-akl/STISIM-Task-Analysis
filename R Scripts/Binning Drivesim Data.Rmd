@@ -74,7 +74,7 @@ bin_by_dist <- function(x, bin_size = 100) {
   bin_start <- bins
   bin_end <- bins + bin_size
   bin_ranges <-  paste(bin_start,"-", bin_end, sep = "")
-  
+  Run <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Run)
   binned_data <- data.frame(bin_start, bin_end, bin_ranges, bin_number)
   
   binned_data <- binned_data %>% mutate(nested = pmap(binned_data, binning_function)) %>% 
@@ -97,11 +97,13 @@ bin_by_dist <- function(x, bin_size = 100) {
               sd_steering = sd(Steering_angle),
               following_road = mean(abs(Road_Curve - Vehic_curve)),
               ID = ID[1],
-              Run_Number = Run_Number[1],
+              File_Number = Run_Number[1],
               Date = Date[1], 
               Trial = session[1],
-              Scenario = scenario[1])
+              Scenario = scenario[1],
+              Run = Run[1])
   
+   binned_data$Run_Number <- rep(Run[1], nrow(binned_data))
   
    save_location <- str_replace(file_to_bin,"checked", 
                                paste0("binned_by_dist_",bin_size)) 
@@ -164,6 +166,8 @@ bin_by_saccades <- function(x, bin_size = 100) {
   saccade_bin_end <- saccades + bin_size
   saccade_bin_ranges <-  paste(saccade_bin_start,"-", saccade_bin_end, sep = "")
   
+  Run <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Run) %>% as.character()
+    
   binned_data <- data.frame(saccade_bin_start, saccade_bin_end, saccade_bin_ranges, saccade_number)
   
   binned_data <- binned_data %>% mutate(nested = pmap(binned_data, binning_function1)) %>% 
@@ -186,11 +190,13 @@ bin_by_saccades <- function(x, bin_size = 100) {
               sd_steering = sd(Steering_angle),
               following_road = mean(abs(Road_Curve - Vehic_curve)),
               ID = ID[1],
-              Run_Number = Run_Number[1],
+              File_Number = Run_Number[1],
               Date = Date[1],
               Trial = session[1],
               Scenario = scenario[1])
-
+  
+  binned_data$Run_Number <- rep(Run[1], nrow(binned_data))
+   
   save_location <- str_replace(file_to_bin,"checked", 
                                paste0("binned_by_saccade_",bin_size)) 
   
@@ -280,8 +286,7 @@ p2
 ```{r}
 trial1 %>% bin_by_saccades(bin_size = 100)
 
-lapply(List_of_checked_files$pattern_name, bin_by_saccades)
-
+lapply(List_of_checked_files$pattern_name, bin_by_dist)
 
 
 ```

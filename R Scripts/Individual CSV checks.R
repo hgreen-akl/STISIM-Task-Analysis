@@ -50,7 +50,7 @@ load_trimmed <- function(x, df) {
                                pattern = paste0("?",pat,"_trimmed"), recursive = TRUE, full.names = TRUE)
   save_location <- str_replace(file_to_check, "trimmed", "checked")   
   existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
-  if (existing_file) {
+  if (existing_file == TRUE) {
     recheck <- menu(c("Recheck","Stop"), graphics = TRUE, title = paste(pat, "checked csv data already exists do you wish to overwrite")) %>% as.numeric()
     if(recheck == 2) {
       stop("ERROR:: file already exists")
@@ -76,7 +76,7 @@ files3 <- list_of_DAT_files %>% filter(Scenario == "Urban", CSV_checked == "No")
 
 
 ## once functions are loaded you can change x and then run this block once to check then save, change x and repeat
-x <- 49
+x <- 1
 csv_to_check <- x %>% load_trimmed(df = files2)
 csv_to_check %>% plot_by_distance()
 csv_to_check %>% plot_by_time()
@@ -93,4 +93,6 @@ csv_to_check %>% filter(Total_dist > 29000) %>% ggplot(aes(x = Total_dist, y = L
 
 csv_to_check %>% save_data()
 x <- x+1
+
+
 

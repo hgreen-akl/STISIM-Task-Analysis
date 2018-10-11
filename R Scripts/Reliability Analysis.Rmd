@@ -53,9 +53,9 @@ binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects
 binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
 
 
-database_by_saccade_100 <- binned_files_saccade %>% map_df(~read_csv(., col_types = "dddddddddddddddddccccc"))
+database_by_saccade_100 <- binned_files_saccade %>% map_df(~read_csv(., col_types = "dddddddddddddddddcccccc"))
 
-database_by_distance_100 <- binned_files_distance %>% map_df(~read_csv(., col_types = "iiddddddddddddddd??c?"))
+database_by_distance_100 <- binned_files_distance %>% map_df(~read_csv(., col_types = "iiddddddddddddddd??c?c"))
 
 
 database_by_saccade_100 <- binned_files_saccade %>% map_df(~fread(., stringsAsFactors = TRUE, colClasses=c()))
@@ -67,18 +67,22 @@ database_by_saccade_100 %>% write.csv(file.choose())
 
  
 x <- binned_files_distance %>% map_df(~create_database(.))
+x$Run <- x$Run %>% as.factor()
+
+df <- read_csv(binned_files_distance[1], col_types = "???????????????????c??")
 
 create_database <- function (x) {
-  df <- read_csv(x, col_types = "???????????????????c?")
+  df <- read_csv(x, col_types = "???????????????????c?d")
 
   df$ID <- df$ID %>% as.character()
-  df$Run_Number <- df$Run_Number %>% as.double()
+  df$File_Number <- df$File_Number %>% as.double()
   df$Date <- df$Date %>% as.Date()
   df$Trial <- df$Trial %>% as.character()
- 
+  df$Run <- df$Run %>% as.character()
+  
  df1 <- df %>% filter(start_dist < 30100, start_dist > 300)
  
- df1
+ df1 
     }
 
 ```
@@ -104,11 +108,12 @@ ridgeline_with_dots(df = x, variable_to_show = sd_speed)
 
 
 
-p3 <- ggplot(x, aes(x = sd_lanepos, y = Trial, color = Run_Number, point_color = Run_Number, fill = Run_Number, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
-                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
+p3 <- ggplot(x, aes(x = sd_lanepos, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
+                      alpha = 0.5, vline_size = .8, vline_color = c("blue"), point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
-         scale_fill_cyclical(values = c("blue", "green"), guide = "legend")+
-    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .9)
+         scale_fill_cyclical(values = c("blue", "red"), guide = "legend")+
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .9) +
+  xlim(0,2)
 p3
 
 
