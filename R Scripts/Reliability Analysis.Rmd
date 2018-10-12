@@ -90,7 +90,7 @@ create_database <- function (x) {
 
 ```{r}
 ##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
-p1 <- ggplot(x, aes(x = sd_lanepos, y = Trial, height = ..density..)) +
+p1 <- ggplot(x, aes(x = avg_lanepos, y = Trial, height = ..density..)) +
     stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)
 p1
 # an alternative ridgeline plot with data points recorded can use in aes(color = Run_Number once correctly labelled run number to 1 or two)
@@ -108,12 +108,12 @@ ridgeline_with_dots(df = x, variable_to_show = sd_speed)
 
 
 
-p3 <- ggplot(x, aes(x = sd_lanepos, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
+p3 <- ggplot(x, aes(x = avg_lanepos, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.7, 
                       alpha = 0.5, vline_size = .8, vline_color = c("blue"), point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
          scale_fill_cyclical(values = c("blue", "red"), guide = "legend")+
-    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .9) +
-  xlim(0,2)
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7)
+ 
 p3
 
 

@@ -76,6 +76,7 @@ bin_by_dist <- function(x, bin_size = 100) {
   bin_ranges <-  paste(bin_start,"-", bin_end, sep = "")
   Run <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Run)
   binned_data <- data.frame(bin_start, bin_end, bin_ranges, bin_number)
+  Session_extracted <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Session) %>% as.character()
   
   binned_data <- binned_data %>% mutate(nested = pmap(binned_data, binning_function)) %>% 
     as_tibble() %>%
@@ -99,7 +100,7 @@ bin_by_dist <- function(x, bin_size = 100) {
               ID = ID[1],
               File_Number = Run_Number[1],
               Date = Date[1], 
-              Trial = session[1],
+              Trial = Session_extracted[1],
               Scenario = scenario[1],
               Run = Run[1])
   
@@ -167,6 +168,7 @@ bin_by_saccades <- function(x, bin_size = 100) {
   saccade_bin_ranges <-  paste(saccade_bin_start,"-", saccade_bin_end, sep = "")
   
   Run <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Run) %>% as.character()
+  Session_extracted <- List_of_checked_files %>% filter(pattern_name == pat) %>% select(Session) %>% as.character()
     
   binned_data <- data.frame(saccade_bin_start, saccade_bin_end, saccade_bin_ranges, saccade_number)
   
@@ -192,7 +194,7 @@ bin_by_saccades <- function(x, bin_size = 100) {
               ID = ID[1],
               File_Number = Run_Number[1],
               Date = Date[1],
-              Trial = session[1],
+              Trial = Session_extracted[1],
               Scenario = scenario[1])
   
   binned_data$Run_Number <- rep(Run[1], nrow(binned_data))
@@ -286,7 +288,7 @@ p2
 ```{r}
 trial1 %>% bin_by_saccades(bin_size = 100)
 
-lapply(List_of_checked_files$pattern_name, bin_by_dist)
+lapply(List_of_checked_files$pattern_name, bin_by_saccades)
 
 
 ```
