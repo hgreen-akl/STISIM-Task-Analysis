@@ -64,7 +64,7 @@ load_trimmed <- function(x, df) {
 
 
 ## Loading of the file containg the list of existing files. 
-filename_Database <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Participant Information.xlsx" 
+filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx"  
 list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number))
 

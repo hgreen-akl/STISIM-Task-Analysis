@@ -20,7 +20,7 @@ library(readxl)
 
 filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
 List_of_checked_files <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx") %>%   mutate(pattern_name = paste0(Participant,"_", Run_Number)) %>% 
-  filter(CSV_checked == "Yes")
+  filter(CSV_checked == "Yes") 
 
 checked <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx")  %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number)) %>% filter(CSV_checked == "Yes")
@@ -288,8 +288,7 @@ p2
 ```{r}
 trial1 %>% bin_by_saccades(bin_size = 100)
 
-lapply(List_of_checked_files$pattern_name, bin_by_saccades)
-
+lapply(List_of_checked_files$pattern_name, bin_by_dist)
 
 ```
 

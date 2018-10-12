@@ -27,7 +27,7 @@ Errors may appear when running this dialog if there is a problem with using your
 
 ```{r}
 filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
-list_of_DAT_files <- read.xlsx(filename_Database, sheetIndex = 1) %>% 
+list_of_DAT_files <- read_excel(filename_Database, 1) %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number))
         
 list_of_DAT_files %>% head()

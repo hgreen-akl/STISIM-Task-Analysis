@@ -46,7 +46,7 @@ ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Sessi
 
 ```
 
-```{r}
+```{r, results = 'hide'}
 
 binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
 
@@ -69,10 +69,10 @@ database_by_saccade_100 %>% write.csv(file.choose())
 x <- binned_files_distance %>% map_df(~create_database(.))
 x$Run <- x$Run %>% as.factor()
 
-df <- read_csv(binned_files_distance[1], col_types = "???????????????????c??")
+
 
 create_database <- function (x) {
-  df <- read_csv(x, col_types = "???????????????????c?d")
+  df <- read_csv(x, col_types = "???????????????????c?d?")
 
   df$ID <- df$ID %>% as.character()
   df$File_Number <- df$File_Number %>% as.double()
@@ -80,18 +80,42 @@ create_database <- function (x) {
   df$Trial <- df$Trial %>% as.character()
   df$Run <- df$Run %>% as.character()
   
- df1 <- df %>% filter(start_dist < 30100, start_dist > 300)
+ df1 <- df %>% filter(start_dist < 30001, start_dist > 299)
  
  df1 
     }
+
+
+Fam <- x %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, bin_number) %>% 
+  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+
+T1_R1 <- x %>% filter(Trial == "1" & Run == 1) %>% arrange(ID,Run,bin_number) %>% 
+  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+
+T1_R2 <- x %>% filter(Trial == "1" & Run == 2) %>% arrange(ID,Run,bin_number) %>% 
+  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+
+T2_R1 <- x %>% filter(Trial == "2" & Run == 1) %>% arrange(ID,Run,bin_number) %>% 
+  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+
+T2_R2 <- x %>% filter(Trial == "2" & Run == 2) %>% arrange(ID,Run,bin_number) %>% 
+  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+
+
+Fam <- Fam %>% group_by(ID) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
+T1_R1 <- T1_R1 %>% group_by(ID) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
+T1_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
+T2_R1 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
+T2_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
 
 ```
 
 
 ```{r}
 ##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
-p1 <- ggplot(x, aes(x = avg_lanepos, y = Trial, height = ..density..)) +
-    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)
+p1 <- ggplot(x, aes(x = avg_lanepos, y = Trial, height = ..density.., fill = Run)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9) +
+  theme_minimal()
 p1
 # an alternative ridgeline plot with data points recorded can use in aes(color = Run_Number once correctly labelled run number to 1 or two)
 
@@ -109,13 +133,24 @@ ridgeline_with_dots(df = x, variable_to_show = sd_speed)
 
 
 p3 <- ggplot(x, aes(x = avg_lanepos, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.7, 
-                      alpha = 0.5, vline_size = .8, vline_color = c("blue"), point_size = 0.4,
+                      alpha = 0.5, vline_size = .5, vline_color = c("black"), point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
-         scale_fill_cyclical(values = c("blue", "red"), guide = "legend")+
-    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7)
+         scale_color_canva()+
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7) +
+  theme_base()
  
 p3
 
 
+```
+```{r}
+
+ICCtester <- data.frame(Fam$mean_lanesd, T1_R1$mean_lanesd)
+
+psych::ICC(ICCtester)
+
+
+
+blandr.display.and.draw(Fam$avg_lanepos,T1_R1$avg_lanepos)
 ```
 
