@@ -66,25 +66,38 @@ database_by_saccade_100 %>% write.csv(file.choose())
 
 
  
-x <- binned_files_distance %>% map_df(~create_database(.))
-x$Run <- x$Run %>% as.factor()
+database_by_distance <- binned_files_distance %>% map_df(~create_database_dist(.))
+database_by_distance$Run <- database_by_distance$Run %>% as.factor()
 
+database_by_saccade <- binned_files_saccade %>% map_df(~create_database_saccade(.) )
+database_by_saccade$Run <- database_by_saccade$Run %>% as.factor()
 
-
-create_database <- function (x) {
-  df <- read_csv(x, col_types = "???????????????????c?d?")
-
-  df$ID <- df$ID %>% as.character()
-  df$File_Number <- df$File_Number %>% as.double()
-  df$Date <- df$Date %>% as.Date()
-  df$Trial <- df$Trial %>% as.character()
-  df$Run <- df$Run %>% as.character()
+create_database_dist <- function (x) {
   
- df1 <- df %>% filter(start_dist < 30001, start_dist > 299)
- 
- df1 
-    }
+        df <- read_csv(x, col_types = "???????????????????c?d?")
 
+        df$ID <- df$ID %>% as.character()
+        df$File_Number <- df$File_Number %>% as.double()
+        df$Date <- df$Date %>% as.Date()
+        df$Trial <- df$Trial %>% as.character()
+        df$Run <- df$Run %>% as.character()
+        df1 <- df %>% filter(start_dist < 30001, start_dist > 299)
+        df1
+            }
+
+
+
+  create_database_saccade <- function (x) {     
+        df <- read_csv(x, col_types = "???????????????????c?d")
+
+        df$ID <- df$ID %>% as.character()
+        df$File_Number <- df$File_Number %>% as.double()
+        df$Date <- df$Date %>% as.Date()
+        df$Trial <- df$Trial %>% as.character()
+        df$Run <- df$Run_Number %>% as.character()
+        df1 <- df
+        df1
+  }
 
 Fam <- x %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, bin_number) %>% 
   select(ID, Run, bin_number, sd_speed, avg_lanepos)
@@ -151,6 +164,6 @@ psych::ICC(ICCtester)
 
 
 
-blandr.display.and.draw(Fam$avg_lanepos,T1_R1$avg_lanepos)
+blandr.display.and.draw(Fam$avg_lanepos,T1_R1$avg_lanepos) + theme_minimal()
 ```
 
