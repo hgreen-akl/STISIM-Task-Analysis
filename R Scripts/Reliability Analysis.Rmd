@@ -16,6 +16,7 @@ library(psych)
 library(irr)
 library(ez)
 library(data.table)
+library(blandr)
 
 file_to_import <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?KSS Scores.xlsx", recursive = TRUE, full.names = TRUE)
 
@@ -90,6 +91,7 @@ Fam <- database_by_saccade %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, R
 
 T1_R1 <-  database_by_saccade %>% filter(Trial == "1" & Run == 1) %>% arrange(ID,Run,saccade_number)
 
+
 T1_R2 <-  database_by_saccade %>% filter(Trial == "1" & Run == 2) %>% arrange(ID,Run,saccade_number)
 
 T2_R1 <-  database_by_saccade %>% filter(Trial == "2" & Run == 1) %>% arrange(ID,Run,saccade_number) 
@@ -106,7 +108,7 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
 
 
 
- Fam_t_test <- Fam  %>% select(ID ,sd_speed) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ Fam_t_test <- Fam   %>% group_by(ID) %>% summarise(var = mean(sd_speed))
  T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
  T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
  T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
@@ -124,7 +126,9 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
  shapiro.test(Fam_vs_T1logdifference)
  t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
  t.test(log(Fam_t_test$var), log(T1_R1_t_test$var), paired = TRUE)
- psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))
+ psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))$results %>% head()
+ 
+ 
  
  ##T1_R1 vs T1_R2
  T1R1_vs_T1R2difference <- T1_R1_t_test$var - T1_R2_t_test$var
@@ -147,14 +151,14 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
  psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
  
  ## T1_R1 vs T2_R1
- T1_R1_vs_T2_R2difference <- T1_R1_t_test$var - T2_R1_t_test$var
- T1_R1_vs_T2_R2logdifference <- log(T1_R1_t_test$var) - log(T2_R1_t_test$var)
+ T1_R1_vs_T2_R2difference <- T1_R1_onlyT2$var - T2_R1_t_test$var
+ T1_R1_vs_T2_R2logdifference <- log(T1_R1_onlyT2$var) - log(T2_R1_t_test$var)
  shapiro.test(T1_R1_vs_T2_R2difference)
  shapiro.test(T1_R1_vs_T2_R2logdifference) 
  
- t.test(T1_R1_t_test$var,T2_R1_t_test$var, paired = TRUE)
- t.test(log(T1_R1_t_test$var),log(T2_R1_t_test$var), paired = TRUE)
- psych::ICC(data_frame(T1_R1_t_test$var,T2_R1_t_test$var))
+ t.test(T1_R1_onlyT2$var,T2_R1_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_onlyT2$var),log(T2_R1_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(Fam_onlyT2$var,T1_R1_onlyT2$var,T2_R1_t_test$var))
  
  ## T1_R2 vs T2_R2
  T1_R2_vs_T2_R2difference <- T1_R2_onlyT2$var - T2_R2_t_test$var
@@ -179,8 +183,7 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
  psych::ICC(data_frame(T2_R1_t_test$var,T2_R2_t_test$var))
  
  
- 
- 
+
 variables <- names(Fam)[6:16]
 
 Completed_T2 <- T2_R1$ID %>% unique()
@@ -196,6 +199,8 @@ summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
 summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
                       sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
                       sd(T2_R2_t_test$var))
+
+
 
 
 ```
@@ -244,6 +249,6 @@ psych::ICC(ICCtester)
 
 
 
-blandr.display.and.draw(Fam$avg_lanepos,T1_R1$avg_lanepos) + theme_minimal()
+blandr.display.and.draw(log10(Fam$sd_speed),log10(T1_R1$sd_speed)) + theme_bw() + ylab("Familarisation - Trial 1 Run 1")
 ```
 
