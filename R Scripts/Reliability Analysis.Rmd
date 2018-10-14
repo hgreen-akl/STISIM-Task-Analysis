@@ -46,26 +46,13 @@ ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Sessi
 
 ```
 
-```{r, results = 'hide'}
+```{r}
 
 binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
 
 binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
 
 
-database_by_saccade_100 <- binned_files_saccade %>% map_df(~read_csv(., col_types = "dddddddddddddddddcccccc"))
-
-database_by_distance_100 <- binned_files_distance %>% map_df(~read_csv(., col_types = "iiddddddddddddddd??c?c"))
-
-
-database_by_saccade_100 <- binned_files_saccade %>% map_df(~fread(., stringsAsFactors = TRUE, colClasses=c()))
-
-database_by_distance_100 %>% write.csv(file.choose())
-
-database_by_saccade_100 %>% write.csv(file.choose())
-
-
- 
 database_by_distance <- binned_files_distance %>% map_df(~create_database_dist(.))
 database_by_distance$Run <- database_by_distance$Run %>% as.factor()
 
@@ -87,7 +74,7 @@ create_database_dist <- function (x) {
 
 
 
-  create_database_saccade <- function (x) {     
+create_database_saccade <- function (x) {     
         df <- read_csv(x, col_types = "???????????????????c?d")
 
         df$ID <- df$ID %>% as.character()
@@ -99,20 +86,16 @@ create_database_dist <- function (x) {
         df1
   }
 
-Fam <- x %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, bin_number) %>% 
-  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+Fam <- database_by_saccade %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, saccade_number)
 
-T1_R1 <- x %>% filter(Trial == "1" & Run == 1) %>% arrange(ID,Run,bin_number) %>% 
-  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+T1_R1 <-  database_by_saccade %>% filter(Trial == "1" & Run == 1) %>% arrange(ID,Run,saccade_number)
 
-T1_R2 <- x %>% filter(Trial == "1" & Run == 2) %>% arrange(ID,Run,bin_number) %>% 
-  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+T1_R2 <-  database_by_saccade %>% filter(Trial == "1" & Run == 2) %>% arrange(ID,Run,saccade_number)
 
-T2_R1 <- x %>% filter(Trial == "2" & Run == 1) %>% arrange(ID,Run,bin_number) %>% 
-  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+T2_R1 <-  database_by_saccade %>% filter(Trial == "2" & Run == 1) %>% arrange(ID,Run,saccade_number) 
 
-T2_R2 <- x %>% filter(Trial == "2" & Run == 2) %>% arrange(ID,Run,bin_number) %>% 
-  select(ID, Run, bin_number, sd_speed, avg_lanepos)
+T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID,Run,saccade_number)
+
 
 
 Fam <- Fam %>% group_by(ID) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
@@ -120,6 +103,88 @@ T1_R1 <- T1_R1 %>% group_by(ID) %>% summarise(min = min(bin_number), max = max(b
 T1_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
 T2_R1 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
 T2_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
+
+
+bin <- seq(1, 120, 1)
+subsets <- data.frame(bin) %>% as.tibble()
+Fam_nested <- data.frame(bin)
+
+
+ Fam_t_test <- Fam  %>% select(ID ,sd_speed) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ 
+ Fam_onlyT2 <- Fam %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T1_R1_onlyT2 <-T1_R1 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ T1_R2_onlyT2 <- T1_R2 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ 
+ ##Fam Vs T1_R1
+ Fam_vs_T1difference <- Fam_t_test$var - T1_R1_t_test$var
+ Fam_vs_T1logdifference <- log(Fam_t_test$var) - log(T1_R1_t_test$var)
+  
+ shapiro.test(Fam_vs_T1difference)
+ shapiro.test(Fam_vs_T1logdifference)
+ t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
+ t.test(log(Fam_t_test$var), log(T1_R1_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))
+ 
+ ##T1_R1 vs T1_R2
+ T1R1_vs_T1R2difference <- T1_R1_t_test$var - T1_R2_t_test$var
+ T1R1_vs_T1R2logdifference <- log(T1_R1_t_test$var) - log(T1_R2_t_test$var)
+ shapiro.test(T1R1_vs_T1R2difference)
+ shapiro.test(T1R1_vs_T1R2logdifference)
+ 
+ t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
+ 
+##Fam vs T2 difference 
+ Fam_vs_T1R2difference <- Fam_onlyT2$var - T2_R1_t_test$var
+ Fam_vs_T1R2logdifference <- log(Fam_onlyT2$var) - log(T2_R1_t_test$var)
+ shapiro.test(Fam_vs_T1R2difference)
+ shapiro.test(Fam_vs_T1R2logdifference)
+ 
+ t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
+ 
+ ## T1_R1 vs T2_R1
+ 
+ 
+ ## T1_R2 vs T2_R2
+ 
+ 
+ ##T2_R1 vs T2_R2
+ T2_R1_vs_T1R2difference <- Fam_onlyT2$var - T2_R1_t_test$var
+ Fam_vs_T1R2logdifference <- log(Fam_onlyT2$var) - log(T2_R1_t_test$var)
+ shapiro.test(Fam_vs_T1R2difference)
+ shapiro.test(Fam_vs_T1R2logdifference)
+ 
+ t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
+ 
+ 
+ 
+ 
+variables <- names(Fam)[6:16]
+
+Completed_T2 <- T2_R1$ID %>% unique()
+
+Timepoints <- c("Fam", "T1_R1", "T1_R2", "T2_R1", "T2_R2")
+
+summarydata <- data.frame(time = Timepoints, mean = 1:5, sd = 1:5)
+
+summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
+                      mean(T1_R2_t_test$var), mean(T2_R1_t_test$var),
+                      mean(T2_R2_t_test$var))
+
+summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
+                      sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
+                      sd(T2_R2_t_test$var))
+
 
 ```
 
@@ -133,7 +198,7 @@ p1
 # an alternative ridgeline plot with data points recorded can use in aes(color = Run_Number once correctly labelled run number to 1 or two)
 
 
-  p2 <- ggplot(x, aes(x = sd_speed, y = Trial, color =  height = ..density..)) +
+  p2 <- ggplot(database_by_saccade, aes(x = sd_speed, y = Trial, height = ..density..)) +
   geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.9, 
                       alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
@@ -156,6 +221,9 @@ p3
 
 
 ```
+
+
+
 ```{r}
 
 ICCtester <- data.frame(Fam$mean_lanesd, T1_R1$mean_lanesd)
