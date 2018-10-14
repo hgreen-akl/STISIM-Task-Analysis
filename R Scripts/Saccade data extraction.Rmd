@@ -1,0 +1,26 @@
+---
+title: "Saccade analysis"
+author: "Hayden Green"
+date: "14 October 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readr)
+library(readxl)
+```
+
+
+
+
+```{r}
+
+path <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades"
+  
+list.files(path, pattern = "?Results_var.csv", recursive = TRUE, full.names = TRUE)  
+
+
+
+```
+
