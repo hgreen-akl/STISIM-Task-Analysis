@@ -108,82 +108,18 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
 
 
 
- Fam_t_test <- Fam   %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = mean(sd_speed))
+ Fam_t_test <- Fam   %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
  
- Fam_onlyT2 <- Fam %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T1_R1_onlyT2 <-T1_R1 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- T1_R2_onlyT2 <- T1_R2 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = mean(sd_speed))
- 
- ##Fam Vs T1_R1
- Fam_vs_T1difference <- Fam_t_test$var - T1_R1_t_test$var
- Fam_vs_T1logdifference <- log(Fam_t_test$var) - log(T1_R1_t_test$var)
-  
- shapiro.test(Fam_vs_T1difference)
- shapiro.test(Fam_vs_T1logdifference)
- t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
- t.test(log(Fam_t_test$var), log(T1_R1_t_test$var), paired = TRUE)
- psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))$results %>% head()
+ Fam_onlyT2 <- Fam %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T1_R1_onlyT2 <-T1_R1 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ T1_R2_onlyT2 <- T1_R2 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
  
  
  
- ##T1_R1 vs T1_R2
- T1R1_vs_T1R2difference <- T1_R1_t_test$var - T1_R2_t_test$var
- T1R1_vs_T1R2logdifference <- log(T1_R1_t_test$var) - log(T1_R2_t_test$var)
- shapiro.test(T1R1_vs_T1R2difference)
- shapiro.test(T1R1_vs_T1R2logdifference)
- 
- t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
- t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
- psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
- 
-##Fam vs T2_R1 difference 
- Fam_vs_T1R2difference <- Fam_onlyT2$var - T2_R1_t_test$var
- Fam_vs_T1R2logdifference <- log(Fam_onlyT2$var) - log(T2_R1_t_test$var)
- shapiro.test(Fam_vs_T1R2difference)
- shapiro.test(Fam_vs_T1R2logdifference)
- 
- t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
- t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
- psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
- 
- ## T1_R1 vs T2_R1
- T1_R1_vs_T2_R2difference <- T1_R1_onlyT2$var - T2_R1_t_test$var
- T1_R1_vs_T2_R2logdifference <- log(T1_R1_onlyT2$var) - log(T2_R1_t_test$var)
- shapiro.test(T1_R1_vs_T2_R2difference)
- shapiro.test(T1_R1_vs_T2_R2logdifference) 
- 
- t.test(T1_R1_onlyT2$var,T2_R1_t_test$var, paired = TRUE)
- t.test(log(T1_R1_onlyT2$var),log(T2_R1_t_test$var), paired = TRUE)
- psych::ICC(data_frame(Fam_onlyT2$var,T1_R1_onlyT2$var,T2_R1_t_test$var))
- 
- ## T1_R2 vs T2_R2
- T1_R2_vs_T2_R2difference <- T1_R2_onlyT2$var - T2_R2_t_test$var
- T1_R2_vs_T2_R2logdifference <- log(T1_R2_onlyT2$var) - log(T2_R2_t_test$var)
- shapiro.test(T1_R2_vs_T2_R2difference)
- shapiro.test(T1_R2_vs_T2_R2logdifference) 
- 
- t.test(T1_R2_onlyT2$var,T2_R2_t_test$var, paired = TRUE)
- t.test(log(T1_R2_onlyT2$var),log(T2_R2_t_test$var), paired = TRUE)
- psych::ICC(data_frame(T1_R2_onlyT2$var,T2_R2_t_test$var))
- 
- 
- 
- ##T2_R1 vs T2_R2
- T2_R1_vs_T2R2difference <- Fam_onlyT2$var - T2_R1_t_test$var
- Fam_vs_T1R2logdifference <- log(Fam_onlyT2$var) - log(T2_R1_t_test$var)
- shapiro.test(Fam_vs_T2R2difference)
- shapiro.test(Fam_vs_T2R2logdifference)
- 
- t.test(T2_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
- t.test(log(T2_R1_t_test$var),log(T2_R2_t_test$var), paired = TRUE)
- psych::ICC(data_frame(T2_R1_t_test$var,T2_R2_t_test$var))
- 
- 
-
 variables <- names(Fam)[6:16]
 
 Completed_T2 <- T2_R1$ID %>% unique()
@@ -194,14 +130,112 @@ summarydata <- data.frame(time = Timepoints, mean = 1:5, sd = 1:5)
 
 summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
                       mean(T1_R2_t_test$var), mean(T2_R1_t_test$var),
-                      mean(T2_R2_t_test$var))
+                      mean(T2_R2_t_test$var))*0.3048
 
 summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
                       sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
-                      sd(T2_R2_t_test$var))
+                      sd(T2_R2_t_test$var))*0.3048
+
+```
+
+```{r} 
+ ##Fam Vs T1_R1
+ Fam_vs_T1difference <- Fam_t_test$var - T1_R1_t_test$var
+ Fam_vs_T1logdifference <- log(Fam_t_test$var) - log(T1_R1_t_test$var)
+  
+ shapiro.test(Fam_vs_T1difference)
+ shapiro.test(Fam_vs_T1logdifference)
+ t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
+ t.test(log(Fam_t_test$var), log(T1_R1_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))
+ 
+ wilcox.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
+```
+
+```{r}
+ 
+ ##T1_R1 vs T1_R2
+ T1R1_vs_T1R2difference <- T1_R1_t_test$var - T1_R2_t_test$var
+ T1R1_vs_T1R2logdifference <- log(T1_R1_t_test$var) - log(T1_R2_t_test$var)
+ shapiro.test(T1R1_vs_T1R2difference)
+ shapiro.test(T1R1_vs_T1R2logdifference)
+ 
+ t.test(T1_R1_t_test$var,T1_R2_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_t_test$var),log(T1_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R1_t_test$var,T1_R2_t_test$var))
+ blandr.display.and.draw(T1_R1$sd_steering,T1_R2$sd_steering)
+
+ data <- data_frame(T1_R1_t_test$var,T1_R2_t_test$var)
+ 
+ ggplot(data = data_frame(T1_R1_t_test$var,T1_R2_t_test$var),aes(x = T1_R1_t_test$var, y = T1_R2_t_test$var))+ geom_point() + xlim(2,3) + ylim(2,3)
+```
+ 
+```{r} 
+##Fam vs T2_R1 difference 
+ Fam_vs_T2R1difference <- Fam_onlyT2$var - T2_R1_t_test$var
+ Fam_vs_T2R1logdifference <- log(Fam_onlyT2$var) - log(T2_R1_t_test$var)
+ shapiro.test(Fam_vs_T2R1difference)
+ shapiro.test(Fam_vs_T2R1logdifference)
+ 
+ t.test(Fam_onlyT2$var,T2_R1_t_test$var, paired = TRUE)
+ t.test(log(Fam_onlyT2$var),log(T2_R1_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(Fam_onlyT2$var,T2_R1_t_test$var))
+
+``` 
+ 
+```{r}
+  
+ ## T1_R1 vs T2_R1
+ T1_R1_vs_T2_R1difference <- T1_R1_onlyT2$var - T2_R1_t_test$var
+ T1_R1_vs_T2_R1logdifference <- log(T1_R1_onlyT2$var) - log(T2_R1_t_test$var)
+ shapiro.test(T1_R1_vs_T2_R1difference)
+ shapiro.test(T1_R1_vs_T2_R1logdifference) 
+ 
+ t.test(T1_R1_onlyT2$var,T2_R1_t_test$var, paired = TRUE)
+ t.test(log(T1_R1_onlyT2$var),log(T2_R1_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R1_onlyT2$var,T2_R1_t_test$var))
+```
+
+```{r}  
+ ## T1_R2 vs T2_R2
+ T1_R2_vs_T2_R2difference <- T1_R2_onlyT2$var - T2_R2_t_test$var
+ T1_R2_vs_T2_R2logdifference <- log(T1_R2_onlyT2$var) - log(T2_R2_t_test$var)
+ shapiro.test(T1_R2_vs_T2_R2difference)
+ shapiro.test(T1_R2_vs_T2_R2logdifference)$p.value
+ 
+ t.test(T1_R2_onlyT2$var,T2_R2_t_test$var, paired = TRUE)
+ t.test(log(T1_R2_onlyT2$var),log(T2_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T1_R2_onlyT2$var,T2_R2_t_test$var))
+ 
+ wilcox.test(T1_R2_onlyT2$var,T2_R2_t_test$var, paired = TRUE)
+ 
+``` 
+ 
+```{r} 
+ ##T2_R1 vs T2_R2
+ T2_R1_vs_T2R2difference <- T2_R1_t_test$var - T2_R2_t_test$var
+ T2_R1_vs_T2R2logdifference <- log(T2_R1_t_test$var) - log(T2_R2_t_test$var)
+ shapiro.test(T2_R1_vs_T2R2difference)
+ shapiro.test(T2_R1_vs_T2R2logdifference)
+ 
+ t.test(T2_R1_t_test$var,T2_R2_t_test$var, paired = TRUE)
+ t.test(log(T2_R1_t_test$var),log(T2_R2_t_test$var), paired = TRUE)
+ psych::ICC(data_frame(T2_R1_t_test$var,T2_R2_t_test$var))
+ 
+ blandr.display.and.draw(T2_R1$sd_steering,T2_R2$sd_steering)
+``` 
+
+```{r}
+
+aov(Fam_onlyT2[var],T1_R1_onlyT2$var,T2_R1_t_test$var)
+
+```
 
 
 
+```{r}
+
+psych::ICC(data_frame(Fam_onlyT2$var,T1_R1_onlyT2$var,T2_R1_t_test$var))
 
 ```
 
@@ -243,12 +277,8 @@ p3
 
 ```{r}
 
-ICCtester <- data.frame(Fam$mean_lanesd, T1_R1$mean_lanesd)
-
-psych::ICC(ICCtester)
 
 
-
-blandr.display.and.draw(log10(Fam$sd_speed),log10(T1_R1$sd_speed)) + theme_bw() + ylab("Familarisation - Trial 1 Run 1")
+blandr.draw(Fam$sd_speed,T1_R1$sd_speed, LoA.mode = 1) + theme_bw()
 ```
 
