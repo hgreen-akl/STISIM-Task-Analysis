@@ -6,15 +6,21 @@ library(ggridges)
 
 ## Locating the file of saccade data names "Prosaccade_saccades.csv" and the task response results names Results_var.csv
 
-saccade_csv_filename <- choose.files(default = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ER", 
-                                     filters = "saccades.csv", multi = FALSE)
+working_file_saccade <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\HB\\Session 1\\HB_C_1_31082018_Prosaccade_saccades.csv"
+
+working_file_saccade
+
+saccade_csv_filename <- working_file_saccade
+    
+##saccade_csv_filename <- choose.files(default = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ER", 
+                                  #   filters = "saccades.csv", multi = FALSE)
 
 taskresponse_csv_filename <- str_replace(saccade_csv_filename, 
                                           pattern = "saccades", 
                                           replacement = "Results_var")
 
 
-saccade_results <- read_csv(saccade_csv_filename)
+saccade_results <- read_csv(saccade_csv_filename) %>% select(-22)
 
 taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
                             "Corr_tTIME", "rKey", "rSecs","rTIME", 
@@ -24,6 +30,12 @@ taskresponse_results <- read_csv(taskresponse_csv_filename, col_names = taskresp
 
 
 combined_results <- saccade_results %>% left_join(taskresponse_results, by = "trial number")
+combined_results$response_type <- ifelse(combined_results$rDir == combined_results$rKey,"Correct",
+                        ifelse((combined_results$rKey == 0), "Miss",
+                        ifelse((combined_results$rKey > 0) & (combined_results$rKey != combined_results$rDir),"Incorrect", NA)))
+task_condition <- ifelse()
+
+    
 ```
 
 
@@ -36,7 +48,9 @@ combined_results <- saccade_results %>% left_join(taskresponse_results, by = "tr
 
 ## Creating reaction time variable and correct response varibale
 
-reaction_time = Corr_rTIME - Corr_tTIME
+
+
+    
 
 
 ```
