@@ -33,9 +33,12 @@ combined_results <- saccade_results %>% left_join(taskresponse_results, by = "tr
 combined_results$response_type <- ifelse(combined_results$rDir == combined_results$rKey,"Correct",
                         ifelse((combined_results$rKey == 0), "Miss",
                         ifelse((combined_results$rKey > 0) & (combined_results$rKey != combined_results$rDir),"Incorrect", NA)))
-task_condition <- ifelse()
+combined_results$task_condition <- combined_results$rDir * combined_results$Condition
+combined_results$task_arrow_dir <- ifelse(combined_results$rDir == 1, "Left", "Right")
+combined_results$stimulus_left_right <- ifelse(combined_results$condition <= 6, "Left", "Right")
+combined_results$reaction_time <- combined_results$Corr_rTIME - combined_results$Corr_tTIME
+combined_results$congruency <- ifelse(combined_results$task_arrow_dir == combined_results$stimulus_left_right, "Congruent", "Incongruent")
 
-    
 ```
 
 
