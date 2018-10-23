@@ -3,12 +3,13 @@
 library(tidyverse)
 library(ggridges)
 
+```
 
+
+```  {r}
 ## Locating the file of saccade data names "Prosaccade_saccades.csv" and the task response results names Results_var.csv
 
 working_file_saccade <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\HB\\Session 1\\HB_C_1_31082018_Prosaccade_saccades.csv"
-
-working_file_saccade
 
 saccade_csv_filename <- working_file_saccade
     
@@ -38,18 +39,13 @@ combined_results$task_arrow_dir <- ifelse(combined_results$rDir == 1, "Left", "R
 combined_results$stimulus_left_right <- ifelse(combined_results$condition <= 6, "Left", "Right")
 combined_results$reaction_time <- combined_results$Corr_rTIME - combined_results$Corr_tTIME
 combined_results$congruency <- ifelse(combined_results$task_arrow_dir == combined_results$stimulus_left_right, "Congruent", "Incongruent")
+combined_results$target_deviation <- ifelse(combined_results$condition )
 
 ```
 
 
 ```{r}
-## Defining the conditions for each saccade, there are 24 conditions, 12 left and 12 right arrows, 12 up or down (7 degrees) and then each degree (10,25,35 degrees) left or right. Each posible combination occurs 5 times. 
 
-
-
-
-
-## Creating reaction time variable and correct response varibale
 
 
 
