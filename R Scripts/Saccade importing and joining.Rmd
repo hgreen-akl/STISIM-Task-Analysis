@@ -15,6 +15,10 @@ saccade_csv_filename <- working_file_saccade
     
 ##saccade_csv_filename <- choose.files(default = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ER", 
                                   #   filters = "saccades.csv", multi = FALSE)
+pattern_name <- "HB_C_1_31082018"
+test_filename <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\",
+                           pattern = paste0(pattern_name,"_Prosaccade_saccades.csv"), 
+                           recursive = TRUE, full.names = TRUE, include.dirs = TRUE)
 
 taskresponse_csv_filename <- str_replace(saccade_csv_filename, 
                                           pattern = "saccades", 
@@ -31,26 +35,43 @@ taskresponse_results <- read_csv(taskresponse_csv_filename, col_names = taskresp
 
 
 combined_results <- saccade_results %>% left_join(taskresponse_results, by = "trial number")
+
 combined_results$response_type <- ifelse(combined_results$rDir == combined_results$rKey,"Correct",
                         ifelse((combined_results$rKey == 0), "Miss",
                         ifelse((combined_results$rKey > 0) & (combined_results$rKey != combined_results$rDir),"Incorrect", NA)))
-combined_results$task_condition <- combined_results$rDir * combined_results$Condition
+
+combined_results$task_condition <- ifelse(combined_results$rDir == 2,
+                                          combined_results$Condition + 12, 
+                                          combined_results$Condition)
+
 combined_results$task_arrow_dir <- ifelse(combined_results$rDir == 1, "Left", "Right")
+
 combined_results$stimulus_left_right <- ifelse(combined_results$condition <= 6, "Left", "Right")
+
 combined_results$reaction_time <- combined_results$Corr_rTIME - combined_results$Corr_tTIME
+
 combined_results$congruency <- ifelse(combined_results$task_arrow_dir == combined_results$stimulus_left_right, "Congruent", "Incongruent")
-combined_results$target_deviation <- ifelse(combined_results$condition )
+
+combined_results$target_deviation <- ifelse(combined_results$condition %% 3 == 1, "10", 
+                                            ifelse(combined_results$condition %% 3 == 2, "25",
+                                                   ifelse(combined_results$condition %% 3 == 0, "35", NA)))
+
+combined_results$difference <- combined_results$target_deviation %>% as.numeric() - combined_results$amplitude
+
+combined_results$saccades_to_check <- ifelse(combined_results$`correct direction` == 0, "Check")
+
 
 ```
 
 
 ```{r}
 
-
+tester <- combined_results %>% select(`trial number`, eye, valid,`correct direction`, amplitude, target_deviation, difference)
 
 
     
-
+tester1 <- tester %>% filter(valid == 1) %>% group_by(`trial number`) %>% count()
+tester1 <- tester %>% filter(valid == 1) %>% group_by(eye) %>% summarise(mean_diff = mean(abs(difference)), sd_diff = sd(difference))
 
 ```
 
