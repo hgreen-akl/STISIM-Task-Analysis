@@ -288,7 +288,8 @@ p2
 ```{r}
 trial1 %>% bin_by_saccades(bin_size = 100)
 
-lapply(List_of_checked_files$pattern_name, bin_by_dist)
+lapply(List_of_checked_files$pattern_name, bin_by_saccades)
+
 
 ```
 

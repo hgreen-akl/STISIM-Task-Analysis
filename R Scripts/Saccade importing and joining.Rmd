@@ -58,7 +58,20 @@ combined_results$target_deviation <- ifelse(combined_results$condition %% 3 == 1
 
 combined_results$difference <- combined_results$target_deviation %>% as.numeric() - combined_results$amplitude
 
-combined_results$saccades_to_check <- ifelse(combined_results$`correct direction` == 0, "Check")
+combined_results$saccades_to_check <- ifelse(combined_results$`correct direction` == 0, "Check", 
+                                             ifelse(combined_results$difference %>% abs() >= 5, "Check", "Fine"))
+
+saccades_to_check <- combined_results %>% 
+                        filter(saccades_to_check == "Check") %>% 
+                        select(`trial number`, eye, valid, `correct direction`, `dva/s`, `peak_dva/s`, difference, response_type)
+
+
+to_check_path <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Saccades_to_check\\"
+pattern_name
+to_check_filename <- paste0(to_check_path,pattern_name,".csv")
+to_check_filename
+
+write_csv(x = saccades_to_check, path = to_check_filename)
 
 
 ```
