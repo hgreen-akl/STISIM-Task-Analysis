@@ -130,11 +130,11 @@ summarydata <- data.frame(time = Timepoints, mean = 1:5, sd = 1:5)
 
 summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
                       mean(T1_R2_t_test$var), mean(T2_R1_t_test$var),
-                      mean(T2_R2_t_test$var))*0.3048
+                      mean(T2_R2_t_test$var))
 
 summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
                       sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
-                      sd(T2_R2_t_test$var))*0.3048
+                      sd(T2_R2_t_test$var))
 
 ```
 
@@ -254,19 +254,22 @@ p1
                       alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
   theme_classic()
-plot(p2)
+p2
 
 
 ridgeline_with_dots(df = x, variable_to_show = sd_speed)
 
 
 
-p3 <- ggplot(x, aes(x = avg_lanepos, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.7, 
-                      alpha = 0.5, vline_size = .5, vline_color = c("black"), point_size = 0.4,
+p3 <- ggplot(database_by_saccade, aes(x = avg_lanepos +6, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = FALSE, quantile_lines = TRUE, scale = 0.7, 
+                      alpha = 0.1, vline_size = .5, vline_color = c("black"), point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
-         scale_color_canva()+
     stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7) +
-  theme_base()
+    scale_color_cyclical(values = c("blue", "red"))+
+    scale_fill_cyclical(values = c("blue", "red"), guide = "legend",
+                        labels = c("Run 1", "Run 2"))+
+    xlab("Lane Position")+
+  theme_classic()
  
 p3
 
