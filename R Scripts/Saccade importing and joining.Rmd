@@ -15,8 +15,11 @@ saccade_csv_filename <- working_file_saccade
     
 ##saccade_csv_filename <- choose.files(default = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ER", 
                                   #   filters = "saccades.csv", multi = FALSE)
-pattern_name <- "HB_C_1_31082018"
-test_filename <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\",
+pat <- "HB_C_2_31082018"
+
+simple_saccade_and_bin <- function(pattern_name) {
+
+saccade_csv_filename <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\",
                            pattern = paste0(pattern_name,"_Prosaccade_saccades.csv"), 
                            recursive = TRUE, full.names = TRUE, include.dirs = TRUE)
 
@@ -72,7 +75,16 @@ to_check_filename <- paste0(to_check_path,pattern_name,".csv")
 to_check_filename
 
 write_csv(x = saccades_to_check, path = to_check_filename)
+return(print(paste("Method complete for", pattern_name)))
+}
 
+
+```
+
+
+```{r}
+pat <- "MR_C_1_07082018"
+simple_saccade_and_bin(pat)
 
 ```
 

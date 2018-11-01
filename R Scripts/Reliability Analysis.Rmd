@@ -261,18 +261,21 @@ ridgeline_with_dots(df = x, variable_to_show = sd_speed)
 
 
 
-p3 <- ggplot(database_by_saccade, aes(x = avg_lanepos +6, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = FALSE, quantile_lines = TRUE, scale = 0.7, 
+p3 <- ggplot(database_by_saccade, aes(x = sd_steering, y = Trial, color = Run, point_color = Run, fill = Run, height = ..density..)) + geom_density_ridges(jittered_points = FALSE, quantile_lines = TRUE, scale = 0.7, 
                       alpha = 0.1, vline_size = .5, vline_color = c("black"), point_size = 0.4,
                       position = position_raincloud(adjust_vlines = FALSE)) +
     stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7) +
     scale_color_cyclical(values = c("blue", "red"))+
     scale_fill_cyclical(values = c("blue", "red"), guide = "legend",
                         labels = c("Run 1", "Run 2"))+
-    xlab("Lane Position")+
+    xlab("Variability of Steering Input (AU)")+
   theme_classic()
  
 p3
 
+ggpath <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\Prelim Figures\\"
+    
+ggsave(filename = "sd_steering.png", plot = p3, path = ggpath, device = "png", width = 15, height = 10, units = "cm", dpi = 400)
 
 ```
 
