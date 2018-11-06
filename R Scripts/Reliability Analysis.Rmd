@@ -49,9 +49,9 @@ ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Sessi
 
 ```{r}
 
-binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
+binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
 
-binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
+binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
 
 
 database_by_distance <- binned_files_distance %>% map_df(~create_database_dist(.))
@@ -135,6 +135,51 @@ summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
 summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
                       sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
                       sd(T2_R2_t_test$var))
+
+bin_num <- 1
+
+run_tests_by_saccade <- function (database,var){
+no_of_bins <- database_by_saccade %>% distinct(saccade_number) %>% count() %>% as.numeric()
+bins_df <- seq_along(no_of_bins)
+     tests_func <- function (bin_num,var) {
+     
+         Fam_t_test <- Fam   %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+         T1_R1_t_test <- T1_R1 %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+         T1_R2_t_test <- T1_R2 %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+         T2_R1_t_test <- T2_R1 %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+         T2_R2_t_test <- T2_R2 %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+ 
+        Fam_onlyT2 <- Fam %>% filter(ID %in% Completed_T2) %>% filter(saccade_number == bin_num) %>% 
+            group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+    
+        T1_R1_onlyT2 <-T1_R1 %>% filter(saccade_number == bin_num) %>% filter(ID %in% Completed_T2) %>% 
+            group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+    
+        T1_R2_onlyT2 <- T1_R2 %>% filter(saccade_number == bin_num) %>% filter(ID %in% Completed_T2) %>% 
+            group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
+     
+
+ Fam_t_test_mean <- mean(Fam_t_test$var)
+ T1_R1_t_test_mean <- mean(T1_R1_t_test$var)
+ T1_R2_t_test_mean <- mean(T1_R2_t_test$var)
+ T2_R1_t_test_mean <- mean(T2_R1_t_test$var)
+ T2_R2_t_test_mean <- mean(T2_R2_t_test$var)
+
+ Fam_t_test_sd <- sd(Fam_t_test$var)
+ T1_R1_t_test_sd <- sd(T1_R1_t_test$var)
+ T1_R2_t_test_sd <- sd(T1_R2_t_test$var)
+ T2_R1_t_test_sd <- sd(T2_R1_t_test$var)
+ T2_R2_t_test_sd <- sd(T2_R2_t_test$var)
+ 
+ df_to_return <- data_frame(Fam_t_test_mean,T1_R1_t_test_mean,T1_R2_t_test_mean,T2_R1_t_test_mean, T2_R2_t_test_mean,
+                            Fam_t_test_sd,T1_R1_t_test_sd,T1_R2_t_test_sd,T2_R1_t_test_sd, T2_R2_t_test_sd)
+ 
+ df_to_return
+ }
+
+     
+}
+
 
 ```
 
