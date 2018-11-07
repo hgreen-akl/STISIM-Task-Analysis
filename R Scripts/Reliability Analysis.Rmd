@@ -138,10 +138,13 @@ summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
 
 bin_num <- 1
 
-run_tests_by_saccade <- function (database,var){
+run_tests_by_saccade <- function (database){
 no_of_bins <- database_by_saccade %>% distinct(saccade_number) %>% count() %>% as.numeric()
-bins_df <- seq_along(no_of_bins)
-     tests_func <- function (bin_num,var) {
+bins_df <- seq(from = 1, to = no_of_bins)
+
+     tests_func <- function (bin_num, decimals = 2) {
+     ## This generates a dataframe for each run through of drviesim data 
+     ## change the value after "var ="" to return the var being summarised
      
          Fam_t_test <- Fam   %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
          T1_R1_t_test <- T1_R1 %>% filter(saccade_number == bin_num) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
@@ -158,27 +161,55 @@ bins_df <- seq_along(no_of_bins)
         T1_R2_onlyT2 <- T1_R2 %>% filter(saccade_number == bin_num) %>% filter(ID %in% Completed_T2) %>% 
             group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
      
+## obtain the mean values for each run at each of the time points
+ Fam_t_test_mean <- mean(Fam_t_test$var) %>% round(digits = decimals)
+ T1_R1_t_test_mean <- mean(T1_R1_t_test$var) %>% round(digits = decimals)
+ T1_R2_t_test_mean <- mean(T1_R2_t_test$var) %>% round(digits = decimals)
+ T2_R1_t_test_mean <- mean(T2_R1_t_test$var) %>% round(digits = decimals)
+ T2_R2_t_test_mean <- mean(T2_R2_t_test$var) %>% round(digits = decimals)
 
- Fam_t_test_mean <- mean(Fam_t_test$var)
- T1_R1_t_test_mean <- mean(T1_R1_t_test$var)
- T1_R2_t_test_mean <- mean(T1_R2_t_test$var)
- T2_R1_t_test_mean <- mean(T2_R1_t_test$var)
- T2_R2_t_test_mean <- mean(T2_R2_t_test$var)
+ Fam_t_test_sd <- sd(Fam_t_test$var) %>% round(digits = decimals+1)
+ T1_R1_t_test_sd <- sd(T1_R1_t_test$var) %>% round(digits = decimals+1)
+ T1_R2_t_test_sd <- sd(T1_R2_t_test$var) %>% round(digits = decimals+1)
+ T2_R1_t_test_sd <- sd(T2_R1_t_test$var) %>% round(digits = decimals+1)
+ T2_R2_t_test_sd <- sd(T2_R2_t_test$var) %>% round(digits = decimals+1)
+ 
+ 
+ ## Running of the normality and t-tests for each timeppoints compairsons
 
- Fam_t_test_sd <- sd(Fam_t_test$var)
- T1_R1_t_test_sd <- sd(T1_R1_t_test$var)
- T1_R2_t_test_sd <- sd(T1_R2_t_test$var)
- T2_R1_t_test_sd <- sd(T2_R1_t_test$var)
- T2_R2_t_test_sd <- sd(T2_R2_t_test$var)
+ Fam_vs_T1difference <- Fam_t_test$var - T1_R1_t_test$var
+ Fam_vs_T1logdifference <- log(Fam_t_test$var) - log(T1_R1_t_test$var)
+  
+ Fam_vs_T1_normality <- if_else(shapiro.test(Fam_vs_T1difference)[2] > 0.05, "Yes", "No")
+ Log_Fam_vs_T1_normality <- if_else(shapiro.test(Fam_vs_T1logdifference)[2] > 0.05, "Yes", "No")
+ Fam_vs_T1_t_test <- t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)[3] %>% as.numeric() %>% round(digits = 4)
+ icc_Fam_vs_T1 <- ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))$'result'[3,2]
  
- df_to_return <- data_frame(Fam_t_test_mean,T1_R1_t_test_mean,T1_R2_t_test_mean,T2_R1_t_test_mean, T2_R2_t_test_mean,
-                            Fam_t_test_sd,T1_R1_t_test_sd,T1_R2_t_test_sd,T2_R1_t_test_sd, T2_R2_t_test_sd)
  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ## creates the dataframe for each time point/bin number
+ 
+ df_to_return <- data_frame(bin_num,Fam_t_test_mean,T1_R1_t_test_mean,T1_R2_t_test_mean,T2_R1_t_test_mean, T2_R2_t_test_mean,
+                            Fam_t_test_sd,T1_R1_t_test_sd,T1_R2_t_test_sd,T2_R1_t_test_sd, T2_R2_t_test_sd,
+                            Fam_vs_T1_normality, Log_Fam_vs_T1_normality,Fam_vs_T1_t_test, icc_Fam_vs_T1                 )
+ names(df_to_return) <- c("bin_num", "Fam_mean","T1_R1_mean","T1_R2_mean","T2_R1_mean", "T2_R2_mean",
+                            "Fam_sd","T1_R1_sd","T1_R2_sd","T2_R1_sd", "T2_R2_sd",
+                            "Fam_vs_T1_normality", "Log_Fam_vs_T1_normality","pval Fam_vs_T1_t_test","ICC val Fam_vs_T1" )
+ ## returns the dataframe to
  df_to_return
  }
 
-     
+     ## applies the function to 
+ bins_df %>% map_df(~tests_func(.))    
 }
+
+output_test <- database_by_saccade %>% run_tests_by_saccade()
 
 
 ```
@@ -188,13 +219,13 @@ bins_df <- seq_along(no_of_bins)
  Fam_vs_T1difference <- Fam_t_test$var - T1_R1_t_test$var
  Fam_vs_T1logdifference <- log(Fam_t_test$var) - log(T1_R1_t_test$var)
   
- shapiro.test(Fam_vs_T1difference)
- shapiro.test(Fam_vs_T1logdifference)
- t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
+ shapiro.test(Fam_vs_T1difference)[2]
+ shapiro.test(Fam_vs_T1logdifference)[2]
+ t.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)[3]
  t.test(log(Fam_t_test$var), log(T1_R1_t_test$var), paired = TRUE)
- psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))
+ psych::ICC(data_frame(Fam_t_test$var, T1_R1_t_test$var))$'result'[3,]
  
- wilcox.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)
+ wilcox.test(Fam_t_test$var, T1_R1_t_test$var, paired = TRUE)[3]
 ```
 
 ```{r}
