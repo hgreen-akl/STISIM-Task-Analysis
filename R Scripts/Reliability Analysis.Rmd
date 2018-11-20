@@ -87,6 +87,15 @@ create_database_saccade <- function (x) {
         df1
   }
 
+filename_by_dist_100 <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/binned_by_dist_100_final.csv"
+filename_by_saccade_100 <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/binned_by_saccade_100_final.csv"
+
+write.csv(database_by_distance, filename_by_dist_100)
+write.csv(database_by_saccade, filename_by_saccade_100)
+
+database_by_distance <- read_csv(filename_by_dist_100)
+database_by_saccade <- read_csv(filename_by_saccade_100)
+
 Fam <- database_by_saccade %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, saccade_number)
 
 T1_R1 <-  database_by_saccade %>% filter(Trial == "1" & Run == 1) %>% arrange(ID,Run,saccade_number)
