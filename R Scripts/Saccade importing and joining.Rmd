@@ -15,7 +15,7 @@ saccade_csv_filename <- working_file_saccade
     
 ##saccade_csv_filename <- choose.files(default = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ER", 
                                   #   filters = "saccades.csv", multi = FALSE)
-pat <- "HB_C_2_31082018"
+pattern_name <- "HB_C_2_31082018"
 
 simple_saccade_and_bin <- function(pattern_name) {
 
@@ -57,16 +57,17 @@ combined_results$congruency <- ifelse(combined_results$task_arrow_dir == combine
 
 combined_results$target_deviation <- ifelse(combined_results$condition %% 3 == 1, "10", 
                                             ifelse(combined_results$condition %% 3 == 2, "25",
-                                                   ifelse(combined_results$condition %% 3 == 0, "35", NA)))
+                                                   ifelse(combined_results$condition %% 3 == 0, "35", NA))) %>% as.numeric()
 
 combined_results$difference <- combined_results$target_deviation %>% as.numeric() - combined_results$amplitude
+combined_results$difference_percent <- abs(combined_results$difference)/combined_results$target_deviation * 100
 
 combined_results$saccades_to_check <- ifelse(combined_results$`correct direction` == 0, "Check", 
-                                             ifelse(combined_results$difference %>% abs() >= 5, "Check", "Fine"))
+                                             ifelse(combined_results$difference_percent >= 33.33, "Check", "Fine"))
 
-saccades_to_check <- combined_results %>% 
+saccades_to_check <- combined_results %>% filter(valid == 1) %>%
                         filter(saccades_to_check == "Check") %>% 
-                        select(`trial number`, eye, valid, `correct direction`, `dva/s`, `peak_dva/s`, difference, response_type)
+                        select(`trial number`, eye, valid, `correct direction`, `dva/s`, `peak_dva/s`, difference, difference_percent, response_type)
 
 
 to_check_path <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Saccades_to_check\\"
@@ -83,7 +84,7 @@ return(print(paste("Method complete for", pattern_name)))
 
 
 ```{r}
-pat <- "MR_C_1_07082018"
+pat <- "HC_C_2_02102018"
 simple_saccade_and_bin(pat)
 
 ```
