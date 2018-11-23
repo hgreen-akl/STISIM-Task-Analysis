@@ -4,12 +4,46 @@ output: html_notebook
 ---
 
 
+```{r, results='hide'}
+
+library(tidyverse)
+library(readxl)
+
+```
 
 Get the Reference Database
 
 ```{r}
  
-list.files(path)
+Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", 
+                                 sheet = 1)
+
+Country_database <- Filename_Database %>% filter(Scenario == "Country")
+HC_Database <- Country_database %>% filter(Participant == "HC")
+
+final_csvs <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
+           pattern = "_Prosaccade_final.csv", 
+           full.names = TRUE, recursive = TRUE) %>% as.tibble()
+final_csvs$pattern <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
+           pattern = "_Prosaccade_final.csv", 
+           recursive = TRUE)
+
+final_csvs %>% filter(pattern %>% contains("HB"))
+
+HC_Database <- 
+
+HC_data_names <- final_csvs[11:15,]
+
+
+
+```
+
+Load the Data
+
+```{r}
+
+
+
 
 ```
 
