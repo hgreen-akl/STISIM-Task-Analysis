@@ -18,23 +18,45 @@ list_of_performance_data <- list.files(path = "G:/Team Drives/Research Team/Proj
 Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", sheet = 1)
 
 
-Country_database <- Filename_Database %>% 
-    filter(Scenario == "Country") %>% 
-    mutate(file_exist = file.exists(paste0("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/4_Analysis_Saccades/Task Response Data/",Task_Pattern,"_Prosaccade_Results_var.csv")))
+Country_reference_database <- Filename_Database %>% 
+    filter(Scenario == "Country")
 
+find_task_csv_filename <- function(x) {
+   y <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Task Response Data", 
+           pattern = paste0(x,"_Prosaccade_Results_var.csv"), 
+           full.names = TRUE, recursive = TRUE)
+  
+ z <- if_else(length(y) == 0, "NA", y[1]) %>% as.character()
+    z
+}
+
+Country_reference_database$Task_csvs <- Country_reference_database$Task_Pattern %>% lapply(find_task_csv_filename) %>% as.character()
+
+importing_df <- Country_reference_database %>% select(Participant, Session, Run, Task_csvs)
+
+read_csv(importing_df[1,4])
+
+y <- importing_df[Task_csvs] %>% as.character()
+
+importing_df
+read_csv(y, col_names = taskresponse_colnames)
 ```
 
 Import the data
 
 ```{r}
 
+
 taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
                             "Corr_tTIME", "rKey", "rSecs","rTIME", 
                             "rCorr", "Corr_rTIME", "rDir", "Condition" )
 
-pattern_name <- Country_database$Task_Pattern[52]
+Task_csvs <- importing_df[1,5] %>% as.character()
+Participant <- importing_df[1,1]
+Session <- importing_df[1,2]
+Run <-  importing_df[1,4]
 
-raw_file <- read_csv(paste0("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/4_Analysis_Saccades/Task Response Data/",pattern_name,"_Prosaccade_Results_var.csv"), col_names = taskresponse_colnames )
+raw_file <- read_csv(Task_csvs, col_names = taskresponse_colnames )
 
 raw_file$task_condition <- ifelse(raw_file$rDir == 2,
                                           raw_file$Condition + 12, 
@@ -51,13 +73,38 @@ raw_file$response_type <- ifelse(raw_file$rDir == raw_file$rKey,"Correct",
                         ifelse((raw_file$rKey > 0) & (raw_file$rKey != raw_file$rDir),"Incorrect", NA)))
 
 
-raw_file %>% 
+raw_file %>% group_by(ID)
     group_by(congruency) %>% 
     summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                        percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                        percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
 
 raw_file %>% group_by(response_type) %>% summarise(reaction_time = mean(reaction_time, na.rm = TRUE))
+
+
+
+create_database_task_response <- function (Participant, Session, Run, Task_csvs) {
+    print(Participant)
+    print(Session)
+    print(Run)
+    print(Task_csvs)
+  #stopifnot(names(reference_frame) == c("Participant", "Session" , "Run", "Task_csvs"))
+  #taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
+   #                      "Corr_tTIME", "rKey", "rSecs","rTIME", 
+    #                     "rCorr", "Corr_rTIME", "rDir", "Condition" )
+ 
+  #filename <- reference_frame[Task_csvs] %>% as.character()   
+  #df <- read_csv(filename, col_names = taskresponse_colnames)
+   #  df[ID] <- reference_frame$Participant %>% as.character()
+    # df[Session] <- reference_frame$Session %>% as.character()
+    # df[Run] <- reference_frame$Run %>% as.character()
+    # df1
+}
+
+task_response_database <- importing_df %>% map_df(~create_database_task_response(importing_df[Participant, Session, Run, Task_csvs]))
+
+print(importing_df)
+
 ```
 
 

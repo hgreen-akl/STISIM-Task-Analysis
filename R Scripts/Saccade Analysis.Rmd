@@ -19,22 +19,16 @@ Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driv
                                  sheet = 1)
 
 Country_database <- Filename_Database %>% filter(Scenario == "Country")
+
+Country_database$final_csvs <- Country_database$Saccade_pattern %>% lapply(find_saccade_csv_filename)
+
+find_saccade_csv_filename <- function(x) {
+    list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
+           pattern = paste0(x,"_Prosaccade_final.csv"), 
+           full.names = TRUE, recursive = TRUE)
+}
+
 HC_Database <- Country_database %>% filter(Participant == "HC")
-
-final_csvs <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
-           pattern = "_Prosaccade_final.csv", 
-           full.names = TRUE, recursive = TRUE) %>% as.tibble()
-final_csvs$pattern <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
-           pattern = "_Prosaccade_final.csv", 
-           recursive = TRUE)
-
-final_csvs %>% filter(pattern %>% contains("HB"))
-
-HC_Database <- 
-
-HC_data_names <- final_csvs[11:15,]
-
-
 
 ```
 
