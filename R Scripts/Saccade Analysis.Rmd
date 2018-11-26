@@ -20,15 +20,20 @@ Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driv
 
 Country_database <- Filename_Database %>% filter(Scenario == "Country")
 
-Country_database$final_csvs <- Country_database$Saccade_pattern %>% lapply(find_saccade_csv_filename)
 
 find_saccade_csv_filename <- function(x) {
-    list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
+   y <-  list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
            pattern = paste0(x,"_Prosaccade_final.csv"), 
            full.names = TRUE, recursive = TRUE)
-}
+    z <- if_else(length(y) == 0, "NA", y[1]) %>% as.character()
+     z
+    }
 
-HC_Database <- Country_database %>% filter(Participant == "HC")
+
+Country_database$final_csvs <- Country_database$Saccade_pattern %>% lapply(find_saccade_csv_filename)
+
+importing_df <- Country_database %>% select(Participant, Session, Run, final_csvs)
+
 
 ```
 
@@ -36,8 +41,24 @@ Load the Data
 
 ```{r}
 
+create_database_saccades <- function (Participant, Session, Run, final_csvs) {
+   
+ taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
+                       "Corr_tTIME", "rKey", "rSecs","rTIME", 
+                      "rCorr", "Corr_rTIME", "rDir", "Condition" )
 
+ filename <- final_csvs %>% as.character()   
+  df <- read_csv(filename, col_names = taskresponse_colnames)
+  df$ID <- Participant %>% as.character()
+  df$Session <- Session %>% as.character()
+  df$Run <- Run %>% as.character()
+  
+ df
+}
 
+saccades_database <- importing_df %>% 
+    filter(final_csvs != "NA") #%>%
+    #pmap_df(~create_database_saccades(..1,..2,..3,..4))
 
 ```
 

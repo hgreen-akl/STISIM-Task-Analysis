@@ -3,7 +3,7 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-```{r}
+```{r, results='hide'}
 library(tidyverse)
 library(readxl)
 ```
@@ -75,7 +75,7 @@ create_database_task_response <- function (Participant, Session, Run, Task_csvs)
  df
 }
 
-importing_df 
+
 task_response_database <- importing_df %>% 
     filter(Task_csvs != "NA") %>%
     pmap_df(~create_database_task_response(..1,..2,..3,..4))
@@ -106,6 +106,9 @@ task_response_database %>% group_by(ID, Session, Run, congruency) %>%
     summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                        percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                        percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+
+lme4
+
 ```
 
 
