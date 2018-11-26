@@ -84,24 +84,24 @@ raw_file %>% group_by(response_type) %>% summarise(reaction_time = mean(reaction
 
 
 create_database_task_response <- function (Participant, Session, Run, Task_csvs) {
-    print(Participant)
-    print(Session)
-    print(Run)
-    print(Task_csvs)
-  #stopifnot(names(reference_frame) == c("Participant", "Session" , "Run", "Task_csvs"))
-  #taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
-   #                      "Corr_tTIME", "rKey", "rSecs","rTIME", 
-    #                     "rCorr", "Corr_rTIME", "rDir", "Condition" )
- 
-  #filename <- reference_frame[Task_csvs] %>% as.character()   
-  #df <- read_csv(filename, col_names = taskresponse_colnames)
-   #  df[ID] <- reference_frame$Participant %>% as.character()
-    # df[Session] <- reference_frame$Session %>% as.character()
-    # df[Run] <- reference_frame$Run %>% as.character()
-    # df1
+   
+ taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
+                       "Corr_tTIME", "rKey", "rSecs","rTIME", 
+                      "rCorr", "Corr_rTIME", "rDir", "Condition" )
+
+ filename <- Task_csvs %>% as.character()   
+  df <- read_csv(filename, col_names = taskresponse_colnames)
+  df$ID <- Participant %>% as.character()
+  df$Session <- Session %>% as.character()
+  df$Run <- Run %>% as.character()
+  
+ df
 }
 
-task_response_database <- importing_df %>% map_df(~create_database_task_response(importing_df[Participant, Session, Run, Task_csvs]))
+importing_df 
+task_response_database <- importing_df %>% 
+    filter(Task_csvs != "NA") %>%
+    pmap_df(~create_database_task_response(..1,..2,..3,..4))
 
 print(importing_df)
 
