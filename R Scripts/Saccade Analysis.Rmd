@@ -8,6 +8,9 @@ output: html_notebook
 
 library(tidyverse)
 library(readxl)
+library(lme4)
+library(lmerTest)
+library(psych)
 
 ```
 
@@ -43,12 +46,8 @@ Load the Data
 
 create_database_saccades <- function (Participant, Session, Run, final_csvs) {
    
- taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
-                       "Corr_tTIME", "rKey", "rSecs","rTIME", 
-                      "rCorr", "Corr_rTIME", "rDir", "Condition" )
-
  filename <- final_csvs %>% as.character()   
-  df <- read_csv(filename, col_names = taskresponse_colnames)
+  df <- read_csv(filename)
   df$ID <- Participant %>% as.character()
   df$Session <- Session %>% as.character()
   df$Run <- Run %>% as.character()
@@ -57,9 +56,37 @@ create_database_saccades <- function (Participant, Session, Run, final_csvs) {
 }
 
 saccades_database <- importing_df %>% 
-    filter(final_csvs != "NA") #%>%
-    #pmap_df(~create_database_saccades(..1,..2,..3,..4))
+    filter(final_csvs != "NA") %>%
+    pmap_df(~create_database_saccades(..1,..2,..3,..4))
+
+saccades_database$saccade_size <- if_else((saccades_database$amplitude >7.5) & (saccades_database$amplitude < 12.5), "10",
+                                         if_else((saccades_database$amplitude > 22.5) & (saccades_database$amplitude < 27.5), "25",
+                                         if_else((saccades_database$amplitude > 32.5) & (saccades_database$amplitude < 37.5), "35","NA")))
 
 ```
 
+sifting down the data
+
+```{r}
+
+summarised <- saccades_database %>% 
+    filter(`peak_dva/s` < 1500) %>%
+    filter(`dva/s` < 1500) %>%
+    group_by(ID, Session, Run) %>%
+    #group_by(saccade_size) %>%
+    summarise(max_velocity = mean(`peak_dva/s`, na.rm = T),
+              mean_velocity = mean(`dva/s`), na.rm = T)
+    #filter(saccade_size != "NA")
+
+
+summarised
+```
+
+Statistical analyses
+
+```{r}
+
+
+
+```
 

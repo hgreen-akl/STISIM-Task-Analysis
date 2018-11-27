@@ -6,6 +6,9 @@ output: html_notebook
 ```{r, results='hide'}
 library(tidyverse)
 library(readxl)
+library(lme4)
+library(lmerTest)
+library(psych)
 ```
 
 
@@ -44,7 +47,7 @@ read_csv(y, col_names = taskresponse_colnames)
 
 Import the data
 
-```{r}
+```{r, results='hide'}
 
 
 taskresponse_colnames <- c("trial number", "tTRIG", "tTIME", "tCorr", 
@@ -101,14 +104,93 @@ task_response_database$response_type <- ifelse(task_response_database$rDir == ta
                         ifelse((task_response_database$rKey == 0), "Miss",
                         ifelse((task_response_database$rKey > 0) & (task_response_database$rKey != task_response_database$rDir),"Incorrect", NA)))
 
+session_levels <- c("F","1","2")
+#summarised withouot congruency
+wo_congruency <- task_response_database %>% group_by(ID, Session, Run) %>%
+    summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                       percent_miss = mean(response_type == "Miss", na.rm = TRUE),
+                       percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+wo_congruency$Session <- wo_congruency$Session %>% factor(session_levels)
+wo_congruency$Run <- wo_congruency$Run %>% as.factor()
 
-task_response_database %>% group_by(ID, Session, Run, congruency) %>%
+wo_congruency2 <- wo_congruency %>% filter(Session != "F")
+# sumarised by congruency
+with_congruency <- task_response_database %>% group_by(ID, Session, Run, congruency) %>%
     summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                        percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                        percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
 
-lme4
+save_filename <- file.choose()
+write.csv(wo_congruency, save_filename)
+```
+
+sifting it down to each trial
+
+
+```{r}
+
+Fam   <- wo_congruency %>% filter(Session == "F" & Run == "1") %>% select(percent_correct)
+S1_R1 <- wo_congruency %>% filter(Session == "1" & Run == "1") %>% select(percent_correct)
+S1_R2 <- wo_congruency %>% filter(Session == "1" & Run == "2") %>% select(percent_correct)
+S2_R1 <- wo_congruency %>% filter(Session == "2" & Run == "1") %>% select(percent_correct)
+S2_R2 <- wo_congruency %>% filter(Session == "2" & Run == "2") %>% select(percent_correct)
+
+
+formatted <- right_join(Fam, S1_R1, by = c("ID")) 
+formatted
+
+
+
+
 
 ```
 
+
+
+Statistical Analyses
+```{r}
+
+fit1 <- anova(lmer(percent_correct ~ Session + Run + (1|ID), data = wo_congruency))
+fit1
+summary(fit1)
+aov(fit1)
+
+plot1 <- wo_congruency %>% group_by(Session, Run) %>% summarise(percent_correct = mean(percent_correct) , 
+                       percent_miss = mean(percent_miss),
+                       percent_incorrect = mean(percent_incorrect)) %>%
+    ggplot(aes(x = Run, y = percent_correct, colour = Session)) +
+        geom_point() +
+    ylim(0.7,1)
+
+    
+plot1
+
+
+
+fit2 <- anova(lmer(percent_correct ~ Session + Run + congruency + (1|ID),data =  with_congruency))
+fit2
+
+    
+
+ICC_import <- read.csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ICC_to_import.csv")
+ICC_ready <- ICC(ICC_import[-1,-2],missing = FALSE)
+ICC_ready
+ICC_output <- ICC_ready$results
+ICC_import_noNS <- ICC_import %>% filter(ID != "NS")
+
+across_all_but_fam <- ICC(ICC_import_noNS[c(-1,-2)],missing = T)
+across_all_but_fam
+
+between_sessions_R1 <- ICC(ICC_import[c(-1,-2,-4,-6)],missing = FALSE)
+between_sessions_R1
+
+between_sessions_R2 <- ICC(ICC_import[c(-1,-2,-3,-5)],missing = FALSE)
+between_sessions_R2
+
+within_session1 <- ICC(ICC_import[c(-1,-2,-5,-6)],missing = T)
+within_session1
+
+within_session2 <- ICC(ICC_import[c(-1,-2,-3,-4)],missing = FALSE)
+within_session2
+```
 
