@@ -74,8 +74,8 @@ summarised <- saccades_database %>%
     filter(`dva/s` < 1500) %>%
     group_by(ID, Session, Run) %>%
     #group_by(saccade_size) %>%
-    summarise(max_velocity = mean(`peak_dva/s`, na.rm = T),
-              mean_velocity = mean(`dva/s`), na.rm = T)
+    summarise(max_velocity = mean(`peak_dva/s`),
+              mean_velocity = mean(`dva/s`))
     #filter(saccade_size != "NA")
 
 

@@ -116,19 +116,19 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
 #T2_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
 
 
-Fam_t_test   <- Fam   %>% group_by(ID) %>% summarise(var = mean(sd_steering))
-T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
-T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
-T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
-T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
+Fam_t_test   <- Fam   %>% group_by(ID) %>% summarise(var = mean(avg_lanepos+6))
+T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(avg_lanepos + 6))
+T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(avg_lanepos + 6))
+T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(avg_lanepos + 6))
+T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = mean(avg_lanepos + 6))
 
-long_form_data <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(sd_steering))
-wide_form_sub <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(sd_steering)) %>% mutate(widevar = paste(paste0("S", Trial), paste0("R",Run), sep = "_")) 
+long_form_data <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(avg_lanepos + 6))
+wide_form_sub <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(avg_lanepos + 6)) %>% mutate(widevar = paste(paste0("S", Trial), paste0("R",Run), sep = "_")) 
 time_points <- wide_form_sub$widevar
 IDS <- wide_form_sub$ID
 variables <- wide_form_sub$var
 
-wide_form_data <- data_frame(IDS,time_points, variables) %>% spread(key = time_points, value = variables)
+wide_form_data <- data_frame(IDS,time_points, variables) %>% spread(key = time_points, value = variables) %>% select(IDS, SF_R1, S1_R1,S1_R2,S2_R1,S2_R2)
 
 summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
                       mean(T1_R2_t_test$var), mean(T2_R1_t_test$var),
