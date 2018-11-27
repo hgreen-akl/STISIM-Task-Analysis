@@ -93,8 +93,8 @@ filename_by_saccade_100 <- "G:/Team Drives/Research Team/Projects/2018 Driving S
 write.csv(database_by_distance, filename_by_dist_100)
 write.csv(database_by_saccade, filename_by_saccade_100)
 
-database_by_distance <- read_csv(filename_by_dist_100)
-database_by_saccade <- read_csv(filename_by_saccade_100)
+database_by_distance <- read_csv(filename_by_dist_100) %>% select(-1)
+database_by_saccade <- read_csv(filename_by_saccade_100) %>% select(-1)
 
 Fam <- database_by_saccade %>% filter(Trial == "F" & Run == 1) %>% arrange(ID, Run, saccade_number)
 
@@ -116,13 +116,29 @@ T2_R2 <-  database_by_saccade %>% filter(Trial == "2" & Run == 2) %>% arrange(ID
 #T2_R2 %>% group_by(ID,bin_number) %>% summarise(min = min(bin_number), max = max(bin_number), mean_lanesd = mean(sd_speed))
 
 
+Fam_t_test   <- Fam   %>% group_by(ID) %>% summarise(var = mean(sd_steering))
+T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
+T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
+T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
+T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = mean(sd_steering))
 
- Fam_t_test <- Fam   %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
- T1_R1_t_test <- T1_R1 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
- T1_R2_t_test <- T1_R2 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
- T2_R1_t_test <- T2_R1 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
- T2_R2_t_test <- T2_R2 %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
- 
+long_form_data <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(sd_steering))
+wide_form_sub <- database_by_saccade %>% group_by(ID, Trial, Run) %>% summarise(var = mean(sd_steering)) %>% mutate(widevar = paste(paste0("S", Trial), paste0("R",Run), sep = "_")) 
+time_points <- wide_form_sub$widevar
+IDS <- wide_form_sub$ID
+variables <- wide_form_sub$var
+
+wide_form_data <- data_frame(IDS,time_points, variables) %>% spread(key = time_points, value = variables)
+
+summarydata$mean <- c(mean(Fam_t_test$var), mean(T1_R1_t_test$var),
+                      mean(T1_R2_t_test$var), mean(T2_R1_t_test$var),
+                      mean(T2_R2_t_test$var))
+
+summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
+                      sd(T1_R2_t_test$var), sd(T2_R1_t_test$var),
+                      sd(T2_R2_t_test$var))
+
+
  Fam_onlyT2 <- Fam %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
  T1_R1_onlyT2 <-T1_R1 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
  T1_R2_onlyT2 <- T1_R2 %>% filter(ID == Completed_T2) %>% group_by(ID) %>% summarise(var = abs(mean(sd_throttle))*1000)
@@ -147,6 +163,11 @@ summarydata$sd <- c(sd(Fam_t_test$var), sd(T1_R1_t_test$var),
 
 bin_num <- 1
 
+```
+
+
+
+``` {r}
 run_tests_by_saccade <- function (database){
 no_of_bins <- database_by_saccade %>% distinct(saccade_number) %>% count() %>% as.numeric()
 bins_df <- seq(from = 1, to = no_of_bins)
@@ -220,6 +241,8 @@ bins_df <- seq(from = 1, to = no_of_bins)
 
 output_test <- database_by_saccade %>% run_tests_by_saccade()
 
+
+```
 
 ```
 
