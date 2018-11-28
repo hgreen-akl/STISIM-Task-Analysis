@@ -95,7 +95,8 @@ summarised <- saccades_database %>%
     filter(`peak_dva/s` < 2000) %>%
     filter(`dva/s` < 2000) %>%
     group_by(ID, Session, Run) %>%
-    select(ID, Session, Run,`trial number`, `peak_dva/s`, `dva/s`, amplitude) %>% summarise(peak_V = mean(`peak_dva/s`), avg_V = mean(`dva/s`), amplitude = mean(amplitude))
+    select(ID, Session, Run,`trial number`, `peak_dva/s`, `dva/s`, amplitude) %>% 
+    summarise(peak_V = mean(`peak_dva/s`), avg_V = mean(`dva/s`), amplitude = mean(amplitude))
 
 
 working_csv <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\working_csv.csv"
@@ -103,6 +104,7 @@ write_csv(summarised, path = working_csv)
 
 lm1 <- lmer(peak_V ~ Run + Session + Run*Session + amplitude + (1|ID), data = summarised, na.action = na.exclude)
 summary(lm1)
+
 
 lm2 <- lmer(`dva/s` ~ Run*Session + amplitude + (1|ID), data = saccades_database, na.action = na.exclude)
 summary(lm2)

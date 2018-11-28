@@ -178,663 +178,108 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmBgYCJ9 -->
-<pre class="r"><code>library(tidyverse)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkeGwpXG5saWJyYXJ5KGxtZTQpXG5gYGAifQ== -->
-<pre class="r"><code>library(readxl)
-library(lme4)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsbWVyVGVzdClcbmBgYCJ9 -->
-<pre class="r"><code>library(lmerTest)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShwc3ljaClcbmBgYCJ9 -->
-<pre class="r"><code>library(psych)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Get the Reference Database</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ291bnRyeV9kYXRhYmFzZSRmaW5hbF9jc3ZzIDwtIENvdW50cnlfZGF0YWJhc2UkU2FjY2FkZV9wYXR0ZXJuICU+JSBsYXBwbHkoZmluZF9zYWNjYWRlX2Nzdl9maWxlbmFtZSlcblxuYGBgIn0= -->
-<pre class="r"><code>Country_database$final_csvs &lt;- Country_database$Saccade_pattern %&gt;% lapply(find_saccade_csv_filename)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIFxuRmlsZW5hbWVfRGF0YWJhc2UgPC0gcmVhZF9leGNlbChcIkc6L1RlYW0gRHJpdmVzL1Jlc2VhcmNoIFRlYW0vUHJvamVjdHMvMjAxOCBEcml2aW5nIFNpbSBSZXByb2R1Y2liaWxpdHkvRmlsZSBSZWZlcmVuY2UgRGF0YWJhc2UueGxzeFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNoZWV0ID0gMSlcblxuQ291bnRyeV9kYXRhYmFzZSA8LSBGaWxlbmFtZV9EYXRhYmFzZSAlPiUgZmlsdGVyKFNjZW5hcmlvID09IFwiQ291bnRyeVwiKVxuXG5cbmZpbmRfc2FjY2FkZV9jc3ZfZmlsZW5hbWUgPC0gZnVuY3Rpb24oeCkge1xuICAgeSA8LSAgbGlzdC5maWxlcyhwYXRoID0gXCJHOlxcXFxUZWFtIERyaXZlc1xcXFxSZXNlYXJjaCBUZWFtXFxcXFByb2plY3RzXFxcXDIwMTggRHJpdmluZyBTaW0gUmVwcm9kdWNpYmlsaXR5XFxcXDRfQW5hbHlzaXNfU2FjY2FkZXNcXFxcXCIsIFxuICAgICAgICAgICBwYXR0ZXJuID0gcGFzdGUwKHgsXCJfUHJvc2FjY2FkZV9maW5hbC5jc3ZcIiksIFxuICAgICAgICAgICBmdWxsLm5hbWVzID0gVFJVRSwgcmVjdXJzaXZlID0gVFJVRSlcbiAgICB6IDwtIGlmX2Vsc2UobGVuZ3RoKHkpID09IDAsIFwiTkFcIiwgeVsxXSkgJT4lIGFzLmNoYXJhY3RlcigpXG4gICAgIHpcbiAgICB9XG5cblxuQ291bnRyeV9kYXRhYmFzZSRmaW5hbF9jc3ZzIDwtIENvdW50cnlfZGF0YWJhc2UkU2FjY2FkZV9wYXR0ZXJuICU+JSBsYXBwbHkoZmluZF9zYWNjYWRlX2Nzdl9maWxlbmFtZSlcblxuaW1wb3J0aW5nX2RmIDwtIENvdW50cnlfZGF0YWJhc2UgJT4lIHNlbGVjdChQYXJ0aWNpcGFudCwgU2Vzc2lvbiwgUnVuLCBmaW5hbF9jc3ZzKVxuXG5cbmBgYCJ9 -->
+<pre class="r"><code> 
+Filename_Database &lt;- read_excel(&quot;G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx&quot;, 
+                                 sheet = 1)
+
+Country_database &lt;- Filename_Database %&gt;% filter(Scenario == &quot;Country&quot;)
+
+
+find_saccade_csv_filename &lt;- function(x) {
+   y &lt;-  list.files(path = &quot;G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\&quot;, 
+           pattern = paste0(x,&quot;_Prosaccade_final.csv&quot;), 
+           full.names = TRUE, recursive = TRUE)
+    z &lt;- if_else(length(y) == 0, &quot;NA&quot;, y[1]) %&gt;% as.character()
+     z
+    }
+
+
+Country_database$final_csvs &lt;- Country_database$Saccade_pattern %&gt;% lapply(find_saccade_csv_filename)
+
+importing_df &lt;- Country_database %&gt;% select(Participant, Session, Run, final_csvs)
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gcGlwZXNbW2ldXSA6IHN1YnNjcmlwdCBvdXQgb2YgYm91bmRzXG4ifQ== -->
-<pre><code>Error in pipes[[i]] : subscript out of bounds</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Load the Data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FjY2FkZXNfZGF0YWJhc2UgPC0gaW1wb3J0aW5nX2RmICU+JSBcbiAgICBmaWx0ZXIoZmluYWxfY3N2cyAhPSBcIk5BXCIpICU+JVxuICAgIHBtYXBfZGYofmNyZWF0ZV9kYXRhYmFzZV9zYWNjYWRlcyguLjEsLi4yLC4uMywuLjQpKVxuXG5gYGAifQ== -->
-<pre class="r"><code>saccades_database &lt;- importing_df %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5jcmVhdGVfZGF0YWJhc2Vfc2FjY2FkZXMgPC0gZnVuY3Rpb24gKFBhcnRpY2lwYW50LCBTZXNzaW9uLCBSdW4sIGZpbmFsX2NzdnMpIHtcbiAgIFxuIGZpbGVuYW1lIDwtIGZpbmFsX2NzdnMgJT4lIGFzLmNoYXJhY3RlcigpICAgXG4gIGRmIDwtIHJlYWRfY3N2KGZpbGVuYW1lKVxuICBkZiRJRCA8LSBQYXJ0aWNpcGFudCAlPiUgYXMuY2hhcmFjdGVyKClcbiAgZGYkU2Vzc2lvbiA8LSBTZXNzaW9uICU+JSBhcy5jaGFyYWN0ZXIoKVxuICBkZiRSdW4gPC0gUnVuICU+JSBhcy5jaGFyYWN0ZXIoKVxuICBcbiBcbiBzZWxlY3Rfb25lX3NhY2NhZGUgPC0gZnVuY3Rpb24oZGYxKSB7XG4gICAgZXllXzEgPC0gZGYxICU+JSBmaWx0ZXIoZXllID09IDEpICU+JSBjb3VudCgpICU+JSBhcy5udW1lcmljKClcbiAgICBleWVfMiA8LSBkZjEgJT4lIGZpbHRlcihleWUgPT0gMikgJT4lIGNvdW50KCkgJT4lIGFzLm51bWVyaWMoKVxuICAgIGV5ZV8xX29yXzIgPC0gaWZfZWxzZShleWVfMSA+IGV5ZV8yLCAxLCAyKVxuICAgIFxuICAgIGR1cGxpY2F0ZSA8LSBkZjEgJT4lIGdyb3VwX2J5KGB0cmlhbCBudW1iZXJgKSAlPiUgIHN1bW1hcmlzZShuID0gbigpKSAlPiUgbXV0YXRlKGR1cGxpY2F0ZSA9IGlmX2Vsc2UobiA9PSAyLCAxLCAwKSkgJT4lIHNlbGVjdCgtMilcbiAgICBcbiAgICBkZjEgPC0gbGVmdF9qb2luKGRmMSwgZHVwbGljYXRlLCBieSA9IFwidHJpYWwgbnVtYmVyXCIpXG4gICAgZGYxJGluY2x1ZGUgPC0gaWZfZWxzZShkZjEkZHVwbGljYXRlID09IDAsIDEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGlmX2Vsc2UoZGYxJGR1cGxpY2F0ZSA9PSBUUlVFICYgZGYxJGV5ZSA9PSBleWVfMV9vcl8yLCAxLCAwKSlcbiAgICBcbiAgICBkZjIgPC0gZGYxICU+JSBmaWx0ZXIoaW5jbHVkZSA9PSAxKVxuICAgIGRmMlxuIH1cbiBcbiBzZWxlY3Rfb25lX3NhY2NhZGUoZGYpXG4gfVxuXG5zYWNjYWRlc19kYXRhYmFzZSA8LSBpbXBvcnRpbmdfZGYgJT4lIFxuICAgIGZpbHRlcihmaW5hbF9jc3ZzICE9IFwiTkFcIikgJT4lXG4gICAgcG1hcF9kZih+Y3JlYXRlX2RhdGFiYXNlX3NhY2NhZGVzKC4uMSwuLjIsLi4zLC4uNCkpXG5cbnNhY2NhZGVzX2RhdGFiYXNlIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSBmaWx0ZXIoaXMuZG91YmxlKGBwZWFrX2R2YS9zYCkpICU+JSBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMClcblxuc2FjY2FkZXNfZGF0YWJhc2Ukc2FjY2FkZV9zaXplIDwtIGlmX2Vsc2UoKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA+Ny41KSAmIChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPCAxMi41KSwgXCIxMFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZl9lbHNlKChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPiAyMi41KSAmIChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPCAyNy41KSwgXCIyNVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZl9lbHNlKChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPiAzMi41KSAmIChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPCAzNy41KSwgXCIzNVwiLFwiTkFcIikpKVxuXG5cblxuXG5cbmBgYCJ9 -->
+<pre class="r"><code>
+create_database_saccades &lt;- function (Participant, Session, Run, final_csvs) {
+   
+ filename &lt;- final_csvs %&gt;% as.character()   
+  df &lt;- read_csv(filename)
+  df$ID &lt;- Participant %&gt;% as.character()
+  df$Session &lt;- Session %&gt;% as.character()
+  df$Run &lt;- Run %&gt;% as.character()
+  
+ 
+ select_one_saccade &lt;- function(df1) {
+    eye_1 &lt;- df1 %&gt;% filter(eye == 1) %&gt;% count() %&gt;% as.numeric()
+    eye_2 &lt;- df1 %&gt;% filter(eye == 2) %&gt;% count() %&gt;% as.numeric()
+    eye_1_or_2 &lt;- if_else(eye_1 &gt; eye_2, 1, 2)
+    
+    duplicate &lt;- df1 %&gt;% group_by(`trial number`) %&gt;%  summarise(n = n()) %&gt;% mutate(duplicate = if_else(n == 2, 1, 0)) %&gt;% select(-2)
+    
+    df1 &lt;- left_join(df1, duplicate, by = &quot;trial number&quot;)
+    df1$include &lt;- if_else(df1$duplicate == 0, 1,
+                          if_else(df1$duplicate == TRUE &amp; df1$eye == eye_1_or_2, 1, 0))
+    
+    df2 &lt;- df1 %&gt;% filter(include == 1)
+    df2
+ }
+ 
+ select_one_saccade(df)
+ }
+
+saccades_database &lt;- importing_df %&gt;% 
     filter(final_csvs != &quot;NA&quot;) %&gt;%
     pmap_df(~create_database_saccades(..1,..2,..3,..4))
+
+saccades_database &lt;- saccades_database %&gt;% filter(is.double(`peak_dva/s`)) %&gt;% filter(`peak_dva/s` &lt; 2000)
+
+saccades_database$saccade_size &lt;- if_else((saccades_database$amplitude &gt;7.5) &amp; (saccades_database$amplitude &lt; 12.5), &quot;10&quot;,
+                                         if_else((saccades_database$amplitude &gt; 22.5) &amp; (saccades_database$amplitude &lt; 27.5), &quot;25&quot;,
+                                         if_else((saccades_database$amplitude &gt; 32.5) &amp; (saccades_database$amplitude &lt; 37.5), &quot;35&quot;,&quot;NA&quot;)))
 </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG5NaXNzaW5nIGNvbHVtbiBuYW1lcyBmaWxsZWQgaW46ICdYMjInIFsyMl1QYXJzZWQgd2l0aCBjb2x1bW4gc3BlY2lmaWNhdGlvbjpcbmNvbHMoXG4gIC5kZWZhdWx0ID0gY29sX2RvdWJsZSgpLFxuICBgdHJpYWwgbnVtYmVyYCA9IGNvbF9pbnRlZ2VyKCksXG4gIGNvbmRpdGlvbiA9IGNvbF9pbnRlZ2VyKCksXG4gIGV5ZSA9IGNvbF9pbnRlZ2VyKCksXG4gIHZhbGlkID0gY29sX2ludGVnZXIoKSxcbiAgWDIyID0gY29sX2NoYXJhY3RlcigpXG4pXG5TZWUgc3BlYyguLi4pIGZvciBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9ucy5cbk1pc3NpbmcgY29sdW1uIG5hbWVzIGZpbGxlZCBpbjogJ1gyMicgWzIyXVBhcnNlZCB3aXRoIGNvbHVtbiBzcGVjaWZpY2F0aW9uOlxuY29scyhcbiAgLmRlZmF1bHQgPSBjb2xfZG91YmxlKCksXG4gIGB0cmlhbCBudW1iZXJgID0gY29sX2ludGVnZXIoKSxcbiAgY29uZGl0aW9uID0gY29sX2ludGVnZXIoKSxcbiAgZXllID0gY29sX2ludGVnZXIoKSxcbiAgdmFsaWQgPSBjb2xfaW50ZWdlcigpLFxuICBYMjIgPSBjb2xfY2hhcmFjdGVyKClcbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuTWlzc2luZyBjb2x1bW4gbmFtZXMgZmlsbGVkIGluOiAnWDIyJyBbMjJdUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9kb3VibGUoKSxcbiAgYHRyaWFsIG51bWJlcmAgPSBjb2xfaW50ZWdlcigpLFxuICBjb25kaXRpb24gPSBjb2xfaW50ZWdlcigpLFxuICBleWUgPSBjb2xfaW50ZWdlcigpLFxuICB2YWxpZCA9IGNvbF9pbnRlZ2VyKCksXG4gIFgyMiA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
-<pre><code>Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.
-Missing column names filled in: 'X22' [22]Parsed with column specification:
-cols(
-  .default = col_double(),
-  `trial number` = col_integer(),
-  condition = col_integer(),
-  eye = col_integer(),
-  valid = col_integer(),
-  X22 = col_character()
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>sifting down the data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-plot-begin eyJjb25kaXRpb25zIjpbXSwiaGVpZ2h0Ijo0MzIuNjMyOSwic2l6ZV9iZWhhdmlvciI6MCwid2lkdGgiOjcwMH0= -->
-<p><img src="data:image/png;base64,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" /></p>
-<!-- rnb-plot-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5zdW1tYXJpc2VkIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSBcbiAgICBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMCkgJT4lXG4gICAgZmlsdGVyKGBkdmEvc2AgPCAyMDAwKSAlPiVcbiAgICBncm91cF9ieShJRCwgU2Vzc2lvbiwgUnVuKSAlPiVcbiAgICBzZWxlY3QoSUQsIFNlc3Npb24sIFJ1bixgdHJpYWwgbnVtYmVyYCwgYHBlYWtfZHZhL3NgLCBgZHZhL3NgLCBhbXBsaXR1ZGUpICU+JSBcbiAgICBzdW1tYXJpc2UocGVha19WID0gbWVhbihgcGVha19kdmEvc2ApLCBhdmdfViA9IG1lYW4oYGR2YS9zYCksIGFtcGxpdHVkZSA9IG1lYW4oYW1wbGl0dWRlKSlcblxuXG53b3JraW5nX2NzdiA8LSBcIkc6XFxcXFRlYW0gRHJpdmVzXFxcXFJlc2VhcmNoIFRlYW1cXFxcUHJvamVjdHNcXFxcMjAxOCBEcml2aW5nIFNpbSBSZXByb2R1Y2liaWxpdHlcXFxcNF9BbmFseXNpc19TYWNjYWRlc1xcXFx3b3JraW5nX2Nzdi5jc3ZcIlxud3JpdGVfY3N2KHN1bW1hcmlzZWQsIHBhdGggPSB3b3JraW5nX2NzdilcblxubG0xIDwtIGxtZXIocGVha19WIH4gUnVuICsgU2Vzc2lvbiArIFJ1bipTZXNzaW9uICsgYW1wbGl0dWRlICsgKDF8SUQpLCBkYXRhID0gc3VtbWFyaXNlZCwgbmEuYWN0aW9uID0gbmEuZXhjbHVkZSlcbnN1bW1hcnkobG0xKVxuXG5cbmxtMiA8LSBsbWVyKGBkdmEvc2AgfiBSdW4qU2Vzc2lvbiArIGFtcGxpdHVkZSArICgxfElEKSwgZGF0YSA9IHNhY2NhZGVzX2RhdGFiYXNlLCBuYS5hY3Rpb24gPSBuYS5leGNsdWRlKVxuc3VtbWFyeShsbTIpXG5wbG90KGxtMSlcblxuc3VtbWFyaXNlZCRTZXNzaW9uIDwtIHN1bW1hcmlzZWQkU2Vzc2lvbiAlPiUgYXMuZmFjdG9yKClcbnN1bW1hcmlzZWQkUnVuIDwtIHN1bW1hcmlzZWQkUnVuICU+JSBhcy5mYWN0b3IoKVxuaGVhZChzdW1tYXJpc2VkKVxuYGBgIn0= -->
+<pre class="r"><code>
+summarised &lt;- saccades_database %&gt;% 
+    filter(`peak_dva/s` &lt; 2000) %&gt;%
+    filter(`dva/s` &lt; 2000) %&gt;%
+    group_by(ID, Session, Run) %&gt;%
+    select(ID, Session, Run,`trial number`, `peak_dva/s`, `dva/s`, amplitude) %&gt;% 
+    summarise(peak_V = mean(`peak_dva/s`), avg_V = mean(`dva/s`), amplitude = mean(amplitude))
+
+
+working_csv &lt;- &quot;G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\working_csv.csv&quot;
+write_csv(summarised, path = working_csv)
+
+lm1 &lt;- lmer(peak_V ~ Run + Session + Run*Session + amplitude + (1|ID), data = summarised, na.action = na.exclude)
+summary(lm1)
+
+
+lm2 &lt;- lmer(`dva/s` ~ Run*Session + amplitude + (1|ID), data = saccades_database, na.action = na.exclude)
+summary(lm2)
+plot(lm1)
+
+summarised$Session &lt;- summarised$Session %&gt;% as.factor()
+summarised$Run &lt;- summarised$Run %&gt;% as.factor()
+head(summarised)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Statistical analyses</p>
@@ -849,7 +294,7 @@ saccade_database_for_SPSS &lt;- saccades_database %&gt;% select()
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyLCByZXN1bHRzPSdoaWRlJ30NCg0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KHJlYWR4bCkNCmxpYnJhcnkobG1lNCkNCmxpYnJhcnkobG1lclRlc3QpDQpsaWJyYXJ5KHBzeWNoKQ0KDQpgYGANCg0KR2V0IHRoZSBSZWZlcmVuY2UgRGF0YWJhc2UNCg0KYGBge3J9DQogDQpGaWxlbmFtZV9EYXRhYmFzZSA8LSByZWFkX2V4Y2VsKCJHOi9UZWFtIERyaXZlcy9SZXNlYXJjaCBUZWFtL1Byb2plY3RzLzIwMTggRHJpdmluZyBTaW0gUmVwcm9kdWNpYmlsaXR5L0ZpbGUgUmVmZXJlbmNlIERhdGFiYXNlLnhsc3giLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNoZWV0ID0gMSkNCg0KQ291bnRyeV9kYXRhYmFzZSA8LSBGaWxlbmFtZV9EYXRhYmFzZSAlPiUgZmlsdGVyKFNjZW5hcmlvID09ICJDb3VudHJ5IikNCg0KDQpmaW5kX3NhY2NhZGVfY3N2X2ZpbGVuYW1lIDwtIGZ1bmN0aW9uKHgpIHsNCiAgIHkgPC0gIGxpc3QuZmlsZXMocGF0aCA9ICJHOlxcVGVhbSBEcml2ZXNcXFJlc2VhcmNoIFRlYW1cXFByb2plY3RzXFwyMDE4IERyaXZpbmcgU2ltIFJlcHJvZHVjaWJpbGl0eVxcNF9BbmFseXNpc19TYWNjYWRlc1xcIiwgDQogICAgICAgICAgIHBhdHRlcm4gPSBwYXN0ZTAoeCwiX1Byb3NhY2NhZGVfZmluYWwuY3N2IiksIA0KICAgICAgICAgICBmdWxsLm5hbWVzID0gVFJVRSwgcmVjdXJzaXZlID0gVFJVRSkNCiAgICB6IDwtIGlmX2Vsc2UobGVuZ3RoKHkpID09IDAsICJOQSIsIHlbMV0pICU+JSBhcy5jaGFyYWN0ZXIoKQ0KICAgICB6DQogICAgfQ0KDQoNCkNvdW50cnlfZGF0YWJhc2UkZmluYWxfY3N2cyA8LSBDb3VudHJ5X2RhdGFiYXNlJFNhY2NhZGVfcGF0dGVybiAlPiUgbGFwcGx5KGZpbmRfc2FjY2FkZV9jc3ZfZmlsZW5hbWUpDQoNCmltcG9ydGluZ19kZiA8LSBDb3VudHJ5X2RhdGFiYXNlICU+JSBzZWxlY3QoUGFydGljaXBhbnQsIFNlc3Npb24sIFJ1biwgZmluYWxfY3N2cykNCg0KDQpgYGANCg0KTG9hZCB0aGUgRGF0YQ0KDQpgYGB7cn0NCg0KY3JlYXRlX2RhdGFiYXNlX3NhY2NhZGVzIDwtIGZ1bmN0aW9uIChQYXJ0aWNpcGFudCwgU2Vzc2lvbiwgUnVuLCBmaW5hbF9jc3ZzKSB7DQogICANCiBmaWxlbmFtZSA8LSBmaW5hbF9jc3ZzICU+JSBhcy5jaGFyYWN0ZXIoKSAgIA0KICBkZiA8LSByZWFkX2NzdihmaWxlbmFtZSkNCiAgZGYkSUQgPC0gUGFydGljaXBhbnQgJT4lIGFzLmNoYXJhY3RlcigpDQogIGRmJFNlc3Npb24gPC0gU2Vzc2lvbiAlPiUgYXMuY2hhcmFjdGVyKCkNCiAgZGYkUnVuIDwtIFJ1biAlPiUgYXMuY2hhcmFjdGVyKCkNCiAgDQogDQogc2VsZWN0X29uZV9zYWNjYWRlIDwtIGZ1bmN0aW9uKGRmMSkgew0KICAgIGV5ZV8xIDwtIGRmMSAlPiUgZmlsdGVyKGV5ZSA9PSAxKSAlPiUgY291bnQoKSAlPiUgYXMubnVtZXJpYygpDQogICAgZXllXzIgPC0gZGYxICU+JSBmaWx0ZXIoZXllID09IDIpICU+JSBjb3VudCgpICU+JSBhcy5udW1lcmljKCkNCiAgICBleWVfMV9vcl8yIDwtIGlmX2Vsc2UoZXllXzEgPiBleWVfMiwgMSwgMikNCiAgICANCiAgICBkdXBsaWNhdGUgPC0gZGYxICU+JSBncm91cF9ieShgdHJpYWwgbnVtYmVyYCkgJT4lICBzdW1tYXJpc2UobiA9IG4oKSkgJT4lIG11dGF0ZShkdXBsaWNhdGUgPSBpZl9lbHNlKG4gPT0gMiwgMSwgMCkpICU+JSBzZWxlY3QoLTIpDQogICAgDQogICAgZGYxIDwtIGxlZnRfam9pbihkZjEsIGR1cGxpY2F0ZSwgYnkgPSAidHJpYWwgbnVtYmVyIikNCiAgICBkZjEkaW5jbHVkZSA8LSBpZl9lbHNlKGRmMSRkdXBsaWNhdGUgPT0gMCwgMSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgaWZfZWxzZShkZjEkZHVwbGljYXRlID09IFRSVUUgJiBkZjEkZXllID09IGV5ZV8xX29yXzIsIDEsIDApKQ0KICAgIA0KICAgIGRmMiA8LSBkZjEgJT4lIGZpbHRlcihpbmNsdWRlID09IDEpDQogICAgZGYyDQogfQ0KIA0KIHNlbGVjdF9vbmVfc2FjY2FkZShkZikNCiB9DQoNCnNhY2NhZGVzX2RhdGFiYXNlIDwtIGltcG9ydGluZ19kZiAlPiUgDQogICAgZmlsdGVyKGZpbmFsX2NzdnMgIT0gIk5BIikgJT4lDQogICAgcG1hcF9kZih+Y3JlYXRlX2RhdGFiYXNlX3NhY2NhZGVzKC4uMSwuLjIsLi4zLC4uNCkpDQoNCnNhY2NhZGVzX2RhdGFiYXNlIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSBmaWx0ZXIoaXMuZG91YmxlKGBwZWFrX2R2YS9zYCkpICU+JSBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMCkNCg0Kc2FjY2FkZXNfZGF0YWJhc2Ukc2FjY2FkZV9zaXplIDwtIGlmX2Vsc2UoKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA+Ny41KSAmIChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPCAxMi41KSwgIjEwIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWZfZWxzZSgoc2FjY2FkZXNfZGF0YWJhc2UkYW1wbGl0dWRlID4gMjIuNSkgJiAoc2FjY2FkZXNfZGF0YWJhc2UkYW1wbGl0dWRlIDwgMjcuNSksICIyNSIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmX2Vsc2UoKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA+IDMyLjUpICYgKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA8IDM3LjUpLCAiMzUiLCJOQSIpKSkNCg0KDQoNCg0KDQpgYGANCg0Kc2lmdGluZyBkb3duIHRoZSBkYXRhDQoNCmBgYHtyfQ0KDQpzdW1tYXJpc2VkIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSANCiAgICBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMCkgJT4lDQogICAgZmlsdGVyKGBkdmEvc2AgPCAyMDAwKSAlPiUNCiAgICBncm91cF9ieShJRCwgU2Vzc2lvbiwgUnVuKSAlPiUNCiAgICBzZWxlY3QoSUQsIFNlc3Npb24sIFJ1bixgdHJpYWwgbnVtYmVyYCwgYHBlYWtfZHZhL3NgLCBgZHZhL3NgLCBhbXBsaXR1ZGUpICU+JSBzdW1tYXJpc2UocGVha19WID0gbWVhbihgcGVha19kdmEvc2ApLCBhdmdfViA9IG1lYW4oYGR2YS9zYCksIGFtcGxpdHVkZSA9IG1lYW4oYW1wbGl0dWRlKSkNCg0KDQp3b3JraW5nX2NzdiA8LSAiRzpcXFRlYW0gRHJpdmVzXFxSZXNlYXJjaCBUZWFtXFxQcm9qZWN0c1xcMjAxOCBEcml2aW5nIFNpbSBSZXByb2R1Y2liaWxpdHlcXDRfQW5hbHlzaXNfU2FjY2FkZXNcXHdvcmtpbmdfY3N2LmNzdiINCndyaXRlX2NzdihzdW1tYXJpc2VkLCBwYXRoID0gd29ya2luZ19jc3YpDQoNCmxtMSA8LSBsbWVyKHBlYWtfViB+IFJ1biArIFNlc3Npb24gKyBSdW4qU2Vzc2lvbiArIGFtcGxpdHVkZSArICgxfElEKSwgZGF0YSA9IHN1bW1hcmlzZWQsIG5hLmFjdGlvbiA9IG5hLmV4Y2x1ZGUpDQpzdW1tYXJ5KGxtMSkNCg0KbG0yIDwtIGxtZXIoYGR2YS9zYCB+IFJ1bipTZXNzaW9uICsgYW1wbGl0dWRlICsgKDF8SUQpLCBkYXRhID0gc2FjY2FkZXNfZGF0YWJhc2UsIG5hLmFjdGlvbiA9IG5hLmV4Y2x1ZGUpDQpzdW1tYXJ5KGxtMikNCnBsb3QobG0xKQ0KDQpzdW1tYXJpc2VkJFNlc3Npb24gPC0gc3VtbWFyaXNlZCRTZXNzaW9uICU+JSBhcy5mYWN0b3IoKQ0Kc3VtbWFyaXNlZCRSdW4gPC0gc3VtbWFyaXNlZCRSdW4gJT4lIGFzLmZhY3RvcigpDQpoZWFkKHN1bW1hcmlzZWQpDQpgYGANCg0KU3RhdGlzdGljYWwgYW5hbHlzZXMNCg0KYGBge3J9DQoNCnNhY2NhZGVfZGF0YWJhc2VfZm9yX1NQU1MgPC0gc2FjY2FkZXNfZGF0YWJhc2UgJT4lIHNlbGVjdCgpDQoNCg0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyLCByZXN1bHRzPSdoaWRlJ30NCg0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KHJlYWR4bCkNCmxpYnJhcnkobG1lNCkNCmxpYnJhcnkobG1lclRlc3QpDQpsaWJyYXJ5KHBzeWNoKQ0KDQpgYGANCg0KR2V0IHRoZSBSZWZlcmVuY2UgRGF0YWJhc2UNCg0KYGBge3J9DQogDQpGaWxlbmFtZV9EYXRhYmFzZSA8LSByZWFkX2V4Y2VsKCJHOi9UZWFtIERyaXZlcy9SZXNlYXJjaCBUZWFtL1Byb2plY3RzLzIwMTggRHJpdmluZyBTaW0gUmVwcm9kdWNpYmlsaXR5L0ZpbGUgUmVmZXJlbmNlIERhdGFiYXNlLnhsc3giLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNoZWV0ID0gMSkNCg0KQ291bnRyeV9kYXRhYmFzZSA8LSBGaWxlbmFtZV9EYXRhYmFzZSAlPiUgZmlsdGVyKFNjZW5hcmlvID09ICJDb3VudHJ5IikNCg0KDQpmaW5kX3NhY2NhZGVfY3N2X2ZpbGVuYW1lIDwtIGZ1bmN0aW9uKHgpIHsNCiAgIHkgPC0gIGxpc3QuZmlsZXMocGF0aCA9ICJHOlxcVGVhbSBEcml2ZXNcXFJlc2VhcmNoIFRlYW1cXFByb2plY3RzXFwyMDE4IERyaXZpbmcgU2ltIFJlcHJvZHVjaWJpbGl0eVxcNF9BbmFseXNpc19TYWNjYWRlc1xcIiwgDQogICAgICAgICAgIHBhdHRlcm4gPSBwYXN0ZTAoeCwiX1Byb3NhY2NhZGVfZmluYWwuY3N2IiksIA0KICAgICAgICAgICBmdWxsLm5hbWVzID0gVFJVRSwgcmVjdXJzaXZlID0gVFJVRSkNCiAgICB6IDwtIGlmX2Vsc2UobGVuZ3RoKHkpID09IDAsICJOQSIsIHlbMV0pICU+JSBhcy5jaGFyYWN0ZXIoKQ0KICAgICB6DQogICAgfQ0KDQoNCkNvdW50cnlfZGF0YWJhc2UkZmluYWxfY3N2cyA8LSBDb3VudHJ5X2RhdGFiYXNlJFNhY2NhZGVfcGF0dGVybiAlPiUgbGFwcGx5KGZpbmRfc2FjY2FkZV9jc3ZfZmlsZW5hbWUpDQoNCmltcG9ydGluZ19kZiA8LSBDb3VudHJ5X2RhdGFiYXNlICU+JSBzZWxlY3QoUGFydGljaXBhbnQsIFNlc3Npb24sIFJ1biwgZmluYWxfY3N2cykNCg0KDQpgYGANCg0KTG9hZCB0aGUgRGF0YQ0KDQpgYGB7cn0NCg0KY3JlYXRlX2RhdGFiYXNlX3NhY2NhZGVzIDwtIGZ1bmN0aW9uIChQYXJ0aWNpcGFudCwgU2Vzc2lvbiwgUnVuLCBmaW5hbF9jc3ZzKSB7DQogICANCiBmaWxlbmFtZSA8LSBmaW5hbF9jc3ZzICU+JSBhcy5jaGFyYWN0ZXIoKSAgIA0KICBkZiA8LSByZWFkX2NzdihmaWxlbmFtZSkNCiAgZGYkSUQgPC0gUGFydGljaXBhbnQgJT4lIGFzLmNoYXJhY3RlcigpDQogIGRmJFNlc3Npb24gPC0gU2Vzc2lvbiAlPiUgYXMuY2hhcmFjdGVyKCkNCiAgZGYkUnVuIDwtIFJ1biAlPiUgYXMuY2hhcmFjdGVyKCkNCiAgDQogDQogc2VsZWN0X29uZV9zYWNjYWRlIDwtIGZ1bmN0aW9uKGRmMSkgew0KICAgIGV5ZV8xIDwtIGRmMSAlPiUgZmlsdGVyKGV5ZSA9PSAxKSAlPiUgY291bnQoKSAlPiUgYXMubnVtZXJpYygpDQogICAgZXllXzIgPC0gZGYxICU+JSBmaWx0ZXIoZXllID09IDIpICU+JSBjb3VudCgpICU+JSBhcy5udW1lcmljKCkNCiAgICBleWVfMV9vcl8yIDwtIGlmX2Vsc2UoZXllXzEgPiBleWVfMiwgMSwgMikNCiAgICANCiAgICBkdXBsaWNhdGUgPC0gZGYxICU+JSBncm91cF9ieShgdHJpYWwgbnVtYmVyYCkgJT4lICBzdW1tYXJpc2UobiA9IG4oKSkgJT4lIG11dGF0ZShkdXBsaWNhdGUgPSBpZl9lbHNlKG4gPT0gMiwgMSwgMCkpICU+JSBzZWxlY3QoLTIpDQogICAgDQogICAgZGYxIDwtIGxlZnRfam9pbihkZjEsIGR1cGxpY2F0ZSwgYnkgPSAidHJpYWwgbnVtYmVyIikNCiAgICBkZjEkaW5jbHVkZSA8LSBpZl9lbHNlKGRmMSRkdXBsaWNhdGUgPT0gMCwgMSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgaWZfZWxzZShkZjEkZHVwbGljYXRlID09IFRSVUUgJiBkZjEkZXllID09IGV5ZV8xX29yXzIsIDEsIDApKQ0KICAgIA0KICAgIGRmMiA8LSBkZjEgJT4lIGZpbHRlcihpbmNsdWRlID09IDEpDQogICAgZGYyDQogfQ0KIA0KIHNlbGVjdF9vbmVfc2FjY2FkZShkZikNCiB9DQoNCnNhY2NhZGVzX2RhdGFiYXNlIDwtIGltcG9ydGluZ19kZiAlPiUgDQogICAgZmlsdGVyKGZpbmFsX2NzdnMgIT0gIk5BIikgJT4lDQogICAgcG1hcF9kZih+Y3JlYXRlX2RhdGFiYXNlX3NhY2NhZGVzKC4uMSwuLjIsLi4zLC4uNCkpDQoNCnNhY2NhZGVzX2RhdGFiYXNlIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSBmaWx0ZXIoaXMuZG91YmxlKGBwZWFrX2R2YS9zYCkpICU+JSBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMCkNCg0Kc2FjY2FkZXNfZGF0YWJhc2Ukc2FjY2FkZV9zaXplIDwtIGlmX2Vsc2UoKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA+Ny41KSAmIChzYWNjYWRlc19kYXRhYmFzZSRhbXBsaXR1ZGUgPCAxMi41KSwgIjEwIiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWZfZWxzZSgoc2FjY2FkZXNfZGF0YWJhc2UkYW1wbGl0dWRlID4gMjIuNSkgJiAoc2FjY2FkZXNfZGF0YWJhc2UkYW1wbGl0dWRlIDwgMjcuNSksICIyNSIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmX2Vsc2UoKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA+IDMyLjUpICYgKHNhY2NhZGVzX2RhdGFiYXNlJGFtcGxpdHVkZSA8IDM3LjUpLCAiMzUiLCJOQSIpKSkNCg0KDQoNCg0KDQpgYGANCg0Kc2lmdGluZyBkb3duIHRoZSBkYXRhDQoNCmBgYHtyfQ0KDQpzdW1tYXJpc2VkIDwtIHNhY2NhZGVzX2RhdGFiYXNlICU+JSANCiAgICBmaWx0ZXIoYHBlYWtfZHZhL3NgIDwgMjAwMCkgJT4lDQogICAgZmlsdGVyKGBkdmEvc2AgPCAyMDAwKSAlPiUNCiAgICBncm91cF9ieShJRCwgU2Vzc2lvbiwgUnVuKSAlPiUNCiAgICBzZWxlY3QoSUQsIFNlc3Npb24sIFJ1bixgdHJpYWwgbnVtYmVyYCwgYHBlYWtfZHZhL3NgLCBgZHZhL3NgLCBhbXBsaXR1ZGUpICU+JSANCiAgICBzdW1tYXJpc2UocGVha19WID0gbWVhbihgcGVha19kdmEvc2ApLCBhdmdfViA9IG1lYW4oYGR2YS9zYCksIGFtcGxpdHVkZSA9IG1lYW4oYW1wbGl0dWRlKSkNCg0KDQp3b3JraW5nX2NzdiA8LSAiRzpcXFRlYW0gRHJpdmVzXFxSZXNlYXJjaCBUZWFtXFxQcm9qZWN0c1xcMjAxOCBEcml2aW5nIFNpbSBSZXByb2R1Y2liaWxpdHlcXDRfQW5hbHlzaXNfU2FjY2FkZXNcXHdvcmtpbmdfY3N2LmNzdiINCndyaXRlX2NzdihzdW1tYXJpc2VkLCBwYXRoID0gd29ya2luZ19jc3YpDQoNCmxtMSA8LSBsbWVyKHBlYWtfViB+IFJ1biArIFNlc3Npb24gKyBSdW4qU2Vzc2lvbiArIGFtcGxpdHVkZSArICgxfElEKSwgZGF0YSA9IHN1bW1hcmlzZWQsIG5hLmFjdGlvbiA9IG5hLmV4Y2x1ZGUpDQpzdW1tYXJ5KGxtMSkNCg0KDQpsbTIgPC0gbG1lcihgZHZhL3NgIH4gUnVuKlNlc3Npb24gKyBhbXBsaXR1ZGUgKyAoMXxJRCksIGRhdGEgPSBzYWNjYWRlc19kYXRhYmFzZSwgbmEuYWN0aW9uID0gbmEuZXhjbHVkZSkNCnN1bW1hcnkobG0yKQ0KcGxvdChsbTEpDQoNCnN1bW1hcmlzZWQkU2Vzc2lvbiA8LSBzdW1tYXJpc2VkJFNlc3Npb24gJT4lIGFzLmZhY3RvcigpDQpzdW1tYXJpc2VkJFJ1biA8LSBzdW1tYXJpc2VkJFJ1biAlPiUgYXMuZmFjdG9yKCkNCmhlYWQoc3VtbWFyaXNlZCkNCmBgYA0KDQpTdGF0aXN0aWNhbCBhbmFseXNlcw0KDQpgYGB7cn0NCg0Kc2FjY2FkZV9kYXRhYmFzZV9mb3JfU1BTUyA8LSBzYWNjYWRlc19kYXRhYmFzZSAlPiUgc2VsZWN0KCkNCg0KDQpgYGANCg0K</div>
 
 
 
