@@ -109,7 +109,8 @@ session_levels <- c("F","1","2")
 wo_congruency <- task_response_database %>% group_by(ID, Session, Run) %>%
     summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                        percent_miss = mean(response_type == "Miss", na.rm = TRUE),
-                       percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+                       percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE),
+              avg_reaction_time = mean(reaction_time, na.rm = T))
 wo_congruency$Session <- wo_congruency$Session %>% factor(session_levels)
 wo_congruency$Run <- wo_congruency$Run %>% as.factor()
 
