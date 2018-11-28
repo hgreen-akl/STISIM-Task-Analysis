@@ -99,5 +99,7 @@ tester <- combined_results %>% select(`trial number`, eye, valid,`correct direct
 tester1 <- tester %>% filter(valid == 1) %>% group_by(`trial number`) %>% count()
 tester1 <- tester %>% filter(valid == 1) %>% group_by(eye) %>% summarise(mean_diff = mean(abs(difference)), sd_diff = sd(difference))
 
+
+
 ```
 

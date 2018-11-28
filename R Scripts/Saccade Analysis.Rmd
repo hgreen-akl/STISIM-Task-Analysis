@@ -52,16 +52,38 @@ create_database_saccades <- function (Participant, Session, Run, final_csvs) {
   df$Session <- Session %>% as.character()
   df$Run <- Run %>% as.character()
   
- df
-}
+ 
+ select_one_saccade <- function(df1) {
+    eye_1 <- df1 %>% filter(eye == 1) %>% count() %>% as.numeric()
+    eye_2 <- df1 %>% filter(eye == 2) %>% count() %>% as.numeric()
+    eye_1_or_2 <- if_else(eye_1 > eye_2, 1, 2)
+    
+    duplicate <- df1 %>% group_by(`trial number`) %>%  summarise(n = n()) %>% mutate(duplicate = if_else(n == 2, 1, 0)) %>% select(-2)
+    
+    df1 <- left_join(df1, duplicate, by = "trial number")
+    df1$include <- if_else(df1$duplicate == 0, 1,
+                          if_else(df1$duplicate == TRUE & df1$eye == eye_1_or_2, 1, 0))
+    
+    df2 <- df1 %>% filter(include == 1)
+    df2
+ }
+ 
+ select_one_saccade(df)
+ }
 
 saccades_database <- importing_df %>% 
     filter(final_csvs != "NA") %>%
     pmap_df(~create_database_saccades(..1,..2,..3,..4))
 
+saccades_database <- saccades_database %>% filter(is.double(`peak_dva/s`)) %>% filter(`peak_dva/s` < 2000)
+
 saccades_database$saccade_size <- if_else((saccades_database$amplitude >7.5) & (saccades_database$amplitude < 12.5), "10",
                                          if_else((saccades_database$amplitude > 22.5) & (saccades_database$amplitude < 27.5), "25",
                                          if_else((saccades_database$amplitude > 32.5) & (saccades_database$amplitude < 37.5), "35","NA")))
+
+
+
+
 
 ```
 
@@ -70,22 +92,32 @@ sifting down the data
 ```{r}
 
 summarised <- saccades_database %>% 
-    filter(`peak_dva/s` < 1500) %>%
-    filter(`dva/s` < 1500) %>%
+    filter(`peak_dva/s` < 2000) %>%
+    filter(`dva/s` < 2000) %>%
     group_by(ID, Session, Run) %>%
-    #group_by(saccade_size) %>%
-    summarise(max_velocity = mean(`peak_dva/s`, na.rm = T),
-              mean_velocity = mean(`dva/s`), na.rm = T)
-    #filter(saccade_size != "NA")
+    select(ID, Session, Run,`trial number`, `peak_dva/s`, `dva/s`, amplitude) %>% summarise(peak_V = mean(`peak_dva/s`), avg_V = mean(`dva/s`), amplitude = mean(amplitude))
 
 
-summarised
+working_csv <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\working_csv.csv"
+write_csv(summarised, path = working_csv)
+
+lm1 <- lmer(peak_V ~ Run + Session + Run*Session + amplitude + (1|ID), data = summarised, na.action = na.exclude)
+summary(lm1)
+
+lm2 <- lmer(`dva/s` ~ Run*Session + amplitude + (1|ID), data = saccades_database, na.action = na.exclude)
+summary(lm2)
+plot(lm1)
+
+summarised$Session <- summarised$Session %>% as.factor()
+summarised$Run <- summarised$Run %>% as.factor()
+head(summarised)
 ```
 
 Statistical analyses
 
 ```{r}
 
+saccade_database_for_SPSS <- saccades_database %>% select()
 
 
 ```
