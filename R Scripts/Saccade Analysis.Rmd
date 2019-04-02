@@ -75,7 +75,7 @@ saccades_database <- importing_df %>%
     filter(final_csvs != "NA") %>%
     pmap_df(~create_database_saccades(..1,..2,..3,..4))
 
-saccades_database <- saccades_database %>% filter(is.double(`peak_dva/s`)) %>% filter(`peak_dva/s` < 2000)
+saccades_database <- saccades_database %>% filter(is.double(`peak_dva/s`)) %>% filter(`peak_dva/s` < 2000) %>% filter(`dva/s` < 2000)
 
 saccades_database$saccade_size <- if_else((saccades_database$amplitude >7.5) & (saccades_database$amplitude < 12.5), "10",
                                          if_else((saccades_database$amplitude > 22.5) & (saccades_database$amplitude < 27.5), "25",
@@ -83,13 +83,14 @@ saccades_database$saccade_size <- if_else((saccades_database$amplitude >7.5) & (
 
 
 
-
+write_csv(saccades_database, file.choose())
 
 ```
 
 sifting down the data
 
 ```{r}
+saccades_database <- (read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccades_database.csv"))
 
 summarised <- saccades_database %>% 
     filter(`peak_dva/s` < 2000) %>%
