@@ -1,0 +1,58 @@
+---
+title: "Final Analysis"
+author: "Hayden Green"
+date: "3 April 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(readxl)
+library(lme4)
+library(lmerTest)
+library(psych)
+library(ggplot2)
+library(ggthemes)
+library(ggridges)
+```
+
+## R Markdown
+
+
+```{r results='hide'}
+
+saccades_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
+
+driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_final.csv")
+
+driving_perf_by_saccade <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_saccade_100_final.csv")
+
+## ER is missing all trials requiring a right trigger response in Fam S1    
+attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
+
+# creates a file where task performance data is given to the saccade data
+saccade_attn_joined <- saccades_database %>% 
+                        left_join(attention_performance_database, 
+                                  by = c("ID","Session","Run","trial number")) %>% 
+                        select()
+                            
+                                  
+```
+
+
+
+
+
+```{r pressure, echo=FALSE}
+
+saccades_database <- filet
+
+names(saccades_database)
+```
+
+
+```{r}
+names(attention_performance_database)
+```
+

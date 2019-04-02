@@ -81,9 +81,9 @@ saccades_database$saccade_size <- if_else((saccades_database$amplitude >7.5) & (
                                          if_else((saccades_database$amplitude > 22.5) & (saccades_database$amplitude < 27.5), "25",
                                          if_else((saccades_database$amplitude > 32.5) & (saccades_database$amplitude < 37.5), "35","NA")))
 
+saccades_database1 <- saccades_database %>% filter(valid == 1) 
 
-
-write_csv(saccades_database, file.choose())
+write_csv(saccades_database1, file.choose())
 
 ```
 
