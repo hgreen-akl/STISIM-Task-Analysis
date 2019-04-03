@@ -31,7 +31,7 @@ driving_perf_by_saccade <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2
 
 ## ER is missing all trials requiring a right trigger response in Fam S1    
 attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
-            select(ID, Session, Run, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
+            select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
                    reaction_time)
 
 # creates a file where task performance data is given to the saccade data
@@ -44,9 +44,10 @@ saccade_attn_joined <- saccades_database %>%
                                reaction_time, response_type) 
 
 KSS_data <- read_excel(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\KSS Scores.xlsx", sheet = 1) %>%
-                select(1:7) %>% gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4)
+                select(1:7) %>% gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4) %>% filter(kss_score != "NA")
 
 KSS_data$kss_score <- KSS_data$kss_score %>% as.numeric()
+KSS_data$Timepoint <- KSS_data$Timepoint %>% as.factor()
 
 ```
 
@@ -56,13 +57,20 @@ KSS_data$kss_score <- KSS_data$kss_score %>% as.numeric()
 
 ```{r, echo=FALSE}
 
-#This code doesn't work yet
-KSS_data %>% filter(!is.na(kss_score)) %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
-    group_by(Session, Timepoint) %>% 
-    summarise(mean = mean(kss_score),sd = sd(kss_score)) %>% 
-    ggplot(aes(x = Timepoint, y= mean, colour = Session, group = 3)) +
-    geom_line()
 
+KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
+    group_by(Session, Timepoint) %>% 
+    summarise(mean = mean(kss_score), sd = sd(kss_score),sem = sd(kss_score)/sqrt(n())) %>%
+    ggplot(aes(x = Timepoint, y= mean, shape = Session, group = Session)) +
+    geom_point() +
+    geom_line() +
+    scale_y_continuous(limits = c(1,9), breaks = c(1,2,3,4,5,6,7,8,9), expand = c(0,0)) +
+    geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem, width = .1)) +
+    theme_classic()
+    
+
+
+    
 ```
 
 
