@@ -15,12 +15,13 @@ library(psych)
 library(ggplot2)
 library(ggthemes)
 library(ggridges)
+library(ez)
 ```
 
 ## R Markdown
 
 
-```{r results='hide'}
+```{r results='hide', warning=FALSE, error=FALSE}
 
 saccades_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
 
@@ -29,30 +30,44 @@ driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\
 driving_perf_by_saccade <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_saccade_100_final.csv")
 
 ## ER is missing all trials requiring a right trigger response in Fam S1    
-attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
+attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
+            select(ID, Session, Run, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
+                   reaction_time)
 
 # creates a file where task performance data is given to the saccade data
 saccade_attn_joined <- saccades_database %>% 
                         left_join(attention_performance_database, 
                                   by = c("ID","Session","Run","trial number")) %>% 
-                        select()
-                            
-                                  
+                        select(ID,Session,Run,`trial number`,condition, task_condition, eye, 
+                               stimulus_left_right, task_arrow_dir, congruency,target_deviation,
+                               `correct direction`, duration, `dva/s`, `peak_dva/s`, amplitude, saccade_size, `stimulus onset delay`,
+                               reaction_time, response_type) 
+
+KSS_data <- read_excel(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\KSS Scores.xlsx", sheet = 1) %>%
+                select(1:7) %>% gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4)
+
+KSS_data$kss_score <- KSS_data$kss_score %>% as.numeric()
+
 ```
 
 
 
 
 
-```{r pressure, echo=FALSE}
+```{r, echo=FALSE}
 
-saccades_database <- filet
+#This code doesn't work yet
+KSS_data %>% filter(!is.na(kss_score)) %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
+    group_by(Session, Timepoint) %>% 
+    summarise(mean = mean(kss_score),sd = sd(kss_score)) %>% 
+    ggplot(aes(x = Timepoint, y= mean, colour = Session, group = 3)) +
+    geom_line()
 
-names(saccades_database)
 ```
 
 
 ```{r}
-names(attention_performance_database)
+
+
 ```
 
