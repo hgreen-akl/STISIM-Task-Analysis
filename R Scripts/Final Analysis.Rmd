@@ -21,6 +21,7 @@ library(ez)
 library(sjPlot)
 library(knitr)
 library(Hmisc)
+library(broom)
 ```
 
 ## R Markdown
@@ -69,27 +70,64 @@ KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
     ggplot(aes(x = Timepoint, y= mean, shape = Session, group = Session)) +
     geom_point() +
     geom_line() +
-    labs
+    labs(title = "KSS Scores",
+         x = " Timepoint",
+         y = "Mean KSS Score") +
     scale_y_continuous(limits = c(1,9), breaks = c(1,2,3,4,5,6,7,8,9), expand = c(0,0)) +
+    scale_x_discrete(labels = c("Baseline","Run 1","Run 2", "Run 3","Run 4"))+
     geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem, width = .1)) +
     theme_classic()
     
 
-y <- KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
+kss_summary <- KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
     group_by(Session, Timepoint) %>% 
     summarise(mean = mean(kss_score), sd = sd(kss_score),sem = sd(kss_score)/sqrt(n()))
 
-fit <- aov(kss_score ~ Session * Timepoint, data = KSS_data)
-summary(fit)
+kss_fit <- aov(kss_score ~ Session * Timepoint, data = KSS_data)
+print(summary(kss_fit))
+plot(kss_fit)
+kss_lm <- lm(kss_score ~ Session * Timepoint, data = KSS_data)
+tidy(kss_lm)
 ```
 
 
 #Plotting and analysis of Drivesim Data
 
 ```{r}
+driving_perf_by_distance$Trial <- driving_perf_by_distance$Trial %>% as.character()
 
-driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise(mean = mean(7:12,15,16), sd = sd(7:12,15,16),sem = sd(7:12,15,16)/sqrt(n()))
 
+driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% arrange(Trial)
+
+drive_perf_summary <- driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% filter(bin_number > 3)
+
+
+drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_mean, 
+                                  group = Timepoint, shape = Timepoint, 
+                                  colour = Timepoint)) +
+    geom_point() +
+    geom_line() +
+    labs(title = "Average Speed",
+         x = "Bin Number",
+         y = "Average Speed (km/h)") +
+    geom_errorbar(aes(ymin = avg_speed_mean - avg_speed_sem, ymax = avg_speed_mean + avg_speed_sem, width = .1)) +
+    theme_classic()
+
+
+drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepos_mean, 
+                                  group = Timepoint, colour = Timepoint, shape = Timepoint)) +
+                        geom_point() +
+                        geom_line() +
+                        geom_smooth( alpha = 0.3)+
+                        labs(title = "Lane Position",
+                             x = "Bin Number",
+                             y = "Lane Position m")
+                        theme_classic()
+    
+```
+
+
+```{r}
 
 ```
 
