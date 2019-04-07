@@ -84,10 +84,14 @@ kss_summary <- KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) 
     summarise(mean = mean(kss_score), sd = sd(kss_score),sem = sd(kss_score)/sqrt(n()))
 
 kss_fit <- aov(kss_score ~ Session * Timepoint, data = KSS_data)
-print(summary(kss_fit))
-plot(kss_fit)
-kss_lm <- lm(kss_score ~ Session * Timepoint, data = KSS_data)
+summary(kss_fit)
+
+kss_lm <- lmer(kss_score ~ Session * Timepoint + (1|Participant_ID), data = KSS_data)
 tidy(kss_lm)
+summary(kss_lm)
+
+ICC()
+
 ```
 
 
@@ -102,32 +106,45 @@ driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) 
 drive_perf_summary <- driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% filter(bin_number > 3)
 
 
-drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_mean, 
-                                  group = Timepoint, shape = Timepoint, 
-                                  colour = Timepoint)) +
-    geom_point() +
-    geom_line() +
-    labs(title = "Average Speed",
-         x = "Bin Number",
-         y = "Average Speed (km/h)") +
-    geom_errorbar(aes(ymin = avg_speed_mean - avg_speed_sem, ymax = avg_speed_mean + avg_speed_sem, width = .1)) +
-    theme_classic()
+mean_speed <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_mean, 
+                                  group = Timepoint, shape = Timepoint, colour = Timepoint)) +
+                                  geom_point() +
+                                  geom_line() +
+                                  labs(title = "Average Speed",
+                                       x = "Bin Number",
+                                       y = "Average Speed (km/h)") +
+                                  geom_errorbar(aes(ymin = avg_speed_mean - avg_speed_sem, ymax = avg_speed_mean + avg_speed_sem, width = .1)) +
+                                  theme_classic()
+mean_speed
 
-
-drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepos_mean, 
+mean_lanepos <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepos_mean +6, 
                                   group = Timepoint, colour = Timepoint, shape = Timepoint)) +
-                        geom_point() +
-                        geom_line() +
-                        geom_smooth( alpha = 0.3)+
-                        labs(title = "Lane Position",
-                             x = "Bin Number",
-                             y = "Lane Position m")
-                        theme_classic()
+                                  geom_line() +
+                                  geom_smooth( alpha = 0.3)+
+                                  labs(title = "Lane Position",
+                                       x = "Bin Number",
+                                       y = "Lane Position (m)") +
+                                  theme_classic()
     
+mean_lanepos
 ```
 
 
 ```{r}
+##Overall Performance
+attn_speed_overall <- attention_performance_database %>% 
+    group_by(ID, Session, Run, target_deviation) %>%
+    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time), count = n())
+
+attn_accuracy_overall <- attention_performance_database %>% 
+    group_by(ID, Session, Run, target_deviation)%>%
+    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time), count = n())
+
+##Performance based on congruency
+attention_performance_database %>% filter(response_type == "Correct") %>%
+    group_by(ID, Session, Run, congruency, target_deviation) %>% 
+    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time))
+    
 
 ```
 
