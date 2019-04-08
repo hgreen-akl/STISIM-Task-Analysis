@@ -18,9 +18,6 @@ library(ggplot2)
 library(ggthemes)
 library(ggridges)
 library(ez)
-library(sjPlot)
-library(knitr)
-library(Hmisc)
 library(broom)
 ```
 
@@ -87,10 +84,8 @@ kss_fit <- aov(kss_score ~ Session * Timepoint, data = KSS_data)
 summary(kss_fit)
 
 kss_lm <- lmer(kss_score ~ Session * Timepoint + (1|Participant_ID), data = KSS_data)
-tidy(kss_lm)
 summary(kss_lm)
 
-ICC()
 
 ```
 
@@ -124,27 +119,86 @@ mean_lanepos <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepo
                                   labs(title = "Lane Position",
                                        x = "Bin Number",
                                        y = "Lane Position (m)") +
+                                  geom_path()+
                                   theme_classic()
     
 mean_lanepos
+
+drive_perf_summary$Run <- drive_perf_summary$Run %>% as.factor()
+
+ridgeline_speed_avg <- drive_perf_summary %>%
+    ggplot(aes(x = avg_speed_mean, y = Trial, 
+               color = Run, point_color = Run, 
+               fill = Run, height = ..density..)) + 
+    geom_density_ridges(jittered_points = FALSE, quantile_lines = TRUE, scale = 0.7, 
+                      alpha = 0.1, vline_size = .5, vline_color = c("black"), point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7) +
+    scale_color_cyclical(values = c("blue", "red"))+
+    scale_fill_cyclical(values = c("blue", "red"), guide = "legend",
+                        labels = c("Run 1", "Run 2"))+
+    theme_classic()
+
+ridgeline_speed_avg
+
+
 ```
+
+
+
+```{r}
+ridgeline_speed_avg_of_sd <- drive_perf_summary %>%
+    ggplot(aes(x = sd_speed_mean, y = Trial, 
+               color = Run, point_color = Run, 
+               fill = Run, height = ..density..)) + 
+    geom_density_ridges(jittered_points = FALSE, quantile_lines = TRUE, scale = 0.7, 
+                      alpha = 0.1, vline_size = .5, vline_color = c("black"), point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.2, scale = .7) +
+    scale_color_cyclical(values = c("blue", "red"))+
+    scale_fill_cyclical(values = c("blue", "red"), guide = "legend",
+                        labels = c("Run 1", "Run 2"))+
+    theme_classic()
+
+ridgeline_speed_avg_of_sd 
+```
+
 
 
 ```{r}
 ##Overall Performance
-attn_speed_overall <- attention_performance_database %>% 
+attn_analysis <- attention_performance_database %>% 
     group_by(ID, Session, Run, target_deviation) %>%
-    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time), count = n())
+    summarise(mean_RT = mean(reaction_time), 
+              sd_RT = sd(reaction_time), 
+              count = n(),
+              percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+              percent_miss = mean(response_type == "Miss", na.rm = TRUE),
+              percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE)) %>%
+    mutate(Timepoint = str_c(Session,Run, sep = "_"))
+attn_analysis
 
-attn_accuracy_overall <- attention_performance_database %>% 
-    group_by(ID, Session, Run, target_deviation)%>%
-    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time), count = n())
+
+
 
 ##Performance based on congruency
-attention_performance_database %>% filter(response_type == "Correct") %>%
+attn_analysis_withcongruency <- attention_performance_database %>%
     group_by(ID, Session, Run, congruency, target_deviation) %>% 
-    summarise(mean_RT = mean(reaction_time), sd_RT = sd(reaction_time))
-    
+    summarise(mean_RT = mean(reaction_time), 
+              sd_RT = sd(reaction_time), 
+              count = n(),
+              percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+              percent_miss = mean(response_type == "Miss", na.rm = TRUE),
+              percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE)) %>%
+    mutate(Timepoint = str_c(Session,Run, sep = "_"))
+
+attn_analysis_withcongruency
+
+attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "_")) %>%
+    filter(response_type == "Correct") %>%
+    ggplot(aes(x = Timepoint, y = reaction_time, colour = congruency)) +
+    geom_boxplot()
+
 
 ```
 
