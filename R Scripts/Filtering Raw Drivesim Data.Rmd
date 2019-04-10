@@ -10,9 +10,7 @@ output: html_document
 library(tidyverse)
 library(readxl)
 library(signal)
-    
-
-
+   
 ```
 
 
@@ -21,27 +19,11 @@ library(signal)
 ```{r}
 # Relocating the csv files
 
-filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx"  
-list_of_DAT_files <- read_xlsx(filename_Database, sheet = "Scenario Coding") %>% 
-  mutate(pattern_name = paste0(Participant,"_", Run_Number)) %>% 
-    filter(Scenario == "Country", CSV_checked == "Yes")
-
-load_trimmed_and_relocate <- function(df) {
-  pat <- df
-  file_to_check <<- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
-                               pattern = paste0("?",pat,"_checked"), recursive = TRUE, full.names = TRUE)
-  csv_to_check <- read_csv(file_to_check, col_names = TRUE) %>% data.frame() %>% as_tibble()
-  csv_to_check <- csv_to_check %>% mutate(session = rep("F",times = nrow(csv_to_check)) ,
-                          scenario = rep("Country",times = nrow(csv_to_check)))
-  
-  save_loc <- paste0("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/7_Filtered_data/",pat,"_checked.csv")
-  csv_to_check %>% write_csv(path = save_loc, col_names = TRUE, new)
-}
+list_of_checked_files <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\7_Filtered_data\\", 
+                                    pattern = "*_checked.csv", full.names = TRUE)
 
 
-list_of_DAT_files %>% select(pattern_name) %>% map(load_trimmed_and_relocate)
-
-
+check_csv <- read_csv(list_of_checked_files[1])
 
 
 ```
