@@ -47,7 +47,10 @@ saccade_attn_joined <- saccades_database %>%
                                reaction_time, response_type) 
 
 KSS_data <- read_excel(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\KSS Scores.xlsx", sheet = 1) %>%
-                select(1:7) %>% gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4) %>% filter(kss_score != "NA") %>% as.tibble()
+                select(1:7) %>% 
+                gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4) %>%
+                dplyr::filter(kss_score != "NA") %>% 
+                as.tibble()
 
 KSS_data$kss_score <- KSS_data$kss_score %>% as.numeric()
 KSS_data$Timepoint <- KSS_data$Timepoint %>% as.factor()
@@ -65,8 +68,8 @@ KSS_data %>% select(Session,Timepoint, Participant_ID,kss_score) %>%
     group_by(Session, Timepoint) %>% 
     summarise(mean = mean(kss_score), sd = sd(kss_score),sem = sd(kss_score)/sqrt(n())) %>%
     ggplot(aes(x = Timepoint, y= mean, shape = Session, group = Session)) +
-    geom_point() +
-    geom_line() +
+    geom_point(size = 2) +
+    geom_line(size = .5) +
     labs(title = "KSS Scores",
          x = " Timepoint",
          y = "Mean KSS Score") +
@@ -98,7 +101,7 @@ driving_perf_by_distance$Trial <- driving_perf_by_distance$Trial %>% as.characte
 
 driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% arrange(Trial)
 
-drive_perf_summary <- driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% filter(bin_number > 3)
+drive_perf_summary <- driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% dplyr::filter(bin_number > 3)
 
 
 mean_speed <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_mean, 
@@ -108,7 +111,8 @@ mean_speed <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_me
                                   labs(title = "Average Speed",
                                        x = "Bin Number",
                                        y = "Average Speed (km/h)") +
-                                  geom_errorbar(aes(ymin = avg_speed_mean - avg_speed_sem, ymax = avg_speed_mean + avg_speed_sem, width = .1)) +
+                                  geom_errorbar(aes(ymin = avg_speed_mean - avg_speed_sem, 
+                                                    ymax = avg_speed_mean + avg_speed_sem, width = .1)) +
                                   theme_classic()
 mean_speed
 
@@ -164,6 +168,7 @@ ridgeline_speed_avg_of_sd
 ```
 
 
+Attention task Data
 
 ```{r}
 ##Overall Performance
@@ -199,6 +204,25 @@ attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "
     ggplot(aes(x = Timepoint, y = reaction_time, colour = congruency)) +
     geom_boxplot()
 
+
+```
+
+#Saccade Performance Analysis
+
+```{r}
+saccade_attn_joined <- saccade_attn_joined %>% 
+                        mutate(Timepoint = str_c(Session,Run, sep = "_")) 
+names(saccade_attn_joined)
+
+saccade_attn_joined %>% 
+    ggplot(aes(x = `trial number`, y = reaction_time - `stimulus onset delay`, shape = response_type)) +
+    geom_point() +
+    theme_classic()
+
+saccade_attn_joined %>% 
+    ggplot(aes(x = `trial number`, y =`stimulus onset delay`, shape = response_type)) +
+    geom_point() +
+    theme_classic()
 
 ```
 

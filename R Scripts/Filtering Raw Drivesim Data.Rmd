@@ -2,7 +2,9 @@
 title: "Filtering Raw Data"
 author: "Hayden Green"
 date: "9 April 2019"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 
@@ -10,23 +12,89 @@ output: html_document
 library(tidyverse)
 library(readxl)
 library(signal)
-   
+library(cowplot)
 ```
 
 
 
 
 ```{r}
-# Relocating the csv files
+# Reading a fresh raw CSV file
 
 list_of_checked_files <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\7_Filtered_data\\", 
                                     pattern = "*_checked.csv", full.names = TRUE)
 
 
-check_csv <- read_csv(list_of_checked_files[1])
+checked_csv <- read_csv(list_of_checked_files[1])
+
+unfiltered_speed_plot <- checked_csv %>% 
+                         ggplot(aes(x= Total_dist, y = Speed)) + 
+                         geom_line() +
+                         ylim(90,110)+
+                         theme_classic()
+unfiltered_speed_plot
+
+unfiltered_lanepos_plot <- checked_csv %>% 
+                         ggplot(aes(x= Total_dist, y = Lateral_Lane_Pos +6)) + 
+                         geom_line() +
+                         ylab("Lateral Lane Position (m)")+
+                         theme_classic()
+unfiltered_lanepos_plot
+
+#checked_csv %>% mutate(filtered_speed = FilterOfOrder(n = 1, x = Speed, type = "high", Wc = 0.1 ))
+
+#filt_speed_plot <- checked_csv %>% fil() 
+binned_csv <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\AL\\Session 1\\AL_10_binned_by_dist_100.csv")
+binned_csv <- binned_csv %>% dplyr::filter(`bin_number` < 301)
+
+mean(checked_csv$Speed)
+sd(checked_csv$Speed)
+mean(checked_csv$Lateral_Lane_Pos+6)
+sd(checked_csv$Lateral_Lane_Pos+6)
+
+
+
+
+mean(binned_csv$sd_speed)
+sd(binned_csv$avg_speed)
+mean(binned_csv$sd_lanepos)
+sd(binned_csv$avg_lanepos+6)
+
+
+```
+
+# Filtering the data
+
+```{r}
+#Setting the parameteres of the highpass filter (first order, 0.1Hz)
+bfhigh <- butter(1, c(0,0.1), type = "high")
+checked_csv <- checked_csv %>%
+               dplyr::filter(Total_dist > 900) %>% 
+               mutate(filtered_speed = filter(bfhigh,Speed), filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6))
+
+filtered_speed_plot <- checked_csv %>% 
+                         ggplot(aes(x= Total_dist, y = filtered_speed)) + 
+                         geom_line() +
+                         ylim(-1,1) +
+                         theme_classic()
+
+
+filtered_lanepos_plot <- checked_csv %>% 
+                         ggplot(aes(x= Total_dist, y = filtered_lane_pos)) + 
+                         geom_line() +
+                         ylab("Lateral Lane Position (m)")+
+                         theme_classic()
+
+
+plot_grid(unfiltered_lanepos_plot, filtered_lanepos_plot, labels =  c("Lane Pos Unfiltered","Lane Pos 0.1HZ Filtered"), scale = 1)
 
 
 ```
 
 
+```{r}
+
+plot_grid(unfiltered_speed_plot, filtered_speed_plot, labels =  c("Speed Unfiltered","0.1HZ Filtered"), scale = 1)
+
+```
 
