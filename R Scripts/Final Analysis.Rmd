@@ -211,18 +211,46 @@ attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "
 
 ```{r}
 saccade_attn_joined <- saccade_attn_joined %>% 
-                        mutate(Timepoint = str_c(Session,Run, sep = "_")) 
+                        mutate(Timepoint = factor(str_c(Session,Run, sep = "_"), levels = c("F_1", "1_1", "1_2","2_1","2_2")))
 names(saccade_attn_joined)
 
-saccade_attn_joined %>% 
-    ggplot(aes(x = `trial number`, y = reaction_time - `stimulus onset delay`, shape = response_type)) +
-    geom_point() +
-    theme_classic()
 
-saccade_attn_joined %>% 
-    ggplot(aes(x = `trial number`, y =`stimulus onset delay`, shape = response_type)) +
-    geom_point() +
-    theme_classic()
+
+organised_saccade_data <- saccade_attn_joined %>% dplyr::filter(amplitude > 2)
+organised_saccade_data$saccade_bin <- if_else((organised_saccade_data$amplitude > 2) & (organised_saccade_data$amplitude < 15), "5-15",
+                                         if_else((organised_saccade_data$amplitude > 15) & (organised_saccade_data$amplitude < 25), "20-30",
+                                         if_else((organised_saccade_data$amplitude > 25) & (organised_saccade_data$amplitude < 40), "30-40","NA"))) %>% as.factor()
+organised_saccade_data$saccade_bin <- organised_saccade_data$saccade_bin %>% factor(levels = c("5-15","20-30","30-40", "NA"))
+organised_saccade_data$Run <- factor(organised_saccade_data$Run)
+
+organised_saccade_data %>% dplyr::filter(saccade_bin != "NA") %>% group_by(Timepoint,saccade_bin) %>% summarise(n())
+
+organised_saccade_data %>% 
+    dplyr::filter(saccade_bin != "NA") %>% 
+    dplyr::filter(Session != "F") %>% 
+    dplyr::filter(`peak_dva/s` <= 1200) %>%
+    group_by(ID, Session, Run, saccade_bin) %>%
+    summarise(mean_peak_velocity = mean(`peak_dva/s`), sd_peak_velocity = sd(`peak_dva/s`), mean_velocity = mean(), sd_velocity = sd())
+
+
+saccade_velocity_by_amplitude <- organised_saccade_data %>% 
+    dplyr::filter(saccade_bin != "NA") %>% 
+    dplyr::filter(Session != "F") %>% 
+    dplyr::filter(`peak_dva/s` <= 1200) %>%
+    ggplot(aes(x = Session, y = `peak_dva/s`, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = .6, color = "black")+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
+        ylab("Peak Saccade Velocity (\u00B0/s)")+
+        scale_y_continuous(limits = c(0,1000), breaks = c(0,200,400,600,800,1000), expand = c(0,0.2))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        facet_wrap(~saccade_bin) 
+
+
+saccade_velocity_by_amplitude   
+ggsave(filename = "Analysis Figures\\Saccade_boxplot_byamplitudes.eps", 
+       saccade_velocity_by_amplitude, dpi = 600, device = "eps", width =  10, height = 7)
 
 ```
 
