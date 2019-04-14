@@ -208,14 +208,15 @@ attention_RT_boxplot <- attention_performance_database %>%
     filter(response_type == "Correct") %>% 
     filter(Session != "F") %>%
     ggplot(aes(x = Session, y = reaction_time, fill = Run)) +
-    geom_boxplot(outlier.shape = NA, size = .6, color = "black")+
+    geom_boxplot(outlier.shape = NA, size = .7, color = "black", fatten = .9)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
         ylab("Reaction time(s)")+
         scale_y_continuous(limits = c(0,1.5), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
-        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), line = )+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
+              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7))+
         facet_wrap(~congruency)
 attention_RT_boxplot
 
@@ -239,11 +240,9 @@ attention_performance_database %>%
 #Saccade Performance Analysis
 
 ```{r}
-saccade_attn_joined <- saccade_attn_joined %>% 
-                        mutate(Timepoint = factor(str_c(Session,Run, sep = "_"), levels = c("F_1", "1_1", "1_2","2_1","2_2")))
+
+saccade_attn_joined <- saccade_attn_joined %>% mutate(Timepoint = factor(str_c(Session,Run, sep = "_")))
 names(saccade_attn_joined)
-
-
 
 organised_saccade_data <- saccade_attn_joined %>% dplyr::filter(amplitude > 2)
 organised_saccade_data$saccade_bin <- if_else((organised_saccade_data$amplitude > 2) & (organised_saccade_data$amplitude < 15), "5-15",
@@ -254,27 +253,21 @@ organised_saccade_data$Run <- factor(organised_saccade_data$Run)
 
 organised_saccade_data %>% dplyr::filter(saccade_bin != "NA") %>% group_by(Timepoint,saccade_bin) %>% summarise(n())
 
-organised_saccade_data %>% 
-    dplyr::filter(saccade_bin != "NA") %>% 
-    dplyr::filter(Session != "F") %>% 
-    dplyr::filter(`peak_dva/s` <= 1200) %>%
-    group_by(ID, Session, Run, saccade_bin) %>%
-    summarise(mean_peak_velocity = mean(`peak_dva/s`), sd_peak_velocity = sd(`peak_dva/s`), mean_velocity = mean(), sd_velocity = sd())
-
-
 saccade_velocity_by_amplitude <- organised_saccade_data %>% 
     dplyr::filter(saccade_bin != "NA") %>% 
     dplyr::filter(Session != "F") %>% 
     dplyr::filter(`peak_dva/s` <= 1200) %>%
     ggplot(aes(x = Session, y = `peak_dva/s`, fill = Run)) +
-        geom_boxplot(outlier.shape = NA, size = .6, color = "black")+
+        geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
         ylab("Peak Saccade Velocity (\u00B0/s)")+
         scale_y_continuous(limits = c(0,1000), expand = c(0,0.4))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
-        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank())+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
+              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              text = element_text(size = 12))+
         facet_wrap(~saccade_bin) 
 
 
