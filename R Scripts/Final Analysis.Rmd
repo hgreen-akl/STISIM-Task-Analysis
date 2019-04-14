@@ -32,6 +32,8 @@ driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\
 
 driving_perf_by_saccade <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_saccade_100_final.csv")
 
+filtered_driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_filtered_final.csv")
+
 ## ER is missing all trials requiring a right trigger response in Fam S1    
 attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
             select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
@@ -97,12 +99,22 @@ summary(kss_lm)
 
 ```{r}
 driving_perf_by_distance$Trial <- driving_perf_by_distance$Trial %>% as.character()
-
+driving_perf_by_distance$Trial <- driving_perf_by_distance$Trial %>% factor(levels = c("F","1","2"))
+driving_perf_by_distance$Run <- driving_perf_by_distance$Run %>% factor()
 
 driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% arrange(Trial)
 
 drive_perf_summary <- driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:16) %>% summarise_at(vars(avg_speed:sd_steering),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% dplyr::filter(bin_number > 3)
 
+filtered_driving_perf_by_distance$Trial <- filtered_driving_perf_by_distance$Trial %>% as.character()
+
+
+filtered_driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:19) %>% summarise_at(vars(avg_speed:sd_filt_lanepos),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% arrange(Trial)
+
+filtered_drive_perf_summary <- filtered_driving_perf_by_distance %>% group_by(Trial, Run, bin_number) %>% select (7:19) %>% summarise_at(vars(avg_speed:sd_filt_lanepos),list(mean = ~mean(.),sd = ~sd(.),sem = (~sd(.)/sqrt(n())))) %>% mutate(Timepoint = str_c(Trial,Run, sep = "_" )) %>% dplyr::filter(bin_number > 3)
+
+filtered_drive_perf_summary$Trial <- filtered_drive_perf_summary$Trial %>% factor(levels = c("F","1","2"))
+filtered_drive_perf_summary$Run <- filtered_drive_perf_summary$Run %>% factor()
 
 mean_speed <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_speed_mean, 
                                   group = Timepoint, shape = Timepoint, colour = Timepoint)) +
@@ -119,7 +131,6 @@ mean_speed
 mean_lanepos <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepos_mean +6, 
                                   group = Timepoint, colour = Timepoint, shape = Timepoint)) +
                                   geom_line() +
-                                  geom_smooth( alpha = 0.3)+
                                   labs(title = "Lane Position",
                                        x = "Bin Number",
                                        y = "Lane Position (m)") +
@@ -127,6 +138,80 @@ mean_lanepos <- drive_perf_summary %>% ggplot(aes(x = bin_number, y = avg_lanepo
                                   theme_classic()
     
 mean_lanepos
+
+filtered_lanepos <- filtered_drive_perf_summary %>% ggplot(aes(x = bin_number, y = ang_filt_lanepos_sd , 
+                                  group = Timepoint, shape = Timepoint)) +
+                                  geom_line() +
+                                  geom_smooth( alpha = 0.3)+
+                                  labs(title = "Lane Position",
+                                       x = "Bin Number",
+                                       y = "Lane Position (m)") +
+                                  geom_path()+
+                                  theme_classic()
+filtered_lanepos
+
+filtered_lanepos_variability <- filtered_drive_perf_summary %>% 
+    ggplot(aes(x = Trial, y = sd_filt_lanepos_mean, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
+        ylab("SD of Lane Position (m)")+
+        scale_y_continuous(limits = c(0,.5), expand = c(0,0.4))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
+              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              text = element_text(size = 12))
+    
+filtered_lanepos_variability_boxplot
+
+unfiltered_lanepos_var_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
+    ggplot(aes(x = Trial, y = sd_lanepos_mean, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = .9, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = .9) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 0.9) +
+        ylab("SD of Lane Position (m)")+
+        scale_y_continuous(limits = c(0,2), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              text = element_text(size = 14))
+
+unfiltered_lanepos_var_boxplot
+ggsave(filename = "Analysis Figures\\unfiltered_lanepos_var_boxplot.eps", 
+       unfiltered_lanepos_var_boxplot, dpi = 600, device = "eps", width =  10, height = 7)
+
+unfiltered_avg_Speed_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
+    ggplot(aes(x = Trial, y = avg_speed_mean, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = .9, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = .9) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 0.9) +
+        ylab("Average Speed (km/h)")+
+        scale_y_continuous(limits = c(96,101), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              text = element_text(size = 14))
+
+unfiltered_avg_Speed_boxplot
+ggsave(filename = "Analysis Figures\\unfiltered_avg_Speed_boxplot.eps", 
+       unfiltered_avg_Speed_boxplot, dpi = 600, device = "eps", width =  10, height = 7)
+
+unfiltered_avg_Speed_violin <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
+    ggplot(aes(x = Trial, y = avg_speed_mean, fill = Run)) +
+        geom_violin(outlier.shape = NA, size = .9, color = "black",fatten = 1)+
+        stat_summary(fun.data=mean_sdl, mult=1,geom="pointrange") +
+        ylab("Average Speed (km/h)")+
+        scale_y_continuous(limits = c(96,101), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              text = element_text(size = 14))
+
+unfiltered_avg_Speed_violin
 
 drive_perf_summary$Run <- drive_perf_summary$Run %>% as.factor()
 
@@ -203,24 +288,26 @@ attention_performance_database$Session <- factor(attention_performance_database$
 
 attention_performance_database$Run <- factor(attention_performance_database$Run, levels = c("1", "2"))
 
+
 attention_RT_boxplot <- attention_performance_database %>% 
     mutate(Timepoint = str_c(Session,Run, sep = "_")) %>%
     filter(response_type == "Correct") %>% 
     filter(Session != "F") %>%
     ggplot(aes(x = Session, y = reaction_time, fill = Run)) +
-    geom_boxplot(outlier.shape = NA, size = .7, color = "black", fatten = .9)+
+    geom_boxplot(outlier.shape = NA, size = .8, color = "black",fatten = .9)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
         ylab("Reaction time(s)")+
         scale_y_continuous(limits = c(0,1.5), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
-        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
-              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7))+
+        theme(legend.key.size = unit(2.5,"line"), strip.background = element_blank(), 
+              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              text = element_text(size = 13))+
         facet_wrap(~congruency)
 attention_RT_boxplot
 
-ggsave(filename = "Analysis Figures\\Attention_task_boxplot_bycongruency.eps", 
+dggsave(filename = "Analysis Figures\\Attention_RT_boxplot_bycongruency.eps", 
        attention_RT_boxplot, dpi = 600, device = "eps", width =  10, height = 7)
 
 attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "_")) %>%
@@ -234,6 +321,40 @@ attention_performance_database %>%
     filter(Session != "F") %>% 
     group_by(ID, Run, Session, congruency, response_type) %>%
     summarise(n())
+
+task_accuracy_bar <- attention_performance_database %>%
+    dplyr::filter(Session != "F") %>% 
+    dplyr::filter(!is.na(response_type)) %>%
+    mutate(Timepoint = factor(str_c(Session,Run, sep = "_"))) %>%
+    ggplot(aes(x = response_type, group = Timepoint, fill = response_type))+
+        geom_bar(position = "dodge",aes(y = ..prop.., fill= factor(response_type), stat = "count")) +
+        scale_y_continuous(labels = scales::percent_format()) +
+        scale_fill_grey(start = 0.2, end = 0.7)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
+              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              text = element_text(size = 12))+
+        facet_wrap(~Timepoint, nrow = 1, strip.position = "bottom")
+
+task_accuracy_bar
+
+prop_correct_line <- attention_performance_database %>%
+    dplyr::filter(Session != "F") %>% 
+    dplyr::filter(response_type == "correct") %>%
+    mutate(Timepoint = factor(str_c(Session,Run, sep = "_"))) %>%
+    ggplot(aes(x = Timepoint))+
+    geom_point(aes(y = prop))
+
+attention_performance_database$ID <- factor(attention_performance_database$ID)
+task_accuracy_props <- attention_performance_database %>%
+    dplyr::filter(response_type != "NA") %>% 
+    group_by(ID, Session, Run) %>% 
+    count(response_type) %>%
+    mutate(proportion = prop.table(n)) %>%
+    mutate(Timepoint = factor(str_c(Session,Run, sep = "_")))
+    
+
+task_accuracy_props
 
 ```
 
@@ -283,6 +404,8 @@ organised_saccade_data %>%
     summarise(n(), avg_peak = mean(`peak_dva/s`), sd_peak = sd(`peak_dva/s`), 
               avg_meanvel = mean(`dva/s`), sd_meanvel = sd(`dva/s`)) %>% 
     write.csv(file = "Analysis csvs/saccade summary by bin.csv")
+
+
 
 
 

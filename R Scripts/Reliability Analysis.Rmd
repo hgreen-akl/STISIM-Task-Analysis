@@ -10,13 +10,13 @@ library(tidyverse)
 library(tidyselect)
 library(ggthemes)
 library(ggridges)
-library(xlsx)
 library(psy)
 library(psych)
 library(irr)
 library(ez)
 library(data.table)
 library(blandr)
+library(readxl)
 
 file_to_import <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/", pattern = "?KSS Scores.xlsx", recursive = TRUE, full.names = TRUE)
 
@@ -51,7 +51,7 @@ ezANOVA(na_removed, dv = value, wid = Participant_ID, within = .(Variable, Sessi
 
 binned_files_saccade <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?binned_by_saccade_100", recursive = TRUE, full.names = TRUE)
 
-binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
+binned_files_distance <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/7_Filtered_data/", pattern = "?binned_by_dist_100", recursive = TRUE, full.names = TRUE)
 
 
 database_by_distance <- binned_files_distance %>% map_df(~create_database_dist(.))
@@ -62,7 +62,7 @@ database_by_saccade$Run <- database_by_saccade$Run %>% as.factor()
 
 create_database_dist <- function (x) {
   
-        df <- read_csv(x, col_types = "???????????????????c?d?")
+        df <- read_csv(x, col_types = "?????????????????????c?d?")
 
         df$ID <- df$ID %>% as.character()
         df$File_Number <- df$File_Number %>% as.double()
@@ -90,7 +90,7 @@ create_database_saccade <- function (x) {
 filename_by_dist_100 <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/binned_by_dist_100_final.csv"
 filename_by_saccade_100 <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/binned_by_saccade_100_final.csv"
 
-write.csv(database_by_distance, filename_by_dist_100)
+write.csv(database_by_distance, file.choose())
 write.csv(database_by_saccade, filename_by_saccade_100)
 
 database_by_distance <- read_csv(filename_by_dist_100) %>% select(-1)
