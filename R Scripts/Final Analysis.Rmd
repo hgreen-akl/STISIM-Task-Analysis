@@ -230,6 +230,7 @@ ridgeline_speed_avg <- drive_perf_summary %>%
 
 ridgeline_speed_avg
 
+drive_perf_summary %>% 
 
 ```
 
@@ -307,8 +308,10 @@ attention_RT_boxplot <- attention_performance_database %>%
         facet_wrap(~congruency)
 attention_RT_boxplot
 
-dggsave(filename = "Analysis Figures\\Attention_RT_boxplot_bycongruency.eps", 
+ggsave(filename = "Analysis Figures\\Attention_RT_boxplot_bycongruency.eps", 
        attention_RT_boxplot, dpi = 600, device = "eps", width =  10, height = 7)
+ggsave(filename = "Analysis Figures\\Attention_RT_boxplot_bycongruency.jpg", 
+       attention_RT_boxplot, dpi = 600, device = "jpg", width =  10, height = 7)
 
 attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "_")) %>%
     filter(response_type == "Correct") %>% 
@@ -347,14 +350,14 @@ prop_correct_line <- attention_performance_database %>%
 
 attention_performance_database$ID <- factor(attention_performance_database$ID)
 task_accuracy_props <- attention_performance_database %>%
-    dplyr::filter(response_type != "NA") %>% 
-    group_by(ID, Session, Run) %>% 
-    count(response_type) %>%
-    mutate(proportion = prop.table(n)) %>%
-    mutate(Timepoint = factor(str_c(Session,Run, sep = "_")))
+    dplyr::filter(response_type != "NA") %>%
+    dplyr::filter(Session !="F") %>%
+    mutate(Timepoint = factor(str_c(Session,Run, sep = "_"))) %>%
+    group_by(ID, Timepoint, response_type) %>% 
+    summarise(n(), percent = n()/120*100)
     
 
-task_accuracy_props
+task_accuracy_props %>% write_csv(path = "Analysis csvs/attention_taskperf_accuracy.csv")
 
 ```
 
@@ -395,6 +398,8 @@ saccade_velocity_by_amplitude <- organised_saccade_data %>%
 saccade_velocity_by_amplitude   
 ggsave(filename = "Analysis Figures\\Saccade_boxplot_byamplitudes.eps", 
        saccade_velocity_by_amplitude, dpi = 600, device = "eps", width =  10, height = 7)
+ggsave(filename = "Analysis Figures\\Saccade_boxplot_byamplitudes.jpg", 
+       saccade_velocity_by_amplitude, dpi = 600, device = "jpg", width =  10, height = 7)
 
 organised_saccade_data %>% 
     dplyr::filter(saccade_bin != "NA") %>% 
@@ -414,7 +419,7 @@ saccade_mean_velocity_by_amplitude <- organised_saccade_data %>%
         geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
-        ylab("Peak Saccade Velocity (\u00B0/s)")+
+        ylab("Mean Saccade Velocity (\u00B0/s)")+
         scale_y_continuous(limits = c(0,600), expand = c(0,0.4))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
@@ -427,7 +432,8 @@ saccade_mean_velocity_by_amplitude <- organised_saccade_data %>%
 saccade_mean_velocity_by_amplitude   
 ggsave(filename = "Analysis Figures\\Saccade_meanvelocity_boxplot_byamplitudes.eps", 
        saccade_mean_velocity_by_amplitude, dpi = 600, device = "eps", width =  10, height = 7)
-
+ggsave(filename = "Analysis Figures\\Saccade_meanvelocity_boxplot_byamplitudes.jpg", 
+       saccade_mean_velocity_by_amplitude, dpi = 600, device = "jpg", width =  10, height = 7)
 
 ```
 
