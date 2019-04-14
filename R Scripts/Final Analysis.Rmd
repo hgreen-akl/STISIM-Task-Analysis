@@ -215,11 +215,11 @@ attention_RT_boxplot <- attention_performance_database %>%
         scale_y_continuous(limits = c(0,1.5), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
-        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank())+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), line = )+
         facet_wrap(~congruency)
 attention_RT_boxplot
 
-ggsave(filename = "Analysis Figures\\Attention_task_boxplot_byamplitudes.eps", 
+ggsave(filename = "Analysis Figures\\Attention_task_boxplot_bycongruency.eps", 
        attention_RT_boxplot, dpi = 600, device = "eps", width =  10, height = 7)
 
 attention_performance_database %>% mutate(Timepoint = str_c(Session,Run, sep = "_")) %>%
