@@ -150,7 +150,7 @@ filtered_lanepos <- filtered_drive_perf_summary %>% ggplot(aes(x = bin_number, y
                                   theme_classic()
 filtered_lanepos
 
-filtered_lanepos_variability <- filtered_drive_perf_summary %>% 
+filtered_lanepos_variability_boxplot <- filtered_drive_perf_summary %>% 
     ggplot(aes(x = Trial, y = sd_filt_lanepos_mean, fill = Run)) +
         geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
@@ -406,7 +406,27 @@ organised_saccade_data %>%
     write.csv(file = "Analysis csvs/saccade summary by bin.csv")
 
 
+saccade_mean_velocity_by_amplitude <- organised_saccade_data %>% 
+    dplyr::filter(saccade_bin != "NA") %>% 
+    dplyr::filter(Session != "F") %>% 
+    dplyr::filter(`dva/s` <= 1000) %>%
+    ggplot(aes(x = Session, y = `dva/s`, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
+        ylab("Peak Saccade Velocity (\u00B0/s)")+
+        scale_y_continuous(limits = c(0,600), expand = c(0,0.4))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
+              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              text = element_text(size = 12))+
+        facet_wrap(~saccade_bin) 
 
+
+saccade_mean_velocity_by_amplitude   
+ggsave(filename = "Analysis Figures\\Saccade_meanvelocity_boxplot_byamplitudes.eps", 
+       saccade_mean_velocity_by_amplitude, dpi = 600, device = "eps", width =  10, height = 7)
 
 
 ```
