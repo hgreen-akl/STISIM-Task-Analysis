@@ -167,15 +167,15 @@ filtered_lanepos_variability_boxplot
 
 unfiltered_lanepos_var_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
     ggplot(aes(x = Trial, y = sd_lanepos_mean, fill = Run)) +
-        geom_boxplot(outlier.shape = NA, size = .9, color = "black",fatten = 1)+
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = .9) +
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 0.9) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("SD of Lane Position (m)")+
-        scale_y_continuous(limits = c(0,2), expand = c(0,0))+
+        scale_y_continuous(limits = c(0,1.5), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"), 
-              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
               text = element_text(size = 14))
 
 unfiltered_lanepos_var_boxplot
@@ -184,15 +184,15 @@ ggsave(filename = "Analysis Figures\\unfiltered_lanepos_var_boxplot.eps",
 
 unfiltered_avg_Speed_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
     ggplot(aes(x = Trial, y = avg_speed_mean, fill = Run)) +
-        geom_boxplot(outlier.shape = NA, size = .9, color = "black",fatten = 1)+
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = .9) +
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 0.9) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("Average Speed (km/h)")+
         scale_y_continuous(limits = c(96,101), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"), 
-              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
               text = element_text(size = 14))
 
 unfiltered_avg_Speed_boxplot
@@ -230,7 +230,6 @@ ridgeline_speed_avg <- drive_perf_summary %>%
 
 ridgeline_speed_avg
 
-drive_perf_summary %>% 
 
 ```
 
@@ -295,15 +294,15 @@ attention_RT_boxplot <- attention_performance_database %>%
     filter(response_type == "Correct") %>% 
     filter(Session != "F") %>%
     ggplot(aes(x = Session, y = reaction_time, fill = Run)) +
-    geom_boxplot(outlier.shape = NA, size = .8, color = "black",fatten = .9)+
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
+    geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("Reaction time(s)")+
         scale_y_continuous(limits = c(0,1.5), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"), strip.background = element_blank(), 
-              axis.line = element_line(size = .8), axis.ticks = element_line(size = .8), 
+              axis.line = element_line(size = 1.1), axis.ticks = element_line(size = 1.1), 
               text = element_text(size = 13))+
         facet_wrap(~congruency)
 attention_RT_boxplot
@@ -382,7 +381,7 @@ saccade_velocity_by_amplitude <- organised_saccade_data %>%
     dplyr::filter(Session != "F") %>% 
     dplyr::filter(`peak_dva/s` <= 1200) %>%
     ggplot(aes(x = Session, y = `peak_dva/s`, fill = Run)) +
-        geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
         ylab("Peak Saccade Velocity (\u00B0/s)")+
@@ -390,7 +389,7 @@ saccade_velocity_by_amplitude <- organised_saccade_data %>%
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
-              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
               text = element_text(size = 12))+
         facet_wrap(~saccade_bin) 
 
@@ -416,15 +415,15 @@ saccade_mean_velocity_by_amplitude <- organised_saccade_data %>%
     dplyr::filter(Session != "F") %>% 
     dplyr::filter(`dva/s` <= 1000) %>%
     ggplot(aes(x = Session, y = `dva/s`, fill = Run)) +
-        geom_boxplot(outlier.shape = NA, size = .7, color = "black",fatten = .9)+
-        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..)) +
-        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("Mean Saccade Velocity (\u00B0/s)")+
         scale_y_continuous(limits = c(0,600), expand = c(0,0.4))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"),strip.background = element_blank(), 
-              axis.line = element_line(size = .7), axis.ticks = element_line(size = .7), 
+              axis.line = element_line(size = 1.1), axis.ticks = element_line(size = 1.1), 
               text = element_text(size = 12))+
         facet_wrap(~saccade_bin) 
 
