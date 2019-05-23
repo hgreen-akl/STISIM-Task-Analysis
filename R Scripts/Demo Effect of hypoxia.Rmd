@@ -1,0 +1,59 @@
+---
+title: "Demo of Effect of hypoxia"
+author: "Hayden Green"
+date: "24/05/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+
+```{r}
+
+id_list <- c("CC_6","CC_8","CC_10")
+trial <- c("normoxia", "hypoxia1","hypoxia2")
+
+direct <- choose.dir()
+file_to_load <- list.files(path = direct, pattern = paste0(id_list[1],"_checked.csv"), recursive = TRUE, full.names = TRUE)
+
+checked_csv <- read_csv(file_to_load)
+
+bfhigh <- butter(1, c(0,0.1), type = "high")
+checked_csv <- checked_csv %>%
+               dplyr::filter(Total_dist > 900) %>% 
+               mutate(filtered_speed = filter(bfhigh,Speed), filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6), condition = "normoxia")
+
+cc_6 <- list.files(path = direct, pattern = paste0(id_list[1],"_checked.csv"), recursive = TRUE, full.names = TRUE) %>%
+        read_csv() %>%
+        dplyr::filter(Total_dist > 900) %>% 
+               mutate(filtered_speed = filter(bfhigh,Speed), filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6), condition = "normoxia")
+    
+cc_8 <- list.files(path = direct, pattern = paste0(id_list[2],"_checked.csv"), recursive = TRUE, full.names = TRUE) %>%
+        read_csv() %>%
+        dplyr::filter(Total_dist > 900) %>% 
+               mutate(filtered_speed = filter(bfhigh,Speed), filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6), condition = "hypoxia1")
+
+cc_10 <- list.files(path = direct, pattern = paste0(id_list[3],"_checked.csv"), recursive = TRUE, full.names = TRUE) %>%
+        read_csv() %>%
+        dplyr::filter(Total_dist > 900) %>% 
+               mutate(filtered_speed = filter(bfhigh,Speed), filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6), condition = "hypoxia2")
+
+working_data <- cc_6 %>% full_join(cc_8) %>% full_join(cc_10)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
