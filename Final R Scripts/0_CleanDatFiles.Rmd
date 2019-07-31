@@ -14,7 +14,8 @@ library(xlsx)
 Generate list of raw files in the desired 
 
 ```{r}
-directory <- choose.dir()
+directory <- choose.dir(caption = "Select Raw Data Folder")
+# directory <- choose.dir(default = "G:\\Shared drives\\Research Team\\Projects", caption = "Select Raw Data Folder")
 
 files2clean <- list.files(path = directory, pattern = "*.Dat", recursive = TRUE, 
                           full.names = TRUE)
