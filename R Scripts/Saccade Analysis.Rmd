@@ -18,14 +18,14 @@ Get the Reference Database
 
 ```{r}
  
-Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", 
+Filename_Database <- read_excel("G:/Shared drives/Projects/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", 
                                  sheet = 1)
 
 Country_database <- Filename_Database %>% filter(Scenario == "Country")
 
 
 find_saccade_csv_filename <- function(x) {
-   y <-  list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
+   y <-  list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\", 
            pattern = paste0(x,"_Prosaccade_final.csv"), 
            full.names = TRUE, recursive = TRUE)
     z <- if_else(length(y) == 0, "NA", y[1]) %>% as.character()
@@ -88,7 +88,7 @@ write_csv(saccades_database, file.choose())
 sifting down the data
 
 ```{r}
-saccades_database <- (read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccades_database.csv"))
+saccades_database <- (read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccades_database.csv"))
 
 summarised <- saccades_database %>% 
     filter(`peak_dva/s` < 2000) %>%
@@ -98,7 +98,7 @@ summarised <- saccades_database %>%
     summarise(peak_V = mean(`peak_dva/s`), avg_V = mean(`dva/s`), amplitude = mean(amplitude))
 
 
-working_csv <- "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\working_csv.csv"
+working_csv <- "G:/Shared drives/Projects/2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\working_csv.csv"
 write_csv(summarised, path = working_csv)
 
 lm1 <- lmer(peak_V ~ Run + Session + Run*Session + amplitude + (1|ID), data = summarised, na.action = na.exclude)
