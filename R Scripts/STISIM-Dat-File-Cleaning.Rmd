@@ -21,16 +21,16 @@ library(xlsx)
 Errors may appear when running this dialog if there is a problem with using your google drive or other file directories are inaccesible to R
 
 ```{r}
-filename_Database <- "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
+filename_Database <- "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
 list_of_DAT_files <- read_excel(filename_Database, 1) %>% 
   mutate(pattern_name = paste0(Participant,"_", Run_Number))
         
 list_of_DAT_files %>% head()
 
   
-list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?NS_3.Dat", recursive = TRUE, full.names = TRUE)
+list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = "?NS_3.Dat", recursive = TRUE, full.names = TRUE)
 
-filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = list_of_DAT_files$pattern_name[1], recursive = TRUE, full.names = TRUE)
+filename <- list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", pattern = list_of_DAT_files$pattern_name[1], recursive = TRUE, full.names = TRUE)
 ```
 
 
@@ -40,13 +40,13 @@ The file is imported, the start and end of the numerical raw data file is idenit
 ```{r}
 clean_DAT <- function (x) {
 
-if(length(list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
+if(length(list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/3_Raw Data/",
                               pattern = paste0("?",x,"_trimmed"), recursive = TRUE, full.names = TRUE)) >= 1) {
     print(paste(x , "is Trimmed"))
   
     } else {
     
-  filename <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", 
+  filename <- list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/3_Raw Data/", 
                          pattern = paste0("?",x,".Dat"), recursive = TRUE, full.names = TRUE)
   
 ## Define the column names that are in the DAT files and then sorting them in a more preferred order.

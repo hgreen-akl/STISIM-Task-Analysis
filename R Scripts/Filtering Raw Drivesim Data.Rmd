@@ -21,7 +21,7 @@ library(cowplot)
 ```{r}
 # Reading a fresh raw CSV file
 
-list_of_checked_files <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\7_Filtered_data\\", 
+list_of_checked_files <- list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility\\7_Filtered_data\\", 
                                     pattern = "*_checked.csv", full.names = TRUE)
 
 
@@ -44,7 +44,7 @@ unfiltered_lanepos_plot
 #checked_csv %>% mutate(filtered_speed = FilterOfOrder(n = 1, x = Speed, type = "high", Wc = 0.1 ))
 
 #filt_speed_plot <- checked_csv %>% fil() 
-binned_csv <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\AL\\Session 1\\AL_10_binned_by_dist_100.csv")
+binned_csv <- read_csv("G:/Shared drives/Projects/2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\AL\\Session 1\\AL_10_binned_by_dist_100.csv")
 binned_csv <- binned_csv %>% dplyr::filter(`bin_number` < 301)
 
 mean(checked_csv$Speed)
