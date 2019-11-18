@@ -26,16 +26,16 @@ library(broom)
 
 ```{r results='hide', warning=FALSE, error=FALSE}
 
-saccades_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
+saccades_database <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
 
-driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_final.csv")
+driving_perf_by_distance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_final.csv")
 
-driving_perf_by_saccade <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_saccade_100_final.csv")
+driving_perf_by_saccade <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\binned_by_saccade_100_final.csv")
 
-filtered_driving_perf_by_distance <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_filtered_final.csv")
+filtered_driving_perf_by_distance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_filtered_final.csv")
 
 ## ER is missing all trials requiring a right trigger response in Fam S1    
-attention_performance_database <- read_csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
+attention_performance_database <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
             select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
                    reaction_time)
 
@@ -48,7 +48,7 @@ saccade_attn_joined <- saccades_database %>%
                                `correct direction`, duration, `dva/s`, `peak_dva/s`, amplitude, saccade_size, `stimulus onset delay`,
                                reaction_time, response_type) 
 
-KSS_data <- read_excel(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\KSS Scores.xlsx", sheet = 1) %>%
+KSS_data <- read_excel(path = "G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\KSS Scores.xlsx", sheet = 1) %>%
                 select(1:7) %>% 
                 gather(key = "Timepoint", value =  "kss_score", Baseline, Run_1, Run_2, Run_3, Run_4) %>%
                 dplyr::filter(kss_score != "NA") %>% 

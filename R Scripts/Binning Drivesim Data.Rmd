@@ -51,7 +51,7 @@ bin_by_dist <- function(x, bin_size = 100) {
   } 
   
   if(!"data.frame" %in% class(csv_to_bin)) {
-    stop("Object is Not Data Frame")
+    stop("Object is Not a Data Frame, cannot bin this object")
   }
   if(!"Total_dist" %in% names(csv_to_bin)){
     stop("No distance column in data frame")
