@@ -16,16 +16,16 @@ Find the datafiles
 
 ```{r, results='hide'}
 
-list_of_performance_data <- list.files(path = "G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/4_Analysis_Saccades/Task Response Data", recursive = TRUE, full.names = TRUE)
+list_of_performance_data <- list.files(path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/4_Analysis_Saccades/Task Response Data", recursive = TRUE, full.names = TRUE)
 
-Filename_Database <- read_excel("G:/Team Drives/Research Team/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", sheet = 1)
+Filename_Database <- read_excel("G:/Shared drives/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx", sheet = 1)
 
 
 Country_reference_database <- Filename_Database %>% 
     filter(Scenario == "Country")
 
 find_task_csv_filename <- function(x) {
-   y <- list.files(path = "G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Task Response Data", 
+   y <- list.files(path = "G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Task Response Data", 
            pattern = paste0(x,"_Prosaccade_Results_var.csv"), 
            full.names = TRUE, recursive = TRUE)
   
@@ -173,7 +173,7 @@ fit2
 
     
 
-ICC_import <- read.csv("G:\\Team Drives\\Research Team\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ICC_to_import.csv")
+ICC_import <- read.csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\ICC_to_import.csv")
 ICC_ready <- ICC(ICC_import[-1,-2],missing = FALSE)
 ICC_ready
 ICC_output <- ICC_ready$results

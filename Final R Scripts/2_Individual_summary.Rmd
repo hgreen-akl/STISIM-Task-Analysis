@@ -1,0 +1,329 @@
+---
+title: "Binning Drivesim Data"
+author: "Hayden Green"
+date: "6 August 2018"
+output: html_document
+---
+
+## Function to Bin the Drivesim data into chunks of equal distance
+  The function requires the Bin size otherwise the default will be 100m,
+
+
+```{r results='hide'}
+library(tidyverse)
+library(tidyselect)
+library(ggthemes)
+library(ggridges)
+library(readxl)
+library(signal)
+```
+
+```{r}
+filename_Database <- "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx" 
+
+List_of_checked_files <- read_excel("G:/Shared drives/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx") %>%  mutate(dat_name = paste0(Participant,"_", Run_Number)) %>% dplyr::filter(Scenario != "Familiarisation") 
+
+checked <- read_excel("G:/Shared drives/Projects/2018 Driving Sim Reproducibility/File Reference Database.xlsx")  %>% 
+  mutate(pattern_name = paste0(Participant,"_", Run_Number)) %>% dplyr::filter(CSV_checked == "Yes")
+
+find_checked_csv_filename <- function(x) {
+   y <- list.files(path = "G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\3_Raw Data\\", 
+           pattern = paste0(x,"_checked.csv"), 
+           full.names = TRUE, recursive = TRUE)
+  
+ z <- if_else(length(y) == 0, "NA", y[1]) %>% as.character()
+    z
+}
+
+
+List_of_checked_files$checked_files <- List_of_checked_files$dat_name %>% lapply(find_checked_csv_filename) %>% as.character()
+```
+
+```{r}
+# #The function used to create the bins, bin size by default is every 100m  
+# bin_by_dist <- function(x, bin_size = 100) {
+#     #Check to see data structure and contents is sufficient for the binning function. 
+#   pat <- x
+#   file_to_bin <- list.files( path = "G:/Shared drives/Projects/2018 Driving Sim Reproducibility/7_Filtered_data/", pattern = paste0("?",pat,"_checked"), recursive = TRUE, full.names = TRUE)
+#   
+#   csv_to_bin <- read_csv(file_to_bin, col_names = TRUE, col_types = "ddddddddddddddddddddddddtcdccc") %>% 
+#     as.tibble() %>%   select(-15,-16, -20,-21,-22,-23,-24,-25)
+#   bfhigh <- butter(1, c(0,0.1), type = "high")
+#   csv_to_bin <- csv_to_bin %>% mutate(filtered_speed = filter(bfhigh,Speed), 
+#                                       filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6))
+#   
+#   binning_function <- function(bin_start, bin_end, bin_ranges, bin_number) {
+#  csv_to_bin %>% 
+#   dplyr::filter(Total_dist >= bin_start, Total_dist < bin_end) %>% as.tibble()
+#   } 
+#   
+#   if(!"data.frame" %in% class(csv_to_bin)) {
+#     stop("Object is Not Data Frame")
+#   }
+#   if(!"Total_dist" %in% names(csv_to_bin)){
+#     stop("No distance column in data frame")
+#   }
+#   ##pop up to confirm whether the file was from the country or urban task. 
+#   Task <- if_else(csv_to_bin$scenario[1] == "Country", 1,2)
+#     
+#   max_bin <- if_else(Task == 1, 31000, 9000)
+#   
+#   bins <- c(seq(from = 100, to = max_bin-bin_size, by= bin_size))
+# 
+#   
+#   bin_number <- seq(from = 1, to = length(bins), by = 1)
+#   bin_start <- bins
+#   bin_end <- bins + bin_size
+#   bin_ranges <-  paste(bin_start,"-", bin_end, sep = "")
+#   Run <- List_of_checked_files %>% dplyr::filter(pattern_name == pat) %>% select(Run)
+#   binned_data <- data.frame(bin_start, bin_end, bin_ranges, bin_number)
+#   Session_extracted <- List_of_checked_files %>% dplyr::filter(pattern_name == pat) %>% select(Session) %>% as.character()
+#   
+#   binned_data <- binned_data %>% mutate(nested = pmap(binned_data, binning_function)) %>% 
+#     as_tibble() %>%
+#     unnest() %>% 
+#     group_by(bin_number) %>% 
+#     summarise(n_of_obs = n(), 
+#               start_dist = min(Total_dist),
+#               end_dist = max(Total_dist),
+#               bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+#               avg_speed = mean(Speed), 
+#               sd_speed = sd(Speed),
+#               avg_lanepos = mean(Lateral_Lane_Pos), 
+#               sd_lanepos = sd(Lateral_Lane_Pos),
+#               avg_throttle = mean(Throttle_input), 
+#               sd_throttle = sd(Throttle_input),
+#               avg_brake = mean(Brake_input),
+#               sd_brake = sd(Brake_input),
+#               avg_steering = mean(Steering_angle),
+#               sd_steering = sd(Steering_angle),
+#               following_road = mean(abs(Road_Curve - Vehic_curve)),
+#               ang_filt_lanepos = mean(filtered_lane_pos),
+#               sd_filt_lanepos = sd(filtered_lane_pos),
+#               ID = ID[1],
+#               File_Number = Run_Number[1],
+#               Date = Date[1], 
+#               Trial = Session_extracted[1],
+#               Scenario = scenario[1],
+#               Run = Run[1])
+#   
+#    binned_data$Run_Number <- rep(Run[1], nrow(binned_data))
+#   
+#    save_location <- str_replace(file_to_bin,"checked", 
+#                                paste0("binned_by_dist_",bin_size,"filtered")) 
+#   
+#   existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+#   
+#   code <- paste0(csv_to_bin$ID[1] %>% as.character(),"_" ,csv_to_bin$Run_Number[1] %>% as.character())
+#   
+#   if(existing_file == TRUE) {
+#     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, 
+#     title = paste0(code,"binned by dist",
+#                    bin_size,"already exists do you wish to overwrite?")) %>% 
+#       as.numeric()
+#     
+#      if(overwrite == 2) {
+#        stop("ERROR:: file already exists")
+#       } else {
+#        write.csv(binned_data, file = save_location, row.names = FALSE)
+#        print(paste0(code,"_binned_by_dist_", bin_size,"filtered.csv is saved"))
+#   } } 
+#     else if (existing_file == FALSE) {
+#   write.csv(binned_data, file = save_location, row.names = FALSE)
+#   return(paste0(code,"_binned_by_dist_filtered", bin_size,".csv is saved")) 
+#     } else {
+#     stop("ERROR :: error in saving process save manually")
+#         }
+#   
+# }
+# 
+
+```
+
+```{r}
+#The function used to create the mean and SD of variables on straight sections of the road 
+summarise_file_parameters <- function(dat_name,checked_csv_name,task,run,session) {
+    #Check to see data structure and contents is sufficient for the binning function. 
+  pat <- dat_name
+  csv_to_bin <- read_csv(checked_csv_name, col_names = TRUE, col_types = "ddddddddddddddddddddddddtcdccc") %>% 
+    as.tibble() %>%   select(-15,-16, -20,-21,-22,-23,-24,-25)
+  bfhigh <- butter(1, c(0,0.1), type = "high")
+  csv_to_bin <- csv_to_bin %>% mutate(filtered_speed = filter(bfhigh,Speed), 
+                                      filtered_lane_pos = filter(bfhigh,Lateral_Lane_Pos + 6))
+  
+ ##pop up to confirm whether the file was from the country or urban task. 
+  Task <- if_else(task == "country"|task == "Country", 1,2)
+
+  if(task == "country") {
+      summarised_data <- csv_to_bin %>%
+          as_tibble() %>% 
+          dplyr::filter(Total_dist >= 300 & Total_dist <= 30000) %>%
+          summarise(n_of_obs = n(), 
+                  start_dist = min(Total_dist),
+                  end_dist = max(Total_dist),
+                  bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+                  avg_speed = mean(Speed), 
+                  sd_speed = sd(Speed),
+                  avg_lanepos = mean(Lateral_Lane_Pos), 
+                  sd_lanepos = sd(Lateral_Lane_Pos),
+                  avg_throttle = mean(Throttle_input), 
+                  sd_throttle = sd(Throttle_input),
+                  avg_brake = mean(Brake_input),
+                  sd_brake = sd(Brake_input),
+                  avg_steering = mean(Steering_angle),
+                  sd_steering = sd(Steering_angle),
+                  following_road = mean(abs(Road_Curve - Vehic_curve)),
+                  avg_filt_lanepos = mean(filtered_lane_pos),
+                  sd_filt_lanepos = sd(filtered_lane_pos),
+                  ID = ID[1],
+                  File_Number = Run_Number[1],
+                  Date = Date[1],
+                  Scenario = scenario[1],
+                  task = task,
+                  run = run,
+                  session = session)
+  }
+  else{
+      summarised_data <- csv_to_bin %>% mutate(bin = if_else(Total_dist >= 150 & Total_dist <= 550,"bin1",
+                                                     if_else(Total_dist >= 850 & Total_dist <= 1050,"bin2",
+                                                     if_else(Total_dist >= 1350 & Total_dist <= 1750,"bin3",
+                                                     if_else(Total_dist >= 3250 & Total_dist <= 3650,"bin4",
+                                                     if_else(Total_dist >= 4650 & Total_dist <= 5250,"bin5",
+                                                     if_else(Total_dist >= 5550 & Total_dist <= 5750,"bin6",
+                                                     if_else(Total_dist >= 6050 & Total_dist <= 6290,"bin7",
+                                                     if_else(Total_dist >= 7150 & Total_dist <= 7450,"bin8",
+                                                     if_else(Total_dist >= 8450 & Total_dist <= 9050,"bin9","na")))))))))) %>%
+                                        as_tibble() %>%
+                                        dplyr::filter(bin != "na") %>%
+                                        group_by(bin)%>%
+                                        summarise(n_of_obs = n(), 
+                                                start_dist = min(Total_dist),
+                                                end_dist = max(Total_dist),
+                                                bin_duration = max(Elapsed_Time) - min(Elapsed_Time),
+                                                avg_speed = mean(Speed)*(max(Total_dist)-min(Total_dist))/3340, 
+                                                sd_speed = sd(Speed)*(max(Total_dist)-min(Total_dist))/3340,
+                                                avg_lanepos = mean(Lateral_Lane_Pos)*(max(Total_dist)-min(Total_dist))/3340, 
+                                                sd_lanepos = sd(Lateral_Lane_Pos)*(max(Total_dist)-min(Total_dist))/3340,
+                                                avg_throttle = mean(Throttle_input)*(max(Total_dist)-min(Total_dist))/3340, 
+                                                sd_throttle = sd(Throttle_input)*(max(Total_dist)-min(Total_dist))/3340,
+                                                avg_brake = mean(Brake_input)*(max(Total_dist)-min(Total_dist))/3340,
+                                                sd_brake = sd(Brake_input)*(max(Total_dist)-min(Total_dist))/3340,
+                                                avg_steering = mean(Steering_angle)*(max(Total_dist)-min(Total_dist))/3340,
+                                                sd_steering = sd(Steering_angle)*(max(Total_dist)-min(Total_dist))/3340,
+                                                following_road = mean(abs(Road_Curve - Vehic_curve))*(max(Total_dist)-min(Total_dist))/3340,
+                                                avg_filt_lanepos = mean(filtered_lane_pos)*(max(Total_dist)-min(Total_dist))/3340,
+                                                sd_filt_lanepos = sd(filtered_lane_pos)*(max(Total_dist)-min(Total_dist))/3340,
+                                                ID = ID[1],
+                                                File_Number = Run_Number[1],
+                                                Date = Date[1]) %>%
+                                        summarise(n_of_obs = n(), 
+                                                start_dist = sum(start_dist),
+                                                end_dist = sum(end_dist),
+                                                bin_duration = sum(bin_duration),
+                                                avg_speed = sum(avg_speed), 
+                                                sd_speed = sum(sd_speed),
+                                                avg_lanepos = sum(avg_lanepos), 
+                                                sd_lanepos = sum(sd_lanepos),
+                                                avg_throttle = sum(avg_throttle), 
+                                                sd_throttle = sum(sd_throttle),
+                                                avg_brake = sum(avg_brake),
+                                                sd_brake = sum(sd_brake),
+                                                avg_steering = sum(avg_steering),
+                                                sd_steering = sum(sd_steering),
+                                                following_road = sum(following_road),
+                                                avg_filt_lanepos = sum(ang_filt_lanepos),
+                                                sd_filt_lanepos = sum(sd_filt_lanepos),
+                                                ID = ID[1],
+                                                File_Number = File_Number[1],
+                                                Date = Date[1],
+                                                task = task,
+                                                run = run,
+                                                session = session)
+        
+      
+  }
+  
+   save_location <- str_replace(checked_csv_name,"checked", 
+                               paste0("summarised")) 
+  
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE)  
+  code <- paste0(csv_to_bin$ID[1] %>% as.character(),"_" ,csv_to_bin$Run_Number[1] %>% as.character())
+  
+  write.csv(summarised_data, file = save_location, row.names = FALSE)
+       print(paste0(code,"_summarised.csv is saved"))
+
+}
+```
+
+
+```{r results='hide'}
+
+mapply(summarise_file_parameters,List_of_checked_files$dat_name,List_of_checked_files$checked_files,List_of_checked_files$Scenario,List_of_checked_files$Run,List_of_checked_files$Session)
+```
+
+
+```{r}
+
+save_data <- function(x) {
+  save_location <- str_replace(file_to_check,"checked", "binned_by_saccade")   
+  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
+  code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
+  if(existing_file == TRUE) {
+     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
+     if(overwrite == 2) {
+       stop("ERROR:: file already exists")
+      } else {
+       write.csv(x, file = save_location, row.names = FALSE)
+       print(paste0(code,"_checked.csv is saved"))
+  } } 
+    else if (existing_file == FALSE) {
+  write.csv(x, file = save_location, row.names = FALSE)
+  return(paste0(code,"_checked.csv is saved")) 
+    } else {
+    stop("ERROR :: error in saving process save manually")
+        }
+  } 
+
+```
+
+
+
+```{r}
+output <- as.tibble(bin_by_saccades(Imported) %>% dplyr::filter(bin_duration > 0, !is.na(bin_num)))
+output <- as.tibble(bin_by_dist(Imported) %>% dplyr::filter(bin_duration > 0, !is.na(bin_num)))
+output2 <- output %>% mutate(Trial = as.factor("Fam"))
+output3 <- output %>% mutate(Trial = as.factor("1"))
+output4 <- output2 %>% bind_rows(output3)
+output4$Trial <- output4$Trial %>% as.factor()
+
+
+saccade_bins <- Imported %>% bin_by_dist()
+```
+
+
+
+
+```{r}
+##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
+p1 <- ggplot(database_by_distance_100, aes(x = avg_speed, y = Trial, height = ..density..)) +
+    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)+
+  xlim(60,120)
+p1
+# an alternative ridgeline plot with data points recorded
+p2 <- ggplot(output4, aes(x = avg_speed, y = Trial, height = ..density..)) +
+  geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.8, 
+                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
+                      position = position_raincloud(adjust_vlines = FALSE)) +
+  theme_classic()
+p2
+
+```
+
+```{r}
+trial1 %>% bin_by_saccades(bin_size = 100)
+
+lapply(List_of_checked_files$pattern_name, bin_by_saccades)
+
+
+```
+
