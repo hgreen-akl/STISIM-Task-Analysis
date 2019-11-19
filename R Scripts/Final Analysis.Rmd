@@ -35,8 +35,8 @@ driving_perf_by_saccade <- read_csv("G:/Shared drives/Projects/Projects\\2018 Dr
 filtered_driving_perf_by_distance <- read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\binned_by_dist_100_filtered_final.csv")
 
 ## ER is missing all trials requiring a right trigger response in Fam S1    
-attention_performance_database <- read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>% 
-            select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
+attention_performance_database <- read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>%
+  select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
                    reaction_time)
 
 # creates a file where task performance data is given to the saccade data
