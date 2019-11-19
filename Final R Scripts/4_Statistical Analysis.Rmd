@@ -3,15 +3,13 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
 library(tidyverse)
 library(psych)
 library(ez)
 ```
+
 
 ```{r}
 #summarised_data <- read_csv(file.choose())
@@ -23,7 +21,6 @@ summarised_data <- read_csv(file = "G:\\Shared drives\\Projects\\2018 Driving Si
 # filtered variability of lane sd, 5 = variability of throttle, 6 = average throttle
 
 create_ICC_dataframe <- function(database,variable){
-    variable <- menu(var_choices, graphics = T)
     data <- summarised_data %>% select(ID,task,session,run,variable)
     U_F1    <- data %>% filter(task == "Urban" & session == 0 & run == 1)
     U_S1_R1 <- data %>% filter(task == "Urban" & session == 1 & run == 1)
@@ -36,11 +33,34 @@ create_ICC_dataframe <- function(database,variable){
     C_S2_R1 <- data %>% filter(task == "Country" & session == 2 & run == 1)
     C_S2_R2 <- data %>% filter(task == "Country" & session == 2 & run == 2)
     
-    U_F1vsS1R1 <- ICC(data.frame(U_F1[variable],U_S1_R1[variable]))$results  
+    U_F1vsS1R1   <- ICC(data.frame(U_F1[variable],U_S1_R1[variable]))$results
+    U_S1R1vsS1R2 <- ICC(data.frame(U_S1_R1[variable],U_S1_R2[variable]))$results
+    U_S2R1vsS2R2 <- ICC(data.frame(U_S2_R1[variable],U_S2_R2[variable]))$results
+    U_S1R1vsS2R1 <- ICC(data.frame(U_S1_R1[variable],U_S2_R1[variable]))$results
+    U_S1R2vsS2R2 <- ICC(data.frame(U_S1_R2[variable],U_S2_R2[variable]))$results
+    
+    C_F1vsS1R1   <- ICC(data.frame(C_F1[variable],C_S1_R1[variable]))$results
+    C_S1R1vsS1R2 <- ICC(data.frame(C_S1_R1[variable],C_S1_R2[variable]))$results
+    C_S2R1vsS2R2 <- ICC(data.frame(C_S2_R1[variable],C_S2_R2[variable]))$results
+    C_S1R1vsS2R1 <- ICC(data.frame(C_S1_R1[variable],C_S2_R1[variable]))$results
+    C_S1R2vsS2R2 <- ICC(data.frame(C_S1_R2[variable],C_S2_R2[variable]))$results
+    
+    print.table(U_F1vsS1R1  )
+    # print("U_S1R1vsS1R2", U_S1R1vsS1R2)
+    # print("U_S2R1vsS2R2", U_S2R1vsS2R2)
+    # print("U_S1R1vsS2R1", U_S1R1vsS2R1)
+    # print("U_S1R2vsS2R2", U_S1R2vsS2R2)
+    
+    print(C_F1vsS1R1  )
+    print(C_S1R1vsS1R2)
+    print(C_S2R1vsS2R2)
+    print(C_S1R1vsS2R1)
+    print(C_S1R2vsS2R2)
 }
+```
 
 
-
-create_ICC_dataframe(summarised_data, avg_speed)
+```{r}
+create_ICC_dataframe(summarised_data, 'avg_speed')
 ```
 
