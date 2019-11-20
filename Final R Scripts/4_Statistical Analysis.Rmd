@@ -33,36 +33,89 @@ create_ICC_dataframe <- function(database,variable){
     C_S2_R1 <- data %>% filter(task == "Country" & session == 2 & run == 1)
     C_S2_R2 <- data %>% filter(task == "Country" & session == 2 & run == 2)
     
-    U_F1vsS1R1    <- ICC(data.frame(U_F1[,5],U_S1_R1[variable]))$results[3,]
+    U_F1vsS1R1    <- ICC(data.frame(U_F1[,5],U_S1_R1[variable]))$results[3,c(1,2,3,6)]
     U_F1vsS1R1$pearsons_r  <- cor(data.frame(U_F1[,5],U_S1_R1[variable]))[1,2]
-    U_F1vsS1R1$CV_percent <- sd(rbind(U_F1[,5],U_S1_R1[variable])$variable)/mean(rbind(U_F1[variable],U_S1_R1[variable])$variable)*100
+    U_F1vsS1R1$CV_percent <- sd(data.frame(rbind(U_F1[,5],U_S1_R1[,5]))[,1])/mean(data.frame(rbind(U_F1[,5],U_S1_R1[,5]))[,1])*100
     U_F1vsS1R1$t_test_t  <- t.test(data.frame(U_F1[,5],U_S1_R1[,5])[,1],data.frame(U_F1[,5],U_S1_R1[,5])[,2],paired = T)$statistic
     U_F1vsS1R1$t_test_p  <- t.test(data.frame(U_F1[,5],U_S1_R1[,5])[,1],data.frame(U_F1[,5],U_S1_R1[,5])[,2],paired = T)$p.value
-    
-    U_S1R1vsS1R2  <- ICC(data.frame(U_S1_R1[variable],U_S1_R2[variable]))$results
-    U_S2R1vsS2R2  <- ICC(data.frame(U_S2_R1[variable],U_S2_R2[variable]))$results
-    U_S1R1vsS2R1  <- ICC(data.frame(U_S1_R1[variable],U_S2_R1[variable]))$results
-    U_S1R2vsS2R2  <- ICC(data.frame(U_S1_R2[variable],U_S2_R2[variable]))$results
-    
-    C_F1vsS1R1    <- ICC(data.frame(C_F1[variable],C_S1_R1[variable]))$results
-    C_S1R1vsS1R2  <- ICC(data.frame(C_S1_R1[variable],C_S1_R2[variable]))$results
-    C_S2R1vsS2R2  <- ICC(data.frame(C_S2_R1[variable],C_S2_R2[variable]))$results
-    C_S1R1vsS2R1  <- ICC(data.frame(C_S1_R1[variable],C_S2_R1[variable]))$results
-    C_S1R2vsS2R2  <- ICC(data.frame(C_S1_R2[variable],C_S2_R2[variable]))$results
-    
     write.table(U_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
                                          "U_F1vsS1R1","_",variable,"_ICC.txt") )
-    print(U_F1vsS1R1  )
-    # print("U_S1R1vsS1R2", U_S1R1vsS1R2)
-    # print("U_S2R1vsS2R2", U_S2R1vsS2R2)
-    # print("U_S1R1vsS2R1", U_S1R1vsS2R1)
-    # print("U_S1R2vsS2R2", U_S1R2vsS2R2)
     
-    print(C_F1vsS1R1  )
-    print(C_S1R1vsS1R2)
-    print(C_S2R1vsS2R2)
-    print(C_S1R1vsS2R1)
-    print(C_S1R2vsS2R2)
+    U_S1R1vsS1R2    <- ICC(data.frame(U_S1_R2[,5],U_S1_R1[variable]))$results[3,c(1,2,3,6)]
+    U_S1R1vsS1R2$pearsons_r  <- cor(data.frame(U_S1_R2[,5],U_S1_R1[variable]))[1,2]
+    U_S1R1vsS1R2$CV_percent <- sd(data.frame(rbind(U_S1_R2[,5],U_S1_R1[,5]))[,1])/mean(data.frame(rbind(U_S1_R2[,5],U_S1_R1[,5]))[,1])*100
+    U_S1R1vsS1R2$t_test_t  <- t.test(data.frame(U_S1_R2[,5],U_S1_R1[,5])[,1],data.frame(U_S1_R2[,5],U_S1_R1[,5])[,2],paired = T)$statistic
+    U_S1R1vsS1R2$t_test_p  <- t.test(data.frame(U_S1_R2[,5],U_S1_R1[,5])[,1],data.frame(U_S1_R2[,5],U_S1_R1[,5])[,2],paired = T)$p.value
+    write.table(U_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "U_S1R1vsS1R2","_",variable,"_ICC.txt") )
+    
+    U_S2R1vsS2R2    <- ICC(data.frame(U_S2_R1[,5],U_S2_R2[variable]))$results[3,c(1,2,3,6)]
+    U_S2R1vsS2R2$pearsons_r  <- cor(data.frame(U_S2_R1[,5],U_S2_R2[variable]))[1,2]
+    U_S2R1vsS2R2$CV_percent <- sd(data.frame(rbind(U_S2_R1[,5],U_S2_R2[,5]))[,1])/mean(data.frame(rbind(U_S2_R1[,5],U_S2_R2[,5]))[,1])*100
+    U_S2R1vsS2R2$t_test_t  <- t.test(data.frame(U_S2_R1[,5],U_S2_R2[,5])[,1],data.frame(U_S2_R1[,5],U_S2_R2[,5])[,2],paired = T)$statistic
+    U_S2R1vsS2R2$t_test_p  <- t.test(data.frame(U_S2_R1[,5],U_S2_R2[,5])[,1],data.frame(U_S2_R1[,5],U_S2_R2[,5])[,2],paired = T)$p.value
+    write.table(U_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "U_S2R1vsS2R2","_",variable,"_ICC.txt") )
+    
+    U_S1R1vsS2R1    <- ICC(data.frame(U_S2_R1[,5],U_S1_R1[variable]))$results[3,c(1,2,3,6)]
+    U_S1R1vsS2R1$pearsons_r  <- cor(data.frame(U_S2_R1[,5],U_S1_R1[variable]))[1,2]
+    U_S1R1vsS2R1$CV_percent <- sd(data.frame(rbind(U_S2_R1[,5],U_S1_R1[,5]))[,1])/mean(data.frame(rbind(U_S2_R1[,5],U_S1_R1[,5]))[,1])*100
+    U_S1R1vsS2R1$t_test_t  <- t.test(data.frame(U_S2_R1[,5],U_S1_R1[,5])[,1],data.frame(U_S2_R1[,5],U_S1_R1[,5])[,2],paired = T)$statistic
+    U_S1R1vsS2R1$t_test_p  <- t.test(data.frame(U_S2_R1[,5],U_S1_R1[,5])[,1],data.frame(U_S2_R1[,5],U_S1_R1[,5])[,2],paired = T)$p.value
+    write.table(U_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "U_S1R1vsS2R1","_",variable,"_ICC.txt") )
+    
+    U_S1R2vsS2R2    <- ICC(data.frame(U_S1_R2[,5],U_S2_R2[variable]))$results[3,c(1,2,3,6)]
+    U_S1R2vsS2R2$pearsons_r  <- cor(data.frame(U_S1_R2[,5],U_S2_R2[variable]))[1,2]
+    U_S1R2vsS2R2$CV_percent <- sd(data.frame(rbind(U_S1_R2[,5],U_S2_R2[,5]))[,1])/mean(data.frame(rbind(U_S1_R2[,5],U_S2_R2[,5]))[,1])*100
+    U_S1R2vsS2R2$t_test_t  <- t.test(data.frame(U_S1_R2[,5],U_S2_R2[,5])[,1],data.frame(U_S1_R2[,5],U_S2_R2[,5])[,2],paired = T)$statistic
+    U_S1R2vsS2R2$t_test_p  <- t.test(data.frame(U_S1_R2[,5],U_S2_R2[,5])[,1],data.frame(U_S1_R2[,5],U_S2_R2[,5])[,2],paired = T)$p.value
+    write.table(U_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "U_S1R2vsS2R2","_",variable,"_ICC.txt") )
+
+    
+    C_F1vsS1R1    <- ICC(data.frame(C_F1[,5],C_S1_R1[variable]))$results[3,c(1,2,3,6)]
+    C_F1vsS1R1$pearsons_r  <- cor(data.frame(C_F1[,5],C_S1_R1[variable]))[1,2]
+    C_F1vsS1R1$CV_percent <- sd(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])*100
+    C_F1vsS1R1$t_test_t  <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_F1vsS1R1$t_test_p  <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$p.valCe
+    write.table(C_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "C_F1vsS1R1","_",variable,"_ICC.txt") )
+    
+    C_S1R1vsS1R2    <- ICC(data.frame(C_S1_R2[,5],C_S1_R1[variable]))$results[3,c(1,2,3,6)]
+    C_S1R1vsS1R2$pearsons_r  <- cor(data.frame(C_S1_R2[,5],C_S1_R1[variable]))[1,2]
+    C_S1R1vsS1R2$CV_percent <- sd(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])*100
+    C_S1R1vsS1R2$t_test_t  <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_S1R1vsS1R2$t_test_p  <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$p.valCe
+    write.table(C_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "C_S1R1vsS1R2","_",variable,"_ICC.txt") )
+    
+    C_S2R1vsS2R2    <- ICC(data.frame(C_S2_R1[,5],C_S2_R2[variable]))$results[3,c(1,2,3,6)]
+    C_S2R1vsS2R2$pearsons_r  <- cor(data.frame(C_S2_R1[,5],C_S2_R2[variable]))[1,2]
+    C_S2R1vsS2R2$CV_percent <- sd(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])*100
+    C_S2R1vsS2R2$t_test_t  <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$statistic
+    C_S2R1vsS2R2$t_test_p  <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$p.valCe
+    write.table(C_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "C_S2R1vsS2R2","_",variable,"_ICC.txt") )
+    
+    C_S1R1vsS2R1    <- ICC(data.frame(C_S2_R1[,5],C_S1_R1[variable]))$results[3,c(1,2,3,6)]
+    C_S1R1vsS2R1$pearsons_r  <- cor(data.frame(C_S2_R1[,5],C_S1_R1[variable]))[1,2]
+    C_S1R1vsS2R1$CV_percent <- sd(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])*100
+    C_S1R1vsS2R1$t_test_t  <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_S1R1vsS2R1$t_test_p  <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$p.valCe
+    write.table(C_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "C_S1R1vsS2R1","_",variable,"_ICC.txt") )
+    
+    C_S1R2vsS2R2    <- ICC(data.frame(C_S1_R2[,5],C_S2_R2[variable]))$results[3,c(1,2,3,6)]
+    C_S1R2vsS2R2$pearsons_r  <- cor(data.frame(C_S1_R2[,5],C_S2_R2[variable]))[1,2]
+    C_S1R2vsS2R2$CV_percent <- sd(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])*100
+    C_S1R2vsS2R2$t_test_t  <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$statistic
+    C_S1R2vsS2R2$t_test_p  <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$p.valCe
+    write.table(C_F1vsS1R1,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "C_S1R2vsS2R2","_",variable,"_ICC.txt") )
+
+    
+   
 }
 ```
 
@@ -75,7 +128,7 @@ create_ICC_dataframe(summarised_data, 'avg_speed')
 
 sd(rbind(U_F1['avg_speed'],U_S1_R1['avg_speed']))/mean(rbind(U_F1['avg_speed'],U_S1_R1['avg_speed']))
 
-
+variable <- "avg_speed"
 U_F1vsS1R1    <- ICC(data.frame(U_F1[avg_speed],U_S1_R1[svg_speed]))$results[3,]
 U_F1vsS1R1$pearsons_r  <- cor(data.frame(U_F1$avg_speed,U_S1_R1$avg_speed))[1,2]
 U_F1vsS1R1$CV_percent <- sd(rbind(U_F1[avg_speed],U_S1_R1[avg_speed])$variable)/mean(rbind(U_F1[variable],U_S1_R1[variable])$variable)*100
