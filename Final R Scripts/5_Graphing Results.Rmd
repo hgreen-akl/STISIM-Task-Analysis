@@ -1,0 +1,35 @@
+---
+title: "5_Graphing results"
+author: "Hayden Green"
+date: "21/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggthemes)
+library()
+```
+
+#Import the data
+```{r}
+
+```
+
+
+```{r}
+unfiltered_avg_Speed_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
+    ggplot(aes(x = Trial, y = avg_speed_mean, fill = Run)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
+        ylab("Average Speed (km/h)")+
+        scale_y_continuous(limits = c(96,101), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
+              text = element_text(size = 14))
+
+```
+
