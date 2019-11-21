@@ -39,6 +39,10 @@ create_ICC_dataframe_driving <- function(database,variable,data_name){
     U_F1vsS1R1$CV_percent <- sd(data.frame(rbind(U_F1[,5],U_S1_R1[,5]))[,1])/mean(data.frame(rbind(U_F1[,5],U_S1_R1[,5]))[,1])*100
     U_F1vsS1R1$t_test_t  <- t.test(data.frame(U_F1[,5],U_S1_R1[,5])[,1],data.frame(U_F1[,5],U_S1_R1[,5])[,2],paired = T)$statistic
     U_F1vsS1R1$t_test_p  <- t.test(data.frame(U_F1[,5],U_S1_R1[,5])[,1],data.frame(U_F1[,5],U_S1_R1[,5])[,2],paired = T)$p.value
+    U_F1vsS1R1$mean_1  <- mean(U_F1[,5])
+    U_F1vsS1R1$sd_1  <- sd(U_F1[,5])
+    U_F1vsS1R1$mean_2  <- mean(U_S1_R1[,5])
+    U_F1vsS1R1$sd_2  <- sd(U_S1_R1[,5])
     row.names(U_F1vsS1R1) <-"Fam VS S1R1"
     
     
