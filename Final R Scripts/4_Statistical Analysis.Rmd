@@ -115,6 +115,7 @@ create_ICC_dataframe_driving <- function(database,variable,data_name){
                                                     ICCsumm = paste0("ICC = ",round(ICC,3), ", p = ",round(p,3)),
                                                     ttest = paste0("t = ",round(t_test_t,3), ", df = ",round(t_test_df,3), ", p = ",round(t_test_p,3))) %>%
                                              select(mean_1,sd_1,mean_2,sd_2,pearson,ICCsumm,CV_percent,ttest)
+    row.names(Urban_combined) <- c(as.name("Fam VS S1R1"),as.name("Within day 1"),as.name("Within day 2"),as.name("Within run 1"),as.name("Within run 2"))
 
 
     
@@ -202,6 +203,7 @@ create_ICC_dataframe_driving <- function(database,variable,data_name){
                                                     ICCsumm = paste0("ICC = ",round(ICC,3), ", p = ",round(p,3)),
                                                     ttest = paste0("t = ",round(t_test_t,3), ", df = ",round(t_test_df,3), ", p = ",round(t_test_p,3))) %>%
                                              select(mean_1,sd_1,mean_2,sd_2,pearson,ICCsumm,CV_percent,ttest)
+    row.names(Country_combined) <- c(as.name("Fam VS S1R1"),as.name("Within day 1"),as.name("Within day 2"),as.name("Within run 1"),as.name("Within run 2"))
 
 
     
@@ -303,9 +305,9 @@ create_ICC_dataframe_driving(summarised_driving_data, 'sd_filt_lanepos',data_nam
 
 # Analysis of Saccade Data
 ```{r}
-saccades_database <- read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
-                        
-attention_performance_database <- read_csv("G:/Shared drives/Projects/Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>%
+saccades_database <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
+
+attention_performance_database <- read_csv("G:/Shared drives/Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>%
   select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
                    reaction_time)
 
