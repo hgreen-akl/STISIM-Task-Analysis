@@ -13,23 +13,137 @@ library()
 
 #Import the data
 ```{r}
+summarised_driving_data <- read_csv(file = "G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\summarised_DB.csv") %>% select(-1)
+summarised_driving_data$session <- summarised_driving_data$session %>% factor(levels = c("F","1","2"))
+summarised_driving_data$run <- summarised_driving_data$run %>% factor()
+
+saccades_database <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
+
+attention_performance_database <- read_csv("G:/Shared drives/Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv") %>%
+  select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
+                   reaction_time)
+
+saccade_attn_joined <- saccades_database %>% left_join(attention_performance_database, 
+                                  by = c("ID","Session","Run","trial number")) %>% 
+                        select(ID,Session,Run,`trial number`,condition, task_condition, eye, 
+                               stimulus_left_right, task_arrow_dir, congruency,target_deviation,
+                               `correct direction`, duration, `dva/s`, `peak_dva/s`, amplitude, saccade_size, `stimulus onset delay`,
+                               reaction_time, response_type) 
+
+saccade_attn_joined <- saccade_attn_joined %>% mutate(Timepoint = factor(str_c(Session,Run, sep = "_")))
+names(saccade_attn_joined)
+
+organised_saccade_data <- saccade_attn_joined %>% dplyr::filter(amplitude > 2)
+organised_saccade_data$saccade_bin <- if_else((organised_saccade_data$amplitude > 2) & (organised_saccade_data$amplitude < 15), "5-15",
+                                         if_else((organised_saccade_data$amplitude > 15) & (organised_saccade_data$amplitude < 25), "20-30",
+                                         if_else((organised_saccade_data$amplitude > 25) & (organised_saccade_data$amplitude < 40), "30-40","NA"))) %>%
+                                         as.factor()
+
+task_response_performance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
+task_response_performance_summarised_wo_cong <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,target_deviation) %>% 
+                                        summarise(mean_RT = mean(reaction_time), 
+                                                  sd_RT = sd(reaction_time), 
+                                                  count = n(),
+                                                  percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                                                  percent_miss = mean(response_type == "Miss", na.rm = TRUE),
+                                                  percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+task_response_performance_summarised_w_cong <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,congruency,target_deviation) %>% 
+                                        summarise(mean_RT = mean(reaction_time), 
+                                                  sd_RT = sd(reaction_time), 
+                                                  count = n(),
+                                                  percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                                                  percent_miss = mean(response_type == "Miss", na.rm = TRUE),
+                                                  percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
 
 ```
 
 
 ```{r}
-unfiltered_avg_Speed_boxplot <- drive_perf_summary %>% dplyr::filter(Trial != "F") %>%
-    ggplot(aes(x = Trial, y = avg_speed_mean, fill = Run)) +
+unfiltered_avg_Speed_boxplot <- summarised_driving_data %>% dplyr::filter(session != 0, task == "Country") %>% 
+    ggplot(aes(x = session, y = avg_speed, fill = run)) +
         geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
         stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("Average Speed (km/h)")+
+        xlab("Session")+
         scale_y_continuous(limits = c(96,101), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"), 
               axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
               text = element_text(size = 14))
+unfiltered_avg_Speed_boxplot
+```
+
+
+```{r}
+unfiltered_speed_var_boxplot <- summarised_driving_data %>% dplyr::filter(session != 0, task == "Country") %>% 
+    ggplot(aes(x = session, y = sd_speed, fill = run)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
+        ylab("Speed SD (km/h)")+
+        xlab("Session")+
+        scale_y_continuous(limits = c(0,3), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
+              text = element_text(size = 14))
+unfiltered_speed_var_boxplot
 
 ```
 
+```{r}
+unfiltered_lanepos_var_boxplot <- summarised_driving_data %>% dplyr::filter(session != 0, task == "Country") %>% 
+    ggplot(aes(x = session, y = sd_lanepos, fill = run)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
+        ylab("Lane Position SD (m)")+
+        xlab("Session")+
+        scale_y_continuous(limits = c(0,3), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
+              text = element_text(size = 14))
+unfiltered_lanepos_var_boxplot
+```
+
+```{r}
+filtered_avg_lanepos_boxplot <- summarised_driving_data %>% dplyr::filter(session != 0, task == "Country") %>% 
+    ggplot(aes(x = session, y = ang_filt_lanepos, fill = run)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
+        ylab("Avg filtered Lane Position (m)")+
+        xlab("Session")+
+        #scale_y_continuous(limits = c(0,3), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
+              text = element_text(size = 14))
+filtered_avg_lanepos_boxplot
+```
+
+```{r}
+filtered_sd_lanepos_boxplot <- summarised_driving_data %>% dplyr::filter(session != 0, task == "Country") %>% 
+    ggplot(aes(x = session, y = sd_filt_lanepos, fill = run)) +
+        geom_boxplot(outlier.shape = NA, size = 1.1, color = "black",fatten = 1)+
+        stat_boxplot(geom = "errorbar", aes(ymax = ..ymax..), size = 1.1) +
+        stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
+        ylab("Filtered Lane Position SD (m)")+
+        xlab("Session")+
+        scale_y_continuous(limits = c(0,0.1), expand = c(0,0))+
+        scale_fill_grey(start = 0.4)+
+        theme_classic()+
+        
+        theme(legend.key.size = unit(2.5,"line"), 
+              axis.line = element_line(size = 1), axis.ticks = element_line(size = 1), 
+              text = element_text(size = 14))
+filtered_sd_lanepos_boxplot
+```

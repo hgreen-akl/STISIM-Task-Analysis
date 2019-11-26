@@ -213,77 +213,6 @@ create_ICC_dataframe_driving <- function(database,variable,data_name){
 }
 ```
 
-```{r}
-
-create_ICC_dataframe_saccades <- function(database,variable,data_name){
-    data <- database %>% select(ID,task,session = Session,run = Run,variable)
-    C_F1    <- data %>% filter(session == 0 & run == 1)
-    C_S1_R1 <- data %>% filter(session == 1 & run == 1)
-    C_S1_R2 <- data %>% filter(session == 1 & run == 2)
-    C_S2_R1 <- data %>% filter(session == 2 & run == 1)
-    C_S2_R2 <- data %>% filter(session == 2 & run == 2)
-    
-    C_F1vsS1R1    <- ICC(data.frame(C_F1[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]
-    totest <-data.frame(C_F1[,5],C_S1_R1[,5])
-    colnames(totest) <- c("x","y")
-    C_F1vsS1R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
-    C_F1vsS1R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
-    C_F1vsS1R1$CV_percent <- sd(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])*100
-    C_F1vsS1R1$t_test_t  <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
-    C_F1vsS1R1$t_test_p  <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$p.value
-    row.names(C_F1vsS1R1) <-"Fam VS S1R1"
-    
-    C_S1R1vsS1R2    <- ICC(data.frame(C_S1_R2[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]    
-    totest <-data.frame(C_S1_R2[,5],C_S1_R1[,5])
-    colnames(totest) <- c("x","y")
-    C_S1R1vsS1R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
-    C_S1R1vsS1R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
-    C_S1R1vsS1R2$CV_percent <- sd(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])*100
-    C_S1R1vsS1R2$t_test_t  <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$statistic
-    C_S1R1vsS1R2$t_test_p  <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$p.value
-    row.names(C_S1R1vsS1R2) <- "Within day 1"
-
-    C_S2R1vsS2R2    <- ICC(data.frame(C_S2_R1[,5],C_S2_R2[,5]))$results[3,c(1,2,3,6)]
-    totest <-data.frame(C_S2_R1[,5],C_S2_R2[,5])
-    colnames(totest) <- c("x","y")
-    C_S2R1vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
-    C_S2R1vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
-    C_S2R1vsS2R2$CV_percent <- sd(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])*100
-    C_S2R1vsS2R2$t_test_t  <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$statistic
-    C_S2R1vsS2R2$t_test_p  <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$p.value
-    row.names(C_S2R1vsS2R2) <- "Within day 2"
-
-    C_S1R1vsS2R1    <- ICC(data.frame(C_S2_R1[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]
-    totest <-data.frame(C_S2_R1[,5],C_S1_R1[,5])
-    colnames(totest) <- c("x","y")
-    C_S1R1vsS2R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
-    C_S1R1vsS2R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
-    C_S1R1vsS2R1$CV_percent <- sd(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])*100
-    C_S1R1vsS2R1$t_test_t  <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
-    C_S1R1vsS2R1$t_test_p  <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$p.value
-    row.names(C_S1R1vsS2R1) <- "Within run 1"
-
-    C_S1R2vsS2R2    <- ICC(data.frame(C_S1_R2[,5],C_S2_R2[,5]))$results[3,c(1,2,3,6)]
-    totest <-data.frame(C_S1_R2[,5],C_S2_R2[,5])
-    colnames(totest) <- c("x","y")
-    C_S1R2vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
-    C_S1R2vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
-    C_S1R2vsS2R2$CV_percent <- sd(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])*100
-    C_S1R2vsS2R2$t_test_t  <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$statistic
-    C_S1R2vsS2R2$t_test_p  <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$p.value
-    row.names(C_S1R2vsS2R2) <- "Within run 2"
-    
-    Country_combined <- rbind(C_F1vsS1R1,C_S1R1vsS1R2,C_S2R1vsS2R2,C_S1R1vsS2R1,C_S1R2vsS2R2)
-
-
-    
-    table2office(Country_combined,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
-                                         "Country_",data_name,"_",variable,"_ICC.docx"), type = "DOC", pointsize = 10, append = FALSE, add.rownames = TRUE )
-
-    
-   
-}
-```
 
 
 ```{r}
@@ -303,6 +232,107 @@ create_ICC_dataframe_driving(summarised_driving_data, 'sd_filt_lanepos',data_nam
 
 ```
 
+
+```{r}
+
+create_ICC_dataframe_saccades <- function(database,variable,data_name){
+    data <- database %>% select(ID,task,session = Session,run = Run,variable)
+    C_F1    <- data %>% filter(session == 0 & run == 1)
+    C_S1_R1 <- data %>% filter(session == 1 & run == 1)
+    C_S1_R2 <- data %>% filter(session == 1 & run == 2)
+    C_S2_R1 <- data %>% filter(session == 2 & run == 1)
+    C_S2_R2 <- data %>% filter(session == 2 & run == 2)
+    
+   C_F1vsS1R1    <- ICC(data.frame(C_F1[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]
+    totest <-data.frame(C_F1[,5],C_S1_R1[,5])
+    colnames(totest) <- c("x","y")
+    C_F1vsS1R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_F1vsS1R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_F1vsS1R1$CV_percent  <- sd(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_F1[,5],C_S1_R1[,5]))[,1])*100
+    C_F1vsS1R1$t_test_t    <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_F1vsS1R1$t_test_df    <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$parameter
+    C_F1vsS1R1$t_test_p    <- t.test(data.frame(C_F1[,5],C_S1_R1[,5])[,1],data.frame(C_F1[,5],C_S1_R1[,5])[,2],paired = T)$p.value
+    C_F1vsS1R1$mean_1      <- C_F1 %>% summarise(mean_1 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_F1vsS1R1$sd_1        <- C_F1 %>% summarise(sd_1 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    C_F1vsS1R1$mean_2      <- C_S1_R1 %>% summarise(mean_2 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_F1vsS1R1$sd_2        <- C_S1_R1 %>% summarise(sd_2 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    row.names(C_F1vsS1R1)  <-"Fam VS S1R1"
+    
+    C_S1R1vsS1R2    <- ICC(data.frame(C_S1_R2[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]
+    totest <-data.frame(C_S1_R2[,5],C_S1_R1[,5])
+    colnames(totest) <- c("x","y")
+    C_S1R1vsS1R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R1vsS1R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R1vsS1R2$CV_percent  <- sd(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S1_R1[,5]))[,1])*100
+    C_S1R1vsS1R2$t_test_t    <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_S1R1vsS1R2$t_test_df    <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$parameter
+    C_S1R1vsS1R2$t_test_p    <- t.test(data.frame(C_S1_R2[,5],C_S1_R1[,5])[,1],data.frame(C_S1_R2[,5],C_S1_R1[,5])[,2],paired = T)$p.value
+    C_S1R1vsS1R2$mean_1      <- C_S1_R1 %>% summarise(mean_1 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_S1R1vsS1R2$sd_1        <- C_S1_R1 %>% summarise(sd_1 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    C_S1R1vsS1R2$mean_2      <- C_S1_R2 %>% summarise(mean_2 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_S1R1vsS1R2$sd_2        <- C_S1_R2 %>% summarise(sd_2 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    row.names(C_S1R1vsS1R2)  <- "Within day 1"
+
+    C_S2R1vsS2R2    <- ICC(data.frame(C_S2_R1[,5],C_S2_R2[,5]))$results[3,c(1,2,3,6)]
+    totest <-data.frame(C_S2_R1[,5],C_S2_R2[,5])
+    colnames(totest) <- c("x","y")
+    C_S2R1vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S2R1vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S2R1vsS2R2$CV_percent  <- sd(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S2_R2[,5]))[,1])*100
+    C_S2R1vsS2R2$t_test_t    <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$statistic
+    C_S2R1vsS2R2$t_test_df    <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$parameter
+    C_S2R1vsS2R2$t_test_p    <- t.test(data.frame(C_S2_R1[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S2_R2[,5])[,2],paired = T)$p.value
+    C_S2R1vsS2R2$mean_1      <- C_S2_R1 %>% summarise(mean_1 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_S2R1vsS2R2$sd_1        <- C_S2_R1 %>% summarise(sd_1 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    C_S2R1vsS2R2$mean_2      <- C_S2_R2 %>% summarise(mean_2 = mean(eval(parse(text = variable)))) %>% as.numeric()
+    C_S2R1vsS2R2$sd_2        <- C_S2_R2 %>% summarise(sd_2 = sd(eval(parse(text = variable)))) %>% as.numeric()
+    row.names(C_S2R1vsS2R2)  <- "Within day 2"
+
+    C_S1R1vsS2R1    <- ICC(data.frame(C_S2_R1[,5],C_S1_R1[,5]))$results[3,c(1,2,3,6)]
+    totest <-data.frame(C_S2_R1[,5],C_S1_R1[,5])
+    colnames(totest) <- c("x","y")
+    C_S1R1vsS2R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R1vsS2R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R1vsS2R1$CV_percent  <- sd(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])/mean(data.frame(rbind(C_S2_R1[,5],C_S1_R1[,5]))[,1])*100
+    C_S1R1vsS2R1$t_test_t    <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$statistic
+    C_S1R1vsS2R1$t_test_df    <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$parameter
+    C_S1R1vsS2R1$t_test_p    <- t.test(data.frame(C_S2_R1[,5],C_S1_R1[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$p.value
+    C_S1R1vsS2R1$mean_1      <- C_S1_R1 %>% summarise(mean_1 = mean(eval(parse(text = variable))))
+    C_S1R1vsS2R1$sd_1        <- C_S1_R1 %>% summarise(sd_1 = sd(eval(parse(text = variable))))
+    C_S1R1vsS2R1$mean_2      <- C_S2_R1 %>% summarise(mean_2 = mean(eval(parse(text = variable))))
+    C_S1R1vsS2R1$sd_2        <- C_S2_R1 %>% summarise(sd_2 = sd(eval(parse(text = variable))))
+    row.names(C_S1R1vsS2R1)  <- "Within run 1"
+
+    C_S1R2vsS2R2    <- ICC(data.frame(C_S1_R2[,5],C_S2_R2[,5]))$results[3,c(1,2,3,6)]
+    totest <-data.frame(C_S1_R2[,5],C_S2_R2[,5])
+    colnames(totest) <- c("x","y")
+    C_S1R2vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R2vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R2vsS2R2$CV_percent  <- sd(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])/mean(data.frame(rbind(C_S1_R2[,5],C_S2_R2[,5]))[,1])*100
+    C_S1R2vsS2R2$t_test_t    <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$statistic
+    C_S1R2vsS2R2$t_test_df    <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S2_R1[,5],C_S1_R1[,5])[,2],paired = T)$parameter
+    C_S1R2vsS2R2$t_test_p    <- t.test(data.frame(C_S1_R2[,5],C_S2_R2[,5])[,1],data.frame(C_S1_R2[,5],C_S2_R2[,5])[,2],paired = T)$p.value
+    C_S1R2vsS2R2$mean_1      <- C_S1_R2 %>% summarise(mean_1 = mean(eval(parse(text = variable))))
+    C_S1R2vsS2R2$sd_1        <- C_S1_R2 %>% summarise(sd_1 = sd(eval(parse(text = variable))))
+    C_S1R2vsS2R2$mean_2      <- C_S2_R2 %>% summarise(mean_2 = mean(eval(parse(text = variable))))
+    C_S1R2vsS2R2$sd_2        <- C_S2_R2 %>% summarise(sd_2 = sd(eval(parse(text = variable))))
+    row.names(C_S1R2vsS2R2)  <- "Within run 2"
+    
+    Country_combined <- rbind(C_F1vsS1R1,C_S1R1vsS1R2,C_S2R1vsS2R2,C_S1R1vsS2R1,C_S1R2vsS2R2)
+    Country_combined <- Country_combined %>% mutate(pearson = paste0("r = ",pearsons_r %>% round(3), ", p = ",round(pearsons_p,3)),
+                                                    ICCsumm = paste0("ICC = ",round(ICC,3), ", p = ",round(p,3)),
+                                                    ttest = paste0("t = ",round(t_test_t,3), ", df = ",round(t_test_df,3), ", p = ",round(t_test_p,3))) %>%
+                                             select(mean_1,sd_1,mean_2,sd_2,pearson,ICCsumm,CV_percent,ttest)
+    row.names(Country_combined) <- c(as.name("Fam VS S1R1"),as.name("Within day 1"),as.name("Within day 2"),as.name("Within run 1"),as.name("Within run 2"))
+
+
+    
+    table2office(Country_combined,paste0("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\ICC\\",
+                                         "Country_",data_name,"_",variable,"_ICC.docx"), type = "DOC", pointsize = 10, append = FALSE, add.rownames = TRUE )
+   
+}
+```
+
 # Analysis of Saccade Data
 ```{r}
 saccades_database <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\4_Analysis_Saccades\\Individual_saccade_database.csv")
@@ -311,7 +341,7 @@ attention_performance_database <- read_csv("G:/Shared drives/Projects\\2018 Driv
   select(ID, Session, Run, `trial number`, task_condition, task_arrow_dir, stimulus_left_right, congruency, target_deviation, response_type,
                    reaction_time)
 
-saccade_attn_joined <- left_join(attention_performance_database, 
+saccade_attn_joined <- saccades_database %>% left_join(attention_performance_database, 
                                   by = c("ID","Session","Run","trial number")) %>% 
                         select(ID,Session,Run,`trial number`,condition, task_condition, eye, 
                                stimulus_left_right, task_arrow_dir, congruency,target_deviation,
