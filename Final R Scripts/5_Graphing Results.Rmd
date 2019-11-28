@@ -8,7 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggthemes)
-library()
 ```
 
 #Import the data
@@ -40,22 +39,32 @@ organised_saccade_data$saccade_bin <- if_else((organised_saccade_data$amplitude 
                                          as.factor()
 
 task_response_performance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
-task_response_performance_summarised_wo_cong <- task_response_performance %>% 
+task_response_performance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
+task_response_performance_summarised_wo_cong_accuracy <- task_response_performance %>% 
                                         group_by(ID,Session,Run,target_deviation) %>% 
-                                        summarise(mean_RT = mean(reaction_time), 
-                                                  sd_RT = sd(reaction_time), 
-                                                  count = n(),
-                                                  percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                                        summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                                                   percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                                                   percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
-task_response_performance_summarised_w_cong <- task_response_performance %>% 
+
+task_response_performance_summarised_wo_cong_RT <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,target_deviation) %>% 
+                                        filter(response_type == "Correct") %>%
+                                        summarise(mean_RT = mean(reaction_time))
+
+task_response_performance_summarised_w_cong_RT <- task_response_performance %>% 
                                         group_by(ID,Session,Run,congruency,target_deviation) %>% 
-                                        summarise(mean_RT = mean(reaction_time), 
-                                                  sd_RT = sd(reaction_time), 
-                                                  count = n(),
-                                                  percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                                        filter(response_type == "Correct") %>%
+                                        summarise(mean_RT = mean(reaction_time))
+
+task_response_performance_summarised_w_cong_accuracy <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,congruency,target_deviation) %>% 
+                                        summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                                                   percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                                                   percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+
+task_response_performance_summarised_w_cong <- task_response_performance_summarised_w_cong_RT %>% left_join(task_response_performance_summarised_w_cong_accuracy)
+task_response_performance_summarised_wo_cong <- task_response_performance_summarised_wo_cong_RT %>% left_join(task_response_performance_summarised_wo_cong_accuracy)
+
 
 ```
 
@@ -68,7 +77,7 @@ unfiltered_avg_Speed_boxplot <- summarised_driving_data %>% dplyr::filter(sessio
         stat_boxplot(geom = "errorbar", aes(ymin = ..ymin..), size = 1.1) +
         ylab("Average Speed (km/h)")+
         xlab("Session")+
-        scale_y_continuous(limits = c(96,101), expand = c(0,0))+
+        scale_y_continuous(limits = c(92,104), expand = c(0,0))+
         scale_fill_grey(start = 0.4)+
         theme_classic()+
         theme(legend.key.size = unit(2.5,"line"), 
