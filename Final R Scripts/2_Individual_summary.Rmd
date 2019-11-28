@@ -154,7 +154,7 @@ summarise_file_parameters <- function(dat_name,checked_csv_name,task,run,session
  ##pop up to confirm whether the file was from the country or urban task. 
   Task <- if_else(task == "country"|task == "Country", 1,2)
 
-  if(task == "country") {
+  if(task == 1) {
       summarised_data <- csv_to_bin %>%
           as_tibble() %>% 
           dplyr::filter(Total_dist >= 300 & Total_dist <= 30000) %>%
@@ -231,7 +231,7 @@ summarise_file_parameters <- function(dat_name,checked_csv_name,task,run,session
                                                 avg_steering = sum(avg_steering),
                                                 sd_steering = sum(sd_steering),
                                                 following_road = sum(following_road),
-                                                avg_filt_lanepos = sum(ang_filt_lanepos),
+                                                avg_filt_lanepos = sum(avg_filt_lanepos),
                                                 sd_filt_lanepos = sum(sd_filt_lanepos),
                                                 ID = ID[1],
                                                 File_Number = File_Number[1],
@@ -259,71 +259,5 @@ summarise_file_parameters <- function(dat_name,checked_csv_name,task,run,session
 ```{r results='hide'}
 
 mapply(summarise_file_parameters,List_of_checked_files$dat_name,List_of_checked_files$checked_files,List_of_checked_files$Scenario,List_of_checked_files$Run,List_of_checked_files$Session)
-```
-
-
-```{r}
-
-save_data <- function(x) {
-  save_location <- str_replace(file_to_check,"checked", "binned_by_saccade")   
-  existing_file <- if_else(file.exists(save_location), TRUE, FALSE) 
-  code <- paste0(x$ID[1] %>% as.character(),"_" ,x$Run_Number[1] %>% as.character())
-  if(existing_file == TRUE) {
-     overwrite <- menu(c("Overwrite","Stop"), graphics = TRUE, title = "trimmed csv data already exists do you wish to overwrite") %>% as.numeric()
-     if(overwrite == 2) {
-       stop("ERROR:: file already exists")
-      } else {
-       write.csv(x, file = save_location, row.names = FALSE)
-       print(paste0(code,"_checked.csv is saved"))
-  } } 
-    else if (existing_file == FALSE) {
-  write.csv(x, file = save_location, row.names = FALSE)
-  return(paste0(code,"_checked.csv is saved")) 
-    } else {
-    stop("ERROR :: error in saving process save manually")
-        }
-  } 
-
-```
-
-
-
-```{r}
-output <- as.tibble(bin_by_saccades(Imported) %>% dplyr::filter(bin_duration > 0, !is.na(bin_num)))
-output <- as.tibble(bin_by_dist(Imported) %>% dplyr::filter(bin_duration > 0, !is.na(bin_num)))
-output2 <- output %>% mutate(Trial = as.factor("Fam"))
-output3 <- output %>% mutate(Trial = as.factor("1"))
-output4 <- output2 %>% bind_rows(output3)
-output4$Trial <- output4$Trial %>% as.factor()
-
-
-saccade_bins <- Imported %>% bin_by_dist()
-```
-
-
-
-
-```{r}
-##ridgeline plot with median upper and lower quartiles, can change stat_density_ridges(quantile_lines = TRUE, quantiles = c() ) and then 
-p1 <- ggplot(database_by_distance_100, aes(x = avg_speed, y = Trial, height = ..density..)) +
-    stat_density_ridges(quantile_lines = TRUE, alpha = 0.9, scale = .9)+
-  xlim(60,120)
-p1
-# an alternative ridgeline plot with data points recorded
-p2 <- ggplot(output4, aes(x = avg_speed, y = Trial, height = ..density..)) +
-  geom_density_ridges(jittered_points = TRUE, quantile_lines = TRUE, scale = 0.8, 
-                      alpha = 0.5, vline_size = .8, vline_color = "blue", point_size = 0.4,
-                      position = position_raincloud(adjust_vlines = FALSE)) +
-  theme_classic()
-p2
-
-```
-
-```{r}
-trial1 %>% bin_by_saccades(bin_size = 100)
-
-lapply(List_of_checked_files$pattern_name, bin_by_saccades)
-
-
 ```
 
