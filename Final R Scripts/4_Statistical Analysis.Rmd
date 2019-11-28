@@ -403,22 +403,31 @@ create_ICC_dataframe_saccades(saccades_30_to_40,'mean_avgv',"mean_velocity 30-40
 # Analysis of Task Performance Data
 ```{r}
 task_response_performance <- read_csv("G:\\Shared drives\\Projects\\2018 Driving Sim Reproducibility\\task_response_database.csv")
-task_response_performance_summarised_wo_cong <- task_response_performance %>% 
+task_response_performance_summarised_wo_cong_accuracy <- task_response_performance %>% 
                                         group_by(ID,Session,Run,target_deviation) %>% 
-                                        summarise(mean_RT = mean(reaction_time), 
-                                                  sd_RT = sd(reaction_time), 
-                                                  count = n(),
+                                        summarise(count = n(),
                                                   percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                                                   percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                                                   percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
-task_response_performance_summarised_w_cong <- task_response_performance %>% 
+
+task_response_performance_summarised_wo_cong_RT <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,target_deviation) %>% 
+                                        filter(response_type == "Correct") %>%
+                                        summarise(mean_RT = mean(reaction_time))
+
+task_response_performance_summarised_w_cong_RT <- task_response_performance %>% 
                                         group_by(ID,Session,Run,congruency,target_deviation) %>% 
-                                        summarise(mean_RT = mean(reaction_time), 
-                                                  sd_RT = sd(reaction_time), 
-                                                  count = n(),
-                                                  percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
+                                        filter(response_type == "Correct") %>%
+                                        summarise(mean_RT = mean(reaction_time))
+
+task_response_performance_summarised_w_cong_accuracy <- task_response_performance %>% 
+                                        group_by(ID,Session,Run,congruency,target_deviation) %>% 
+                                        summarise(percent_correct = mean(response_type == "Correct", na.rm = TRUE), 
                                                   percent_miss = mean(response_type == "Miss", na.rm = TRUE),
                                                   percent_incorrect = mean(response_type == "Incorrect", na.rm = TRUE))
+
+task_response_performance_summarised_w_cong <- task_response_performance_summarised_w_cong_RT %>% left_join(task_response_performance_summarised_w_cong_accuracy)
+task_response_performance_summarised_wo_cong <- task_response_performance_summarised_wo_cong_RT %>% left_join(task_response_performance_summarised_wo_cong_accuracy)
 
 task_response_performance_summarised_cong10    <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 10, congruency == "Congruent")
 task_response_performance_summarised_incong10  <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 10, congruency == "Incongruent")
@@ -427,14 +436,17 @@ task_response_performance_summarised_incong25  <- task_response_performance_summ
 task_response_performance_summarised_cong35   <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35, congruency == "Congruent")
 task_response_performance_summarised_incong35  <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35, congruency == "Incongruent")
 
-task_response_performance_summarised10 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 10)
-task_response_performance_summarised25 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 25)
-task_response_performance_summarised35 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35)
+
+
+task_response_performance_summarised10 <- task_response_performance_summarised_wo_cong %>% filter(target_deviation == 10)
+task_response_performance_summarised25 <- task_response_performance_summarised_wo_cong %>% filter(target_deviation == 25)
+task_response_performance_summarised35 <- task_response_performance_summarised_wo_cong %>% filter(target_deviation == 35)
 ```
 
 
 ```{r}
 create_ICC_dataframe_attention <- function(database,variable,data_name){
+    if ('congruency' %in% names(database)) {
     data <- database %>% select(ID,session = Session,run = Run,variable,-congruency)
     C_F1    <- data %>% filter(session == "F" & run == 1)
     C_S1_R1 <- data %>% filter(session == 1 & run == 1)
@@ -531,6 +543,104 @@ create_ICC_dataframe_attention <- function(database,variable,data_name){
     C_S1R2vsS2R2$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
     C_S1R2vsS2R2$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
     row.names(C_S1R2vsS2R2)  <- "Within run 2"
+    } else {
+    data <- database %>% select(ID,session = Session,run = Run,variable)
+    C_F1    <- data %>% filter(session == "F" & run == 1)
+    C_S1_R1 <- data %>% filter(session == 1 & run == 1)
+    C_S1_R2 <- data %>% filter(session == 1 & run == 2)
+    C_S2_R1 <- data %>% filter(session == 2 & run == 1)
+    C_S2_R2 <- data %>% filter(session == 2 & run == 2)
+    
+    combined_data          <- C_F1 %>% full_join(C_S1_R1, by = "ID") %>% drop_na() %>% data.frame()
+    timepoint_1            <- combined_data[,4]
+    timepoint_2            <- combined_data[,7]
+    C_F1vsS1R1             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
+    totest                 <- data.frame(timepoint_1, timepoint_2)
+    colnames(totest)       <- c("x","y")
+    C_F1vsS1R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_F1vsS1R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_F1vsS1R1$CV_percent  <- sd(data.frame(rbind(timepoint_1,timepoint_2))[,1])/mean(data.frame(rbind(timepoint_1,timepoint_2))[,1])*100
+    C_F1vsS1R1$t_test_t    <- t.test(timepoint_1,timepoint_2,paired = T)$statistic
+    C_F1vsS1R1$t_test_df   <- t.test(timepoint_1,timepoint_2,paired = T)$parameter
+    C_F1vsS1R1$t_test_p    <- t.test(timepoint_1,timepoint_2,paired = T)$p.value
+    C_F1vsS1R1$mean_1      <- mean(timepoint_1) %>% as.numeric() %>% round(3)
+    C_F1vsS1R1$sd_1        <- sd(timepoint_1) %>% as.numeric() %>% round(3)
+    C_F1vsS1R1$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
+    C_F1vsS1R1$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
+    row.names(C_F1vsS1R1)  <- "Fam VS S1R1"
+    
+    combined_data            <- C_F1 %>% full_join(C_S1_R1, by = "ID") %>% drop_na() %>% data.frame()
+    timepoint_1              <- combined_data[,4]
+    timepoint_2              <- combined_data[,7]
+    C_S1R1vsS1R2             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
+    totest                   <- data.frame(timepoint_1, timepoint_2)
+    colnames(totest)         <- c("x","y")
+    C_S1R1vsS1R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R1vsS1R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R1vsS1R2$CV_percent  <- sd(data.frame(rbind(timepoint_1,timepoint_2))[,1])/mean(data.frame(rbind(timepoint_1,timepoint_2))[,1])*100
+    C_S1R1vsS1R2$t_test_t    <- t.test(timepoint_1,timepoint_2,paired = T)$statistic
+    C_S1R1vsS1R2$t_test_df   <- t.test(timepoint_1,timepoint_2,paired = T)$parameter
+    C_S1R1vsS1R2$t_test_p    <- t.test(timepoint_1,timepoint_2,paired = T)$p.value
+    C_S1R1vsS1R2$mean_1      <- mean(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R1vsS1R2$sd_1        <- sd(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R1vsS1R2$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
+    C_S1R1vsS1R2$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
+    row.names(C_S1R1vsS1R2)  <- "Within day 1"
+
+    combined_data            <- C_S2_R1 %>% full_join(C_S2_R2, by = "ID") %>% drop_na() %>% data.frame()
+    timepoint_1              <- combined_data[,4]
+    timepoint_2              <- combined_data[,7]
+    C_S2R1vsS2R2             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
+    totest                   <- data.frame(timepoint_1, timepoint_2)
+    colnames(totest)         <- c("x","y")
+    C_S2R1vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S2R1vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S2R1vsS2R2$CV_percent  <- sd(data.frame(rbind(timepoint_1,timepoint_2))[,1])/mean(data.frame(rbind(timepoint_1,timepoint_2))[,1])*100
+    C_S2R1vsS2R2$t_test_t    <- t.test(timepoint_1,timepoint_2,paired = T)$statistic
+    C_S2R1vsS2R2$t_test_df   <- t.test(timepoint_1,timepoint_2,paired = T)$parameter
+    C_S2R1vsS2R2$t_test_p    <- t.test(timepoint_1,timepoint_2,paired = T)$p.value
+    C_S2R1vsS2R2$mean_1      <- mean(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S2R1vsS2R2$sd_1        <- sd(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S2R1vsS2R2$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
+    C_S2R1vsS2R2$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
+    row.names(C_S2R1vsS2R2)  <- "Within day 2"
+
+    combined_data            <- C_S1_R1 %>% full_join(C_S2_R1, by = "ID") %>% drop_na() %>% data.frame()
+    timepoint_1              <- combined_data[,4]
+    timepoint_2              <- combined_data[,7]
+    C_S1R1vsS2R1             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
+    totest                   <- data.frame(timepoint_1, timepoint_2)
+    colnames(totest)         <- c("x","y")
+    C_S1R1vsS2R1$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R1vsS2R1$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R1vsS2R1$CV_percent  <- sd(data.frame(rbind(timepoint_1,timepoint_2))[,1])/mean(data.frame(rbind(timepoint_1,timepoint_2))[,1])*100
+    C_S1R1vsS2R1$t_test_t    <- t.test(timepoint_1,timepoint_2,paired = T)$statistic
+    C_S1R1vsS2R1$t_test_df   <- t.test(timepoint_1,timepoint_2,paired = T)$parameter
+    C_S1R1vsS2R1$t_test_p    <- t.test(timepoint_1,timepoint_2,paired = T)$p.value
+    C_S1R1vsS2R1$mean_1      <- mean(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R1vsS2R1$sd_1        <- sd(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R1vsS2R1$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
+    C_S1R1vsS2R1$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
+    row.names(C_S1R1vsS2R1)  <- "Within run 1"
+
+    combined_data            <- C_S1_R2 %>% full_join(C_S2_R2, by = "ID") %>% drop_na() %>% data.frame()
+    timepoint_1              <- combined_data[,4]
+    timepoint_2              <- combined_data[,7]
+    C_S1R2vsS2R2             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
+    totest                   <- data.frame(timepoint_1, timepoint_2)
+    colnames(totest)         <- c("x","y")
+    C_S1R2vsS2R2$pearsons_r  <- cor.test(formula = ~x+y, data = totest)$estimate
+    C_S1R2vsS2R2$pearsons_p  <- cor.test(formula = ~x+y, data = totest)$p.value
+    C_S1R2vsS2R2$CV_percent  <- sd(data.frame(rbind(timepoint_1,timepoint_2))[,1])/mean(data.frame(rbind(timepoint_1,timepoint_2))[,1])*100
+    C_S1R2vsS2R2$t_test_t    <- t.test(timepoint_1,timepoint_2,paired = T)$statistic
+    C_S1R2vsS2R2$t_test_df   <- t.test(timepoint_1,timepoint_2,paired = T)$parameter
+    C_S1R2vsS2R2$t_test_p    <- t.test(timepoint_1,timepoint_2,paired = T)$p.value
+    C_S1R2vsS2R2$mean_1      <- mean(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R2vsS2R2$sd_1        <- sd(timepoint_1) %>% as.numeric() %>% round(3)
+    C_S1R2vsS2R2$mean_2      <- mean(timepoint_2) %>% as.numeric() %>% round(3)
+    C_S1R2vsS2R2$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
+    row.names(C_S1R2vsS2R2)  <- "Within run 2" 
+    }
     
     Country_combined <- rbind(C_F1vsS1R1,C_S1R1vsS1R2,C_S2R1vsS2R2,C_S1R1vsS2R1,C_S1R2vsS2R2)
     Country_combined <- Country_combined %>% mutate(pearson = paste0("r = ",pearsons_r %>% round(3), ", p = ",round(pearsons_p,3)),
@@ -555,15 +665,15 @@ create_ICC_dataframe_attention(task_response_performance_summarised_cong10, 'mea
 create_ICC_dataframe_attention(task_response_performance_summarised_incong10, 'mean_RT',data_name = "incongruent_10_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_cong25, 'mean_RT',data_name = "congruent_25_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_incong25, 'mean_RT',data_name = "incongruent_25_task_performance")
-create_ICC_dataframe_attention(task_response_performance_summarised_cong35, 'mean_RT',data_name = "congruent_25_task_performance")
-create_ICC_dataframe_attention(task_response_performance_summarised_incong35, 'mean_RT',data_name = "congruent_25_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised_cong35, 'mean_RT',data_name = "congruent_35_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised_incong35, 'mean_RT',data_name = "congruent_35_task_performance")
 
 create_ICC_dataframe_attention(task_response_performance_summarised_cong10, 'percent_correct',data_name = "congruent_10_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_incong10, 'percent_correct',data_name = "incongruent_10_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_cong25, 'percent_correct',data_name = "congruent_25_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_incong25, 'percent_correct',data_name = "incongruent_25_task_performance")
-create_ICC_dataframe_attention(task_response_performance_summarised_cong35, 'percent_correct',data_name = "congruent_25_task_performance")
-create_ICC_dataframe_attention(task_response_performance_summarised_incong35, 'percent_correct',data_name = "congruent_25_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised_cong35, 'percent_correct',data_name = "congruent_35_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised_incong35, 'percent_correct',data_name = "congruent_35_task_performance")
 
 
 create_ICC_dataframe_attention(task_response_performance_summarised10, 'mean_RT',data_name = "combined_10_task_performance")
