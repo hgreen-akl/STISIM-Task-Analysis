@@ -426,6 +426,10 @@ task_response_performance_summarised_cong25   <- task_response_performance_summa
 task_response_performance_summarised_incong25  <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 25, congruency == "Incongruent")
 task_response_performance_summarised_cong35   <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35, congruency == "Congruent")
 task_response_performance_summarised_incong35  <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35, congruency == "Incongruent")
+
+task_response_performance_summarised10 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 10)
+task_response_performance_summarised25 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 25)
+task_response_performance_summarised35 <- task_response_performance_summarised_w_cong %>% filter(target_deviation == 35)
 ```
 
 
@@ -560,6 +564,15 @@ create_ICC_dataframe_attention(task_response_performance_summarised_cong25, 'per
 create_ICC_dataframe_attention(task_response_performance_summarised_incong25, 'percent_correct',data_name = "incongruent_25_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_cong35, 'percent_correct',data_name = "congruent_25_task_performance")
 create_ICC_dataframe_attention(task_response_performance_summarised_incong35, 'percent_correct',data_name = "congruent_25_task_performance")
+
+
+create_ICC_dataframe_attention(task_response_performance_summarised10, 'mean_RT',data_name = "combined_10_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised25, 'mean_RT',data_name = "combined_25_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised35, 'mean_RT',data_name = "combined_35_task_performance")
+
+create_ICC_dataframe_attention(task_response_performance_summarised10, 'percent_correct',data_name = "combined_10_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised25, 'percent_correct',data_name = "combined_25_task_performance")
+create_ICC_dataframe_attention(task_response_performance_summarised35, 'percent_correct',data_name = "combined_35_task_performance")
 
 ```
 
