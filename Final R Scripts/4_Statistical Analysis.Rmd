@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
 output: html_notebook
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -259,7 +261,7 @@ create_ICC_dataframe_saccades <- function(database,variable,data_name){
     C_F1vsS1R1$sd_2        <- sd(timepoint_2) %>% as.numeric() %>% round(3)
     row.names(C_F1vsS1R1)  <- "Fam VS S1R1"
     
-    combined_data            <- C_F1 %>% full_join(C_S1_R1, by = "ID") %>% drop_na() %>% data.frame()
+    combined_data            <- C_S1_R1 %>% full_join(C_S1_R2, by = "ID") %>% drop_na() %>% data.frame()
     timepoint_1              <- combined_data[,4]
     timepoint_2              <- combined_data[,7]
     C_S1R1vsS1R2             <- ICC(data.frame(timepoint_1,timepoint_2))$results[3,c(1,2,3,6)]
@@ -378,26 +380,27 @@ saccade_by_bin <- organised_saccade_data %>% group_by(ID,Session,Run, saccade_bi
                                              filter(saccade_bin != "NA") %>%
                                              summarise(mean_pv = mean(`peak_dva/s`), 
                                                        mean_dur = mean(duration), 
-                                                       mean_avgv = mean(`dva/s`))
+                                                       mean_avgv = mean(`dva/s`), 
+                                                       n = n())
 
-saccades_5_to_15  <-  saccade_by_bin %>% filter(saccade_bin == "5-15")
-saccades_20_to_30 <-  saccade_by_bin %>% filter(saccade_bin == "20-30")
-saccades_30_to_40 <-  saccade_by_bin %>% filter(saccade_bin == "30-40")
+saccades_5_to_15  <-  saccade_by_bin %>% filter(saccade_bin == "5-15") %>% filter(n >= 5) %>% select(-n)
+saccades_20_to_30 <-  saccade_by_bin %>% filter(saccade_bin == "20-30") %>% filter(n >= 5)%>% select(-n)
+saccades_30_to_40 <-  saccade_by_bin %>% filter(saccade_bin == "30-40") %>% filter(n >= 5)%>% select(-n)
 
 ```
 
 ```{r}
-create_ICC_dataframe_saccades(saccades_5_to_15,'mean_pv',"peak_velocity 5-15 degrees")
-create_ICC_dataframe_saccades(saccades_20_to_30,'mean_pv',"peak_velocity 20-30 degrees")
-create_ICC_dataframe_saccades(saccades_30_to_40,'mean_pv',"peak_velocity 30-40 degrees")
+create_ICC_dataframe_saccades(saccades_5_to_15,'mean_pv',"n_5_peak_velocity 5-15 degrees")
+create_ICC_dataframe_saccades(saccades_20_to_30,'mean_pv',"n_5_peak_velocity 20-30 degrees")
+create_ICC_dataframe_saccades(saccades_30_to_40,'mean_pv',"n_5_peak_velocity 30-40 degrees")
 
-create_ICC_dataframe_saccades(saccades_5_to_15,'mean_dur',"saccade_duration 5-15 degrees")
-create_ICC_dataframe_saccades(saccades_20_to_30,'mean_dur',"saccade_duration 20-30 degrees")
-create_ICC_dataframe_saccades(saccades_30_to_40,'mean_dur',"saccade_duration 30-40 degrees")
+create_ICC_dataframe_saccades(saccades_5_to_15,'mean_dur',"n_5_saccade_duration 5-15 degrees")
+create_ICC_dataframe_saccades(saccades_20_to_30,'mean_dur',"n_5_saccade_duration 20-30 degrees")
+create_ICC_dataframe_saccades(saccades_30_to_40,'mean_dur',"n_5_saccade_duration 30-40 degrees")
 
-create_ICC_dataframe_saccades(saccades_5_to_15,'mean_avgv',"mean_velocity 5-15 degrees")
-create_ICC_dataframe_saccades(saccades_20_to_30,'mean_avgv',"mean_velocity 20-30 degrees")
-create_ICC_dataframe_saccades(saccades_30_to_40,'mean_avgv',"mean_velocity 30-40 degrees")
+create_ICC_dataframe_saccades(saccades_5_to_15,'mean_avgv',"n_5_mean_velocity 5-15 degrees")
+create_ICC_dataframe_saccades(saccades_20_to_30,'mean_avgv',"n_5_mean_velocity 20-30 degrees")
+create_ICC_dataframe_saccades(saccades_30_to_40,'mean_avgv',"n_5_mean_velocity 30-40 degrees")
 ```
 
 # Analysis of Task Performance Data
